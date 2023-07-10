@@ -8,6 +8,7 @@
 Java 17 liberica because it's on real work
 gradle 8.2 because it's newest
 alpine linux in docker because it's mininal
+no exception handling because I don't have enough time
 
 questions
 мы считаем что на сервере точное время? не надо ни с кем синхронизироваться и проверять?
