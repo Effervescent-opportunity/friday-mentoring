@@ -33,6 +33,7 @@ public class ClockController {
     //todo should I return String? or response entity...
     //http://localhost:8080/time/current?timezone=xxx
     //http://localhost:8080/time/current?timezone=Asia/Bangkok
+    //todo curl http://localhost:8080/time/current?timezone=Europe/Moscow&la=lalqa not working from terminal
 
     //"2023-07-09T00:30:10.572164887+07:00"
     @GetMapping("/time/current")
