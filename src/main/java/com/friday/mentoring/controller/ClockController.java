@@ -96,4 +96,14 @@ public class ClockController {
             return ResponseEntity.badRequest().body("Incorrect timezone: " + ianaTimezone);
         }
     }
+
+    @GetMapping(path = "/time/current3", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ZonedDateTime> getCurrentDateTimeinTimezone3(@RequestParam("timezone") String ianaTimezone) {//
+
+        ZoneId zoneId = ZoneId.of(ianaTimezone);
+        ZonedDateTime zonedDateTime = ZonedDateTime.now(zoneId);
+
+        return ResponseEntity.ok(zonedDateTime);
+
+    }
 }
