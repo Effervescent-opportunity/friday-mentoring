@@ -8,7 +8,6 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.zone.ZoneRulesException;
 
-import static com.friday.mentoring.util.TestConstants.ISO_FORMATTER;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ClockServiceTest {
@@ -18,7 +17,7 @@ class ClockServiceTest {
     public void getNowInUtcTest() {
         ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
 
-        ZonedDateTime dateFromService = ZonedDateTime.parse(clockService.getNowInUtc(), ISO_FORMATTER);
+        ZonedDateTime dateFromService = clockService.getNowInUtc();
 
         assertTrue(now.isBefore(dateFromService));
         assertEquals(now.getOffset(), dateFromService.getOffset());
@@ -59,7 +58,7 @@ class ClockServiceTest {
         ZoneId zoneId = ZoneId.of(ianaTimezone);
         ZonedDateTime now = ZonedDateTime.now(zoneId);
 
-        ZonedDateTime dateFromService = ZonedDateTime.parse(clockService.getNowInTimezone(ianaTimezone), ISO_FORMATTER);
+        ZonedDateTime dateFromService = clockService.getNowInTimezone(ianaTimezone);
 
         assertTrue(now.isBefore(dateFromService));
         assertEquals(now.getOffset(), dateFromService.getOffset());
