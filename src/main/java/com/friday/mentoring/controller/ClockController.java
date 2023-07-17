@@ -7,9 +7,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.ZonedDateTime;
 
-/*
-1. produces = MediaType.APPLICATION_JSON_VALUE - лишнее, без него отлично работает;
- */
 @RestController
 public class ClockController {
 
@@ -24,7 +21,7 @@ public class ClockController {
      */
     @GetMapping(path = "/time/current/utc")
     public CurrentTimeResponse getCurrentDateTimeInUtc() {
-        var nowInUtc = clockService.getNowInUtc();
+        ZonedDateTime nowInUtc = clockService.getNowInUtc();
         return new CurrentTimeResponse(nowInUtc);
     }
 
@@ -33,17 +30,10 @@ public class ClockController {
      */
     @GetMapping(path = "/time/current")
     public CurrentTimeResponse getCurrentDateTimeInTimezone(@RequestParam("timezone") String ianaTimezone) {
-        var nowInTimezone = clockService.getNowInTimezone(ianaTimezone);
+        ZonedDateTime nowInTimezone = clockService.getNowInTimezone(ianaTimezone);
         return new CurrentTimeResponse(nowInTimezone);
     }
 
-    /*
-       2. возврат строки как JSON - ужасная практика (да, технически это валидный JSON, однако для REST API
-          нужно использовать реализацию, совместимую с RFC 4627 JSON-text = object / array, а закидоны RFC 7159/8259
-          JSON-text = ws value ws использовать не нужно по причинам:
-             а) несовместимости с некоторыми клиентами;
-             б) непонимания средним человеком-читателем.
-     */
     record CurrentTimeResponse(ZonedDateTime timestamp) {
 
     }

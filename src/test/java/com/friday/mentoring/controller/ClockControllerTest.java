@@ -1,6 +1,5 @@
-package com.friday.mentoring;
+package com.friday.mentoring.controller;
 
-import com.friday.mentoring.controller.ClockController;
 import com.friday.mentoring.service.ClockService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -19,24 +18,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/*
-Т.к. сервисный слой уже проверен, здесь можно:
-
-1. использовать меньший объём контекста и поднимать только web часть
-2. проверять, что контроллер отдаёт то, что получает от сервиса - без самодеятельности и модификаций
-
-Разделение тестов на "сервисный" и "web" слой максимально удачно, т.к. на Web слое нельзя тривиальным образом
-проверить те граничные случаи, которые легко проверяются тестом сервиса.
-
-Конкретно этот тест нужно перенести в пакет controller и переименовать в ClockControllerTest.
-
-Заморачиваться с финальностью и областями видимости в тестах - нет смысла.
-Хотя это - дело вкуса и обычно не закрепляется ни в каких правилах.
- */
 @WebMvcTest(controllers = ClockController.class)
-class ApplicationTest {
-    // !!! Очень изящная реализация теста через ISO DateTimeFormatter, она позволяет не заморачиваться
-    // с хаками наподобие isAfter/isBefore для времени, но мысль не была доведена до конца :(
+class ClockControllerTest {
     DateTimeFormatter ISO_FORMATTER = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 
     @MockBean
@@ -73,8 +56,8 @@ class ApplicationTest {
 
     @Test
     void getNowInIncorrectTimezoneTest() throws Exception {
-        var tz = "Asia/Paris";
-        var expectedDetail = "whatever";
+        String tz = "Asia/Paris";
+        String expectedDetail = "whatever";
 
         Mockito.when(clockService.getNowInTimezone(tz)).thenThrow(new DateTimeException(expectedDetail));
 
@@ -87,8 +70,6 @@ class ApplicationTest {
                 ).andDo(print());
     }
 
-    // Необходим тест реакции системы на пропущенный обязательный параметр timezone,
-    // раз в контроллере он (неявно) объявлен как required
     @Test
     void testMissingRequiredParameter() throws Exception {
         mockMvc.perform(get("/time/current"))
