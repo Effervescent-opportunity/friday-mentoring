@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
@@ -22,10 +23,14 @@ public class BasicSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
-                        .requestMatchers("/auth/login").permitAll()
-                        .requestMatchers("/auth/**").authenticated()
-                        .requestMatchers("time/**").hasAuthority("ADMIN"))
+                .authorizeHttpRequests(authorizeHttpRequests ->
+                        authorizeHttpRequests
+                                .requestMatchers("/auth/login").permitAll()
+                                .requestMatchers("/auth/login1").permitAll()
+                                .requestMatchers("/auth/**").authenticated()
+                                .requestMatchers("/time/**").hasAuthority("ADMIN"))
+                .rememberMe(httpSecurityRememberMeConfigurer -> httpSecurityRememberMeConfigurer
+                        .alwaysRemember(true).key("clock"))//todo wtf? how to send cookie? why curl does't remember it?
                 .exceptionHandling(authorizeHttpRequests -> authorizeHttpRequests
                         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
                 .build();
@@ -35,7 +40,8 @@ public class BasicSecurityConfig {
     public PasswordEncoder passwordEncoder() {
 //        PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder()
 
-        return new BCryptPasswordEncoder();
+        return NoOpPasswordEncoder.getInstance();
+//        return new BCryptPasswordEncoder();
     }
 
     @Bean
@@ -80,9 +86,6 @@ public class BasicSecurityConfig {
 //        http.addFilterAfter(new CustomFilter(), BasicAuthenticationFilter.class);
 //        return http.build();
 //    }
-
-
-
 
 
 }
