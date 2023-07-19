@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -28,9 +29,10 @@ public class BasicSecurityConfig {
                                 .requestMatchers("/auth/login").permitAll()
                                 .requestMatchers("/auth/login1").permitAll()
                                 .requestMatchers("/auth/**").authenticated()
-                                .requestMatchers("/time/**").hasAuthority("ADMIN"))
+                                .requestMatchers("/time/**").hasRole("ADMIN"))
                 .rememberMe(httpSecurityRememberMeConfigurer -> httpSecurityRememberMeConfigurer
                         .alwaysRemember(true).key("clock"))//todo wtf? how to send cookie? why curl does't remember it?
+                .csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling(authorizeHttpRequests -> authorizeHttpRequests
                         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
                 .build();
