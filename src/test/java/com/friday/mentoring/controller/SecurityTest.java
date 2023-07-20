@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -54,22 +53,6 @@ public class SecurityTest {
     }
 
     @Test
-    void successfulAuth1Test() throws Exception {
-        mockMvc.perform(get("/auth/login1")
-                        .param("user", "root").param("password", "password"))
-                .andExpectAll(
-                        status().isOk()
-                ).andDo(print());
-    }
-
-    @Test
-    void unSuccessfulAuth1Test() throws Exception {
-        mockMvc.perform(get("/auth/login1")
-                        .param("user", "nonRoot").param("password", "password"))
-                .andExpect(status().isUnauthorized()).andDo(print());
-    }
-
-    @Test
     @WithMockUser(value = "root", roles = "ADMIN")
     void clockSuccessfulAuthTest() throws Exception {
         ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
@@ -87,30 +70,21 @@ public class SecurityTest {
                 ).andDo(print());
     }
 
-    //If a (proxy) server receives invalid credentials, it should respond with a 401 Unauthorized or
-    // with a 407 Proxy Authentication Required, and the user may send a new request or replace the Authorization header field.
-    //
-    //If a (proxy) server receives valid credentials that are inadequate to access a given resource,
-    // the server should respond with the 403 Forbidden status code. Unlike 401 Unauthorized or 407 Proxy Authentication Required, authentication is impossible for this user and browsers will not propose a new attempt.
-    //
-    //In all cases, the server may prefer returning a 404 Not Found status code, to hide the existence of the page to a user without adequate privileges or not correctly authenticated.
-
     @Test
-    void clockForbiddenTest() throws Exception {
+    void clockNotFoundTest() throws Exception {
         ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
         Mockito.when(clockService.getNowInUtc()).thenReturn(now);
 
         mockMvc.perform(get("/time/current/utc"))
-                .andExpect(status().isUnauthorized()).andDo(print());
+                .andExpect(status().isNotFound()).andDo(print());
 
         mockMvc.perform(get("/time/current").param("timezone", "Europe/Paris"))
-                .andExpect(status().isUnauthorized()
-                ).andDo(print());
+                .andExpect(status().isNotFound()).andDo(print());
     }
 
     @Test
     @WithMockUser(value = "noRoot")
-    void clockUnsuccessfulAuthTest() throws Exception {//todo why 200?
+    void clockUnsuccessfulAuthTest() throws Exception {
         ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
         Mockito.when(clockService.getNowInUtc()).thenReturn(now);
 

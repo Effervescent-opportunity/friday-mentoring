@@ -1,12 +1,5 @@
-version: "3.9"
-
-services:
-  webapp:
-    build:
-      #todo I don't understand wtah to do
-    container_name: friday-m
-    image: my-nginx-image:latest
-    cpus: 1.5
-    mem_limit: 2048m
-    ports:
-      - "8080:80"
+#services:
+#  mentoring-app:
+#    build: .
+#    ports:
+#      - "8080:8081"
