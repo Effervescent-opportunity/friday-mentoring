@@ -15,6 +15,9 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 
+/**
+ * Бины для аутентификации и авторизации
+ */
 @Configuration
 @EnableWebSecurity
 public class CustomSecurityConfig {

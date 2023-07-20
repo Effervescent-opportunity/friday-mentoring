@@ -11,9 +11,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Контроллер для аутентификации
+ */
 @RestController
 public class AuthController {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthController.class);
 
     @PostMapping(path = "auth/login", consumes = MediaType.APPLICATION_JSON_VALUE)
