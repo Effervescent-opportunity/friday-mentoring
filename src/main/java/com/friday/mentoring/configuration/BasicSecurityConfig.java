@@ -28,13 +28,13 @@ public class BasicSecurityConfig {
                         authorizeHttpRequests
                                 .requestMatchers("/auth/login").permitAll()
                                 .requestMatchers("/auth/login1").permitAll()
-                                .requestMatchers("/auth/**").authenticated()
-                                .requestMatchers("/time/**").hasRole("ADMIN"))
-                .rememberMe(httpSecurityRememberMeConfigurer -> httpSecurityRememberMeConfigurer
-                        .alwaysRemember(true).key("clock"))//todo wtf? how to send cookie? why curl does't remember it?
+                                .requestMatchers("/time/**").hasRole("ADMIN")
+                                .anyRequest().authenticated())
+//                .rememberMe(httpSecurityRememberMeConfigurer -> httpSecurityRememberMeConfigurer
+//                        .alwaysRemember(true).key("clock"))//todo wtf? how to send cookie? why curl does't remember it?
                 .csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling(authorizeHttpRequests -> authorizeHttpRequests
-                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
+                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.NOT_FOUND)))
                 .build();
     }
 
