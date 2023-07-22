@@ -1,5 +1,26 @@
 # Вопросы с ответами по заданиям и исправлениям
 
+## Второе задание
+
+1. OAUTH не нужен, так как его ему нужно внешнее апи + его главная фича - возможность авторизовываться в нескольких местах, мне не надо
+> Совершенно верно. При рассмотрении OAuth важно понять идею, которая касается передачи всех clear-text credentials [RFC 6749 Section 3.2. Token Endpoint](https://www.rfc-editor.org/rfc/rfc6749#section-3.2) - сервер обязан использовать TLS.
+2. Для AuthenticationEntryPoint выставлен HTTP код 404
+> Хорошая идея, но в большинстве проектов не реализуется из-за требований DevOps к своему мониторингу.
+> Если всё же возвращать 404 вместо 403, разбор попыток неавторизованного доступа усложнится, а чтобы не усложнять - для мониторинга нужно указывать конкретные имена endpointов, что в какой-то степени привязывает инфраструктуру к коду, но не является проблемой.
+3. Ситуация "я могу 3 раза залогиниться, получить 3 разных JSESSIONID, разлогиниться из одного, и другие останутся рабочими"
+> Если вкратце, вот поэтому: https://github.com/apache/tomcat/blob/main/java/org/apache/catalina/connector/Request.java#L2650
+> Выход происходит из конкретной HTTP-сессии, JSESSIONID её уникально идентифицирует.
+Это нормальное ожидаемое поведение для stateful аутентификации. Если требуется другое поведение, будут нюансы, см. [Properly Clearing an Authentication](https://docs.spring.io/spring-security/reference/servlet/authentication/session-management.html#properly-clearing-authentication) и далее по ссылкам.
+4. Что такое возможность rememberMe
+> Это возможность запоминать пользователя даже если JSESSIONID протухнет.
+Подробности в [Remember-Me Authentication](https://docs.spring.io/spring-security/reference/servlet/authentication/rememberme.html).
+5. Почему везде рекомендуют выключить csrf
+> Не везде :) Spring рекомендует отключать на Remember-Me [When to use CSRF protection](https://docs.spring.io/spring-security/reference/features/exploits/csrf.html#csrf-when) и [No CSRF protection on remember-me authentication](https://github.com/spring-projects/spring-security/issues/3711), для остального REST API есть нюансы [Should I use CSRF protection on Rest API endpoints?](https://security.stackexchange.com/questions/166724/).
+> В нашем конкретном случае CSRF можно смело отключить, т.к. браузерного взаимодействия (и вектора атаки) нет. К слову, при браузерном взаимодействии защита CSRF для POST, PUT, PATCH и DELETE используется парно с CORS, но это - отдельная большая тема в духе middle++, мы её не рассматриваем совсем.
+6. Как exceptionHandling в конфиге соотносится с уже написанным мной ClockExceptionHandler
+> Оба про исключения - в принципе, это всё, что у них общего. Суть:
+> - ClockExceptionHandler обрабатывает ошибки всего, что вызывают методы REST контроллера. Он про то, как превращать ошибки прикладной логики в ответ REST API.
+> - exceptionHandling - про HttpSecurity. Срабатывает "до" прикладной логики и отвечает за ошибки безопасности (до самого REST контроллера запрос может даже не дойти и срезаться на AuthorizationFilter).
 
 ## Первое задание
 
