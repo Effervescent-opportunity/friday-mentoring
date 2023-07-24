@@ -20,19 +20,19 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint;
  * Бины для аутентификации и авторизации
  */
 @Configuration
-@EnableWebSecurity
-@EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
+@EnableWebSecurity//todo should I delete this? if I have Enable method security
+@EnableMethodSecurity
 public class CustomSecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .authorizeHttpRequests(authorizeHttpRequests ->
-                        authorizeHttpRequests
-                                .requestMatchers("/auth/login").permitAll()
-                                .requestMatchers("/time/**").hasRole("ADMIN")
-                                .anyRequest().authenticated())
-                .csrf(AbstractHttpConfigurer::disable)
+//                .authorizeHttpRequests(authorizeHttpRequests ->//todo maybe delete all this filter chain?
+//                        authorizeHttpRequests
+//                                .requestMatchers("/auth/login").permitAll()
+//                                .requestMatchers("/time/**").hasRole("ADMIN")
+//                                .anyRequest().authenticated())
+             .csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling(authorizeHttpRequests -> authorizeHttpRequests
                         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.NOT_FOUND)))
                 .build();
