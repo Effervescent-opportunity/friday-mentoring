@@ -29,17 +29,6 @@ public class AuthController {
         }
     }
 
-    @PostMapping(path = "auth/logout")
-    public ResponseEntity<Void> logout(HttpServletRequest httpServletRequest) {
-        try {
-            httpServletRequest.logout();
-            return ResponseEntity.ok().build();
-        } catch (ServletException ex) {
-            LOGGER.info("Got exception while logging out", ex);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
-
     record Credentials(String user, String password) {
 
     }

@@ -3,7 +3,8 @@
 
 - Сервис защищен @PreAuthorize, потому что @Secured считается Spring'ом legacy, а использовать @PreFilter - перебор, у меня нет списков для фильтрации.
 Можно было бы сделать более сложную логику со специальными бинами или кастомными аннотациями, это тоже перебор относительно требуемого
-- 
+- PKCS12 because it's language-neutral and JKS is only for JAVA
+- Удален метод logout из AuthController, он был некорректный, надо было использовать SecurityContextLogoutHandle
 
 ## Второе задание
 

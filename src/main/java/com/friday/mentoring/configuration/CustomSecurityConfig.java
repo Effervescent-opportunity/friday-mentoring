@@ -27,12 +27,8 @@ public class CustomSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-//                .authorizeHttpRequests(authorizeHttpRequests ->//todo maybe delete all this filter chain?
-//                        authorizeHttpRequests
-//                                .requestMatchers("/auth/login").permitAll()
-//                                .requestMatchers("/time/**").hasRole("ADMIN")
-//                                .anyRequest().authenticated())
              .csrf(AbstractHttpConfigurer::disable)
+                .logout(logout -> logout.logoutUrl("/auth/logout"))
                 .exceptionHandling(authorizeHttpRequests -> authorizeHttpRequests
                         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.NOT_FOUND)))
                 .build();
