@@ -3,9 +3,18 @@
 
 - Сервис защищен @PreAuthorize, потому что @Secured считается Spring'ом legacy, а использовать @PreFilter - перебор, у меня нет списков для фильтрации.
 Можно было бы сделать более сложную логику со специальными бинами или кастомными аннотациями, это тоже перебор относительно требуемого
-- Добавлен PKCS12 keystore, команды для генерации ниже
-- Удален метод logout из AuthController, он был некорректный, надо было использовать SecurityContextLogoutHandle
+- Добавлен PKCS12 keystore, команды для генерации ниже. Правда ощущение, что при запуске берется не из него. При старте приложения вот такая фраза в логах
+`...o.a.t.util.net.NioEndpoint.certificate   : Connector [...], TLS virtual host [_default_], certificate type [UNDEFINED] configured from [/home/.../.keystore] using alias [tomcat]`
+И почему-то работает, лишь когда в application.properties key-store-password и key-password указаны одинаковые - из второй команды openssl'ной
+- Удален метод logout из AuthController, он был некорректный, надо было использовать SecurityContextLogoutHandler
 - Удалена аннотация @EnableWebSecurity, потому что работает и без нее (почему?)
+- Нет тестов на TLS, потому что не удалось найти, как их написать
+- Не понятно, почему приложение на попытку доступа без пользователя отвечает 404 как в CustomSecurityConfig, а на некорректного пользователя выдает 403
+
+#### Команды для создания pkcs12 keystore
+`openssl req -x509 -newkey rsa:4096 -keyout FM-key.key -out FM-ss-cert.pem -days 365 -subj "/CN=localhost/"`
+
+`openssl pkcs12 -export -in FM-ss-cert.pem -inkey FM-key.key -out FM-keystore.p12`
 
 #### Команды curl
 `curl -k -v -X POST https://localhost:8443/auth/login -H "Content-Type: application/json" -d '{"user": "root", "password": "password"}'`

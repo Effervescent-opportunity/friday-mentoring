@@ -1,20 +1,14 @@
 package com.friday.mentoring.controller;
 
-import com.friday.mentoring.service.ClockService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.TestSecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -26,12 +20,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 public class SecurityTest {
-    //todo how to test tls?
-    //todo fix tests
-
-    @MockBean
-    ClockService clockService;
-
     @Autowired
     MockMvc mockMvc;
 
@@ -57,9 +45,6 @@ public class SecurityTest {
     @Test
     @WithMockUser(value = "root", roles = "ADMIN")
     void clockSuccessfulAuthTest() throws Exception {
-        ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
-        Mockito.when(clockService.getNowInUtc()).thenReturn(now);
-
         mockMvc.perform(get("/time/current/utc")).andExpectAll(
                 status().isOk(),
                 content().contentType("application/json")
@@ -73,10 +58,7 @@ public class SecurityTest {
     }
 
     @Test
-    void clockNotFoundTest() throws Exception {
-        ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
-        Mockito.when(clockService.getNowInUtc()).thenReturn(now);
-
+    void clockNoUserNotFoundTest() throws Exception {
         mockMvc.perform(get("/time/current/utc"))
                 .andExpect(status().isNotFound()).andDo(print());
 
@@ -86,10 +68,7 @@ public class SecurityTest {
 
     @Test
     @WithMockUser(value = "noRoot")
-    void clockUnsuccessfulAuthTest() throws Exception {
-        ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
-        Mockito.when(clockService.getNowInUtc()).thenReturn(now);
-
+    void clockNotRootUserForbiddenTest() throws Exception {
         mockMvc.perform(get("/time/current/utc"))
                 .andExpect(status().isForbidden()).andDo(print());
 

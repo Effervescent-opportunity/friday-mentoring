@@ -1,9 +1,6 @@
 package com.friday.mentoring.controller;
 
 import com.friday.mentoring.service.ClockService;
-import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,14 +24,6 @@ public class ClockController {
         ZonedDateTime nowInUtc = clockService.getNowInUtc();
         return new CurrentTimeResponse(nowInUtc);
     }
-
-    @GetMapping(path = "/time/current/utc1")
-    public CurrentTimeResponse getCurrentDateTimeInUtc1(HttpServletRequest request) {
-        SecurityContext context = SecurityContextHolder.getContext();
-        ZonedDateTime nowInUtc = ZonedDateTime.now();
-        return new CurrentTimeResponse(nowInUtc);
-    }
-
 
     /**
      * Получение текущей даты и текущего времени в заданной таймзоне (в запросе задаётся форматом IANA `Area/Location`).
