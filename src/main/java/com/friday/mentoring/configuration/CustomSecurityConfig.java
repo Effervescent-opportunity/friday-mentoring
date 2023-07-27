@@ -20,7 +20,7 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint;
  * Бины для аутентификации и авторизации
  */
 @Configuration
-@EnableWebSecurity//todo should I delete this? if I have Enable method security
+//@EnableWebSecurity//todo should I delete this? if I have Enable method security
 @EnableMethodSecurity
 public class CustomSecurityConfig {
 

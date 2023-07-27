@@ -3,8 +3,18 @@
 
 - Сервис защищен @PreAuthorize, потому что @Secured считается Spring'ом legacy, а использовать @PreFilter - перебор, у меня нет списков для фильтрации.
 Можно было бы сделать более сложную логику со специальными бинами или кастомными аннотациями, это тоже перебор относительно требуемого
-- PKCS12 because it's language-neutral and JKS is only for JAVA
+- Добавлен PKCS12 keystore, команды для генерации ниже
 - Удален метод logout из AuthController, он был некорректный, надо было использовать SecurityContextLogoutHandle
+- Удалена аннотация @EnableWebSecurity, потому что работает и без нее (почему?)
+
+#### Команды curl
+`curl -k -v -X POST https://localhost:8443/auth/login -H "Content-Type: application/json" -d '{"user": "root", "password": "password"}'`
+
+`curl -k -v https://localhost:8443/time/current/utc -H "Cookie: JSESSIONID=F12CC1A341A11E27B07289E26E540E43"`
+
+`curl -k -v -X POST https://localhost:8443/auth/logout -H "Cookie: JSESSIONID=F12CC1A341A11E27B07289E26E540E43"`
+
+`curl -k -v https://localhost:8443/auth/logout -H "Cookie: JSESSIONID=F12CC1A341A11E27B07289E26E540E43"`
 
 ## Второе задание
 
