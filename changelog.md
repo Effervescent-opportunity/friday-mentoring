@@ -8,8 +8,8 @@
 И почему-то работает, лишь когда в application.properties key-store-password и key-password указаны одинаковые - из второй команды openssl'ной
 - Удален метод logout из AuthController, он был некорректный, надо было использовать SecurityContextLogoutHandler
 - Удалена аннотация @EnableWebSecurity, потому что работает и без нее (почему?)
-- Нет тестов на TLS, потому что не удалось найти, как их написать
 - Не понятно, почему приложение на попытку доступа без пользователя отвечает 404 как в CustomSecurityConfig, а на некорректного пользователя выдает 403
+because access denied is doing later, not in filter chain, so it can be overriden by custom exception handling
 
 #### Команды для создания pkcs12 keystore
 `openssl req -x509 -newkey rsa:4096 -keyout FM-key.key -out FM-ss-cert.pem -days 365 -subj "/CN=localhost/"`
