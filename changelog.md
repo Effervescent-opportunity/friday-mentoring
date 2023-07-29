@@ -1,4 +1,9 @@
 
+## Четвёртое задание
+
+- Подняты версии Spring Boot'а до 3.1.2, Spring Dependency Management Plugin'а до 1.1.2
+- 
+
 ## Третье задание
 
 - Сервис защищен @PreAuthorize, потому что @Secured считается Spring'ом legacy, а использовать @PreFilter - перебор, у меня нет списков для фильтрации.
