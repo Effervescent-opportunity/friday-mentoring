@@ -3,9 +3,14 @@ version: '3'
 services:
   #------------------------------- my service
   mentoring-app:
-    build: .
+    build:
+      context: .
+      args:
+        TEST_ARG: WOW I'm in Dockerfile
     ports:
       - "8080:8081"
+
+
 
   #------------------------------- zookeeper
   zookeeper:
@@ -27,9 +32,11 @@ services:
     hostname: kafka
 
 
-#------------------------------- kafka-ui
+  #------------------------------- kafka-ui
   kafka-ui:
     image: provectuslabs/kafka-ui:v0.7.1
-    
+    container_name: kafka-ui
+    ports:
+      - ""
 
 

@@ -1,3 +1,7 @@
+# Test arg stage
+ARG TEST_ARG
+RUN echo "Got arg from docker-compose: $TEST_ARG"
+
 # Build stage
 FROM gradle:8.2.1-jdk17-alpine AS build
 COPY --chown=gradle:gradle . /home/gradle/src
