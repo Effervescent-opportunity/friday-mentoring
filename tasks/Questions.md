@@ -1,5 +1,22 @@
 # Вопросы с ответами по заданиям и исправлениям
 
+## Третье задание
+
+1. Можно ли как-то протестировать само соединение через TLS, что сертификат работает и тд? И нужно ли в рамках задания?
+> Можно, например: https://github.com/robinhowlett/everything-ssl (см. readme + src/test).
+> В рамках задачи это не требуется, т.к. работа Spring Boot уже проверена до нас, см. https://github.com/spring-projects/spring-boot/tree/3.1.x/spring-boot-project/spring-boot/src/test/java/org/springframework/boot/web/server SslTests.java
+2. Сервис защищен @PreAuthorize, а не @Secured и @PreFilter
+> Плюс ещё есть @RolesAllowed. Но ни @RolesAllowed ни @Secured не позволят явным образом указать имя пользователя, только роль.
+SpEL расширяет возможности и позволяет указать root явно, поэтому использование @PreAuthorize единственно правильно.
+3. Добавлен PKCS12 keystore, команды для генерации ниже. Правда ощущение, что при запуске берется не из него
+> Сертификат однозначно правильный и подхватывается именно он. По пути configured from нет такого файла (см. скрин). Похоже на баг в спринге, но подробнее сказать пока не могу.
+> Здесь можно было бы сказать, что сертификат сгенерирован без Subject Alternative Name (IP, DNS), но во-первых, для localhost это избыточно, а во-вторых -- любой уважающий себя удостоверяющий центр даёт инструкцию по выпуску CSR, в которой это описано. Реализацию считаю корректной.
+4. Для logout надо было использовать SecurityContextLogoutHandler
+> К задаче есть два подхода: а) делать свои endpointы явно или б) целиком полагаться на фичи HttpSecurity. И тот и другой имеет право быть. SecurityContextLogoutHandler может дать преимущества в следующей задаче (а может и не дать). В общем, вопрос дискуссионный, т.к. оба варианта работают и явных недостатков первого подхода я не вижу.
+5. Удалена аннотация @EnableWebSecurity, потому что работает и без нее (почему?)
+> https://stackoverflow.com/questions/44671457
+> If you are using Spring Boot, autoconfiguration classes (See https://github.com/spring-projects/spring-boot/tree/main/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security) will autoconfigure security beans for you. There is no need for @EnableWebSecurity.
+
 ## Второе задание
 
 1. OAUTH не нужен, так как его ему нужно внешнее апи + его главная фича - возможность авторизовываться в нескольких местах, мне не надо
