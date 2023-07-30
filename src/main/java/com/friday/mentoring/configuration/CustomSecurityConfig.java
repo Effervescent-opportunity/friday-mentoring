@@ -1,5 +1,7 @@
 package com.friday.mentoring.configuration;
 
+import org.springframework.boot.actuate.audit.AuditEventRepository;
+import org.springframework.boot.actuate.audit.InMemoryAuditEventRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -48,6 +50,11 @@ public class CustomSecurityConfig {
                 .roles("USER")
                 .build();
         return new InMemoryUserDetailsManager(rootUser, otherUser);
+    }
+
+    @Bean
+    public AuditEventRepository auditEventRepository() {
+        return new InMemoryAuditEventRepository();
     }
 
 }
