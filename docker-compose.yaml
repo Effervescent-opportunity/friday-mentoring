@@ -8,7 +8,7 @@ services:
       args:
         TEST_ARG: WOW I'm in Dockerfile
     ports:
-      - "8080:8081"
+      - "8443:8443"
 
 
 
@@ -39,20 +39,20 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
 
-  #------------------------------- kafka-ui
-  kafka-ui:
-    image: provectuslabs/kafka-ui:v0.7.1
-    container_name: kafka-ui
-    ports:
-      - "8090:8080"
-    restart: always
-    environment:
-      - KAFKA_CLUSTERS_0_NAME=local
-      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:29092
-      - KAFKA_CLUSTERS_0_ZOOKEEPER=zookeeper:2181
-    links:
-      - kafka
-      - zookeeper
-
+#  #------------------------------- kafka-ui
+#  kafka-ui:
+#    image: provectuslabs/kafka-ui:v0.7.1
+#    container_name: kafka-ui
+#    ports:
+#      - "8090:8080"
+#    restart: always
+#    environment:
+#      - KAFKA_CLUSTERS_0_NAME=local
+#      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:29092
+#      - KAFKA_CLUSTERS_0_ZOOKEEPER=zookeeper:2181
+#    links:
+#      - kafka
+#      - zookeeper
+#
 
 

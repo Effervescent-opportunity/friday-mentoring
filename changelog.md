@@ -3,7 +3,7 @@
 
 - Подняты версии Spring Boot'а до 3.1.2, Spring Dependency Management Plugin'а до 1.1.2, версии в Dockerfile
 - Выбран Docker-образ Kafka от Confluent, потому что Confluent был создан теми же людьми, которые создали Kafka, почему бы не попробовать именно его
-- 
+`docker-compose build --no-cache mentoring-app` - recreate container
 
 ## Третье задание
 

@@ -12,8 +12,11 @@ import java.util.Map;
 
 @Configuration
 public class KafkaTopicConfig {
+    //todo wtf in logs - don't see kafka
+    //mentoring-app_1  | 2023-07-31T12:03:38.332Z  INFO 1 --- [| adminclient-1] org.apache.kafka.clients.NetworkClient   : [AdminClient clientId=adminclient-1] Node -1 disconnected.
+    //mentoring-app_1  | 2023-07-31T12:03:38.333Z  WARN 1 --- [| adminclient-1] org.apache.kafka.clients.NetworkClient   : [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
 
-    @Value(value = "${spring.kafka.bootstrap-servers}")
+    @Value(value = "${spring.kafka.producer.bootstrap-servers}")
     private String bootstrapAddress;
 
     @Bean
