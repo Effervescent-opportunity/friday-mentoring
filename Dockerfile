@@ -25,6 +25,3 @@ ENTRYPOINT ["java", "-jar", "/usr/app/application.jar"]
  #* Closing connection 0
  #curl: (35) error:0A000126:SSL routines::unexpected eof while reading
  # и в логах приложения пусто
-# Test arg stage
-ARG TEST_ARG
-RUN echo "Got arg from docker-compose: $TEST_ARG"
