@@ -1,19 +1,18 @@
 package com.friday.mentoring.dto;
 
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 
-public class AuthEventDto {
+public class AuthEventDto {//looks very similar to AudiEvent
 
     private String ip;
-    private ZonedDateTime time;
-    private String login;
-    private AuthStatusEnum status;
+    private LocalDateTime time;
+    private String userName;
+    private AuthTypeEnum status;
 
 
     //IPv4 адрес, время, логин, вид события
 
-    private enum AuthStatusEnum {
+    private enum AuthTypeEnum {
         SUCCESS, FAIL
     }
 }
