@@ -27,7 +27,8 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint;
  */
 @Configuration
 @EnableMethodSecurity
-public class CustomSecurityConfig {
+public class CustomSecurityConfig {//todo look how to stop running docker container - when I stop application, it doesn't stop
+    //and kafka-ui is startinag when laptop is turning on - maybe it's restart: always?
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

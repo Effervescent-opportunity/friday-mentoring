@@ -31,11 +31,11 @@ public class AuthController {
     public ResponseEntity<Void> login(@RequestBody Credentials credentials, HttpServletRequest httpServletRequest) {
         try {
             httpServletRequest.login(credentials.user(), credentials.password());
-            kafkaProducer.sendMessage("SUCCESS login");
+//            kafkaProducer.sendMessage("SUCCESS login");
             return ResponseEntity.ok().build();
         } catch (ServletException ex) {
             LOGGER.info("Got exception while logging in with user [{}]", credentials.user(), ex);
-            kafkaProducer.sendMessage("FAIL login");
+//            kafkaProducer.sendMessage("FAIL login");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
