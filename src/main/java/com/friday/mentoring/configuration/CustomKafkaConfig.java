@@ -41,7 +41,7 @@ public class CustomKafkaConfig {
 //    }
 
     @Bean
-    public NewTopic authEventTopic() {
+    public NewTopic authEventTopic() {//может перенести это в конфигурацию просто?
         return TopicBuilder.name("mentoring.auth.events").build();
     }
 

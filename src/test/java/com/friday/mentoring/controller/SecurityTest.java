@@ -20,7 +20,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@Disabled //todo return and fix tests
 public class SecurityTest {
     @Autowired
     MockMvc mockMvc;

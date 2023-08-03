@@ -63,13 +63,14 @@ public class CustomSecurityConfig {//todo look how to stop running docker contai
         return new InMemoryAuditEventRepository();
     }
 
-    @Bean
-    public AuthenticationEventPublisher authenticationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
-        return new DefaultAuthenticationEventPublisher(applicationEventPublisher);
-    }
-
-    @Bean
-    public AuthorizationEventPublisher authorizationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
-        return new SpringAuthorizationEventPublisher(applicationEventPublisher);
-    }
+    //todo try to delete this and look if they are in eventlistener
+//    @Bean
+//    public AuthenticationEventPublisher authenticationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+//        return new DefaultAuthenticationEventPublisher(applicationEventPublisher);
+//    }
+//
+//    @Bean
+//    public AuthorizationEventPublisher authorizationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+//        return new SpringAuthorizationEventPublisher(applicationEventPublisher);
+//    }
 }

@@ -15,6 +15,9 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
+/**
+ * Слушает события аудита (только включенные)
+ */
 @Component
 public class AuthEventListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthEventListener.class);
@@ -48,18 +51,18 @@ public class AuthEventListener {
     //2023-08-03T08:53:27.770+03:00  INFO 10703 --- [0.1-8443-exec-3] c.f.mentoring.service.AuthEventListener  : LALALA1 auditEvent [org.springframework.boot.actuate.audit.listener.AuditApplicationEvent[source=AuditEvent [timestamp=2023-08-03T05:53:27.770788186Z, principal=other, type=AUTHORIZATION_FAILURE, data={details=WebAuthenticationDetails [RemoteIpAddress=127.0.0.1, SessionId=null]}]]]
     //2023-08-03T08:55:34.763+03:00  INFO 10703 --- [.1-8443-exec-10] c.f.mentoring.service.AuthEventListener  : LALALA1 auditEvent [org.springframework.boot.actuate.audit.listener.AuditApplicationEvent[source=AuditEvent [timestamp=2023-08-03T05:55:34.763530629Z, principal=root, type=AUTHENTICATION_FAILURE, data={type=org.springframework.security.authentication.BadCredentialsException, message=Bad credentials, details=WebAuthenticationDetails [RemoteIpAddress=127.0.0.1, SessionId=null]}]]]
 
-    @EventListener
-    public void onSuccess(AuthenticationSuccessEvent success) {
-        LOGGER.info("LALALA success Auth event [{}], [{}]", success.getSource(), success.getAuthentication());
-    }//WebAuthenticationDetails [RemoteIpAddress=127.0.0.1, SessionId=null]
-
-    @EventListener
-    public void onFailure(AbstractAuthenticationFailureEvent failures) {
-        LOGGER.info("LALALA fail Auth event [{}], [{}]", failures.getSource(), failures.getAuthentication());//get source/ get details/get ip
-    }
-
-    @EventListener
-    public void onFailure(AuthorizationDeniedEvent failure) {
-        LOGGER.info("LALALA fail Authorization event [{}], [{}]", failure.getSource(), failure.getAuthentication());
-    }
+//    @EventListener
+//    public void onSuccess(AuthenticationSuccessEvent success) {
+//        LOGGER.info("LALALA success Auth event [{}], [{}]", success.getSource(), success.getAuthentication());
+//    }//WebAuthenticationDetails [RemoteIpAddress=127.0.0.1, SessionId=null]
+//
+//    @EventListener
+//    public void onFailure(AbstractAuthenticationFailureEvent failures) {
+//        LOGGER.info("LALALA fail Auth event [{}], [{}]", failures.getSource(), failures.getAuthentication());//get source/ get details/get ip
+//    }
+//
+//    @EventListener
+//    public void onFailure(AuthorizationDeniedEvent failure) {
+//        LOGGER.info("LALALA fail Authorization event [{}], [{}]", failure.getSource(), failure.getAuthentication());
+//    }
 }

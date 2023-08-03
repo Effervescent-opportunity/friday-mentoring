@@ -5,15 +5,24 @@ import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.common.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Отправляет сообщения в топик
+ */
 @Service
-public class KafkaProducer {
+public class KafkaProducer {//todo let's stop trying find out how to check if Kafka is available and just leave this bad thing
+    //todo why idea stops containers when I stop application?
+    //todo tests
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaProducer.class);
+
+    @Value(value = "${mentoring.auth.events.topic}")
+    private String authEventsTopic;
     private static final String TOPIC = "mentoring.auth.events";
 
 //    private final AdminClient adminClient;
