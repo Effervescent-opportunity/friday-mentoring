@@ -5,7 +5,7 @@
 - Выбран Docker-образ Kafka от Confluent, потому что Confluent был создан теми же людьми, которые создали Kafka, почему бы не попробовать именно его
 - Можно посмотреть сообщения в топике через kafka-ui по адресу localhost:8090
 - Приложение не в докере, кафка, зукипер и кафка юай в докере. чтобы запустить из идеи сразу с докером - раскомментить developmentOnly 'org.springframework.boot:spring-boot-docker-compose' и spring.boot.docker.compose=false
-- 
+- I'm not sure that I really need zookeeper - maybe try without it
 - `docker-compose build --no-cache mentoring-app` - recreate container
 
 ## Третье задание

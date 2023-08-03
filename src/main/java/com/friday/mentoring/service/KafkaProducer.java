@@ -9,37 +9,49 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class KafkaProducer {
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaProducer.class);
     private static final String TOPIC = "mentoring.auth.events";
 
-    private final AdminClient adminClient;
+//    private final AdminClient adminClient;
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
-    public KafkaProducer(AdminClient adminClient, KafkaTemplate<String, Object> kafkaTemplate) {
-        this.adminClient = adminClient;
+    public KafkaProducer(KafkaTemplate<String, Object> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }
+
+
+//    public KafkaProducer(AdminClient adminClient, KafkaTemplate<String, Object> kafkaTemplate) {
+//        this.adminClient = adminClient;
+//        this.kafkaTemplate = kafkaTemplate;
+//    }
 
     public void sendAuthEvent(AuthEventDto authEvent) {
         if (kafkaIsActive()) {
             LOGGER.info("Sending message [{}] to Kafka", authEvent);
-            this.kafkaTemplate.send(TOPIC, authEvent);//todo try-catch and timeout
-            LOGGER.info("Message was sent");
+
+            try {
+                this.kafkaTemplate.send(TOPIC, authEvent).get(3, TimeUnit.SECONDS);
+                LOGGER.info("Message was sent");
+            } catch (Exception ex) {
+                LOGGER.info("Got exception when sending message to Kafka", ex);
+            }
         } else {
             LOGGER.info("Auth event [{}] won't be sent to Kafka - Kafka is inactive", authEvent);
         }
     }
 
     private boolean kafkaIsActive() {
-        try {
-            Collection<Node> nodes = adminClient.describeCluster().nodes().get();
-            return nodes != null && nodes.size() > 0;
-        } catch (Exception ex) {
-            return false;
-        }
+        return true;
+//        try {
+//            Collection<Node> nodes = adminClient.describeCluster().nodes().get();
+//            return nodes != null && nodes.size() > 0;
+//        } catch (Exception ex) {
+//            return false;
+//        }
     }
 
 //    public void sendMessage(String message) {
