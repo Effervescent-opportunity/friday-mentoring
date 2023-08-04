@@ -1,48 +1,102 @@
 package com.friday.mentoring.service;
 
 import com.friday.mentoring.dto.AuthEventDto;
-import org.apache.kafka.clients.consumer.Consumer;
-import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.consumer.MockConsumer;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import com.friday.mentoring.util.AuthEventDtoDeserializer;
+import org.apache.kafka.clients.consumer.*;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
+import org.springframework.security.test.context.TestSecurityContextHolder;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.junit.jupiter.api.Assertions.*;
 
-@EmbeddedKafka
+@EmbeddedKafka(ports = {29092}, zkSessionTimeout = 3000, zkConnectionTimeout = 2000, adminTimeout = 1, partitions = 1)
 @SpringBootTest
+@AutoConfigureMockMvc
 public class KafkaTest {
 
-//    MockConsumer<String, String> consume
+//    @Autowired
+//    private KafkaTemplate<String, String> template;
+
+    //    @Value(value = "${mentoring.auth.events.topic}")
+    static String authEventsTopic = "mentoring.auth.events";
+
+    //@Autowired
+    static MockConsumer<String, Object> mockConsumer;
     @Autowired
     MockMvc mockMvc;
-    //todo wtf Caused by: org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type 'org.springframework.test.web.servlet.MockMvc' 
+
+//    @Autowired
+//    EmbeddedKafkaBroker embeddedKafkaBroker;
+
+//    static Consumer<String, Object> consumer;
+
+//    Map<String, Object> consumerProps;
 
 //    @BeforeAll
 //    private
 
 
-    @Autowired
-    EmbeddedKafkaBroker embeddedKafkaBroker;
+//    @BeforeEach
+//    void setUp() {
+//        consumerProps = KafkaTestUtils.consumerProps("testGroup", "true", embeddedKafkaBroker);
+////        Map<String, Object> consumerProps = KafkaTestUtils.consumerProps("testGroup", "true", embeddedKafkaBroker);
+//        consumerProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+//        consumerProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, AuthEventDtoDeserializer.class);
+//        System.out.println("LALALA3 " + consumerProps.get(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG));
+//
+//        consumer = new DefaultKafkaConsumerFactory<String, Object>(consumerProps).createConsumer();
+//        consumer.subscribe(Collections.singletonList(authEventsTopic));
+//    }
 
-    @Value(value = "${mentoring.auth.events.topic}")
-    String authEventsTopic;
+    @AfterEach
+    void tearDown() {
+
+//        consumer.close();
+        TestSecurityContextHolder.clearContext();
+    }
+
+    @BeforeAll
+    static void beforeAll() {
+        mockConsumer = new MockConsumer<>(OffsetResetStrategy.EARLIEST);
+        mockConsumer.subscribe(Collections.singletonList(authEventsTopic));
+//        EmbeddedKafkaBroker embeddedKafkaBroker = new EmbeddedKafkaBroker(1);
+//        Map<String, Object> consumerProps = KafkaTestUtils.consumerProps("testGroup", "true", embeddedKafkaBroker);
+////        Map<String, Object> consumerProps = KafkaTestUtils.consumerProps("testGroup", "true", embeddedKafkaBroker);
+//        consumerProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+//        consumerProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, AuthEventDtoDeserializer.class);
+//
+//        consumer = new DefaultKafkaConsumerFactory<String, Object>(consumerProps).createConsumer();
+//        consumer.subscribe(Collections.singletonList(authEventsTopic));
+    }
+
+    @AfterAll
+    static void afterAll() {
+        mockConsumer.close();
+//        consumer.close();
+    }
+
+//todo this doesn't work((
 
 //    @Test
 //    public void testReceivingKafkaEvents() {
@@ -75,34 +129,121 @@ public class KafkaTest {
 //        return consumer;
 //    }
 
+//    public class AuthEventDtoDeserializer extends JsonDeserializer<AuthEventDto> {
+//        public AuthEventDtoDeserializer() {
+//            super(AuthEventDto.class);
+//        }
+//    }
+
     @Test
-    public void successfulAuthenticationTest() throws Exception {
-        Map<String, Object> consumerProps = KafkaTestUtils.consumerProps("testGroup", "true", embeddedKafkaBroker);
-        consumerProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-        Consumer<String, Object> consumer = new DefaultKafkaConsumerFactory<String, Object>(consumerProps)
-                .createConsumer();
-        consumer.subscribe(Collections.singletonList(authEventsTopic));
+    public void authenticationSuccessTest() throws Exception {
+//        Map<String, Object> consumerProps = KafkaTestUtils.consumerProps("testGroup", "true", embeddedKafkaBroker);
+//        consumerProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+//        consumerProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, AuthEventDtoDeserializer.class);
+//        Consumer<String, Object> consumer = new DefaultKafkaConsumerFactory<String, Object>(consumerProps).createConsumer();
+//        consumer.subscribe(Collections.singletonList(authEventsTopic));
+
+        LocalDateTime now = LocalDateTime.now();
 
         mockMvc.perform(post("/auth/login").contentType(MediaType.APPLICATION_JSON)
                         .content("{\"user\": \"root\", \"password\": \"password\"}"))
                 .andExpect(status().isOk()).andDo(print());
 
-        ConsumerRecord<String, Object> singleRecord = KafkaTestUtils.getSingleRecord(consumer, authEventsTopic);
+        ConsumerRecord<String, Object> singleRecord = KafkaTestUtils.getSingleRecord(mockConsumer, authEventsTopic);
+//        ConsumerRecord<String, Object> singleRecord = KafkaTestUtils.getSingleRecord(consumer, authEventsTopic);
         System.out.println("LALALA2 record: " + singleRecord);
         assertNotNull(singleRecord);
-        assertTrue(singleRecord.value() instanceof AuthEventDto);
+        System.out.println("LALALA2 record value: " + singleRecord.value());
+        //AuthEventDto[ipAddress=127.0.0.1, time=2023-08-04T08:20:51.486142584, userName=root, type=AUTHENTICATION_SUCCESS]
+        //{"ipAddress":"127.0.0.1","time":"2023-08-04T08:10:34.965668006","userName":"root","type":"AUTHENTICATION_SUCCESS"}
+        checkAuthEventDto(singleRecord.value(), "root", "AUTHENTICATION_SUCCESS", now);
+//        assertTrue(singleRecord.value() instanceof AuthEventDto);
+//        AuthEventDto authEventDto = (AuthEventDto) singleRecord.value();
+//        assertEquals("127.0.0.1", authEventDto.ipAddress());
+//        assertEquals("root", authEventDto.userName());
+//        assertEquals("AUTHENTICATION_SUCCESS", authEventDto.type());
+//
+//        assertTrue(now.isBefore(authEventDto.time()));
+//        assertTrue(LocalDateTime.now().isAfter(authEventDto.time()));
 
 //        assertThat(singleRecord.value()).isEqualTo("my-test-value");
 
-        consumer.close();
+//        consumer.close();
     }
-//
-//    @Test
-//    void unSuccessfulAuthenticationTest() throws Exception {
-//        mockMvc.perform(post("/auth/login").contentType(MediaType.APPLICATION_JSON)
-//                        .content("{\"user\": \"noRoot\", \"password\": \"password\"}"))
-//                .andExpect(status().isUnauthorized()).andDo(print());
-//
-//
-//    }
+
+    @Test
+    void authenticationFailureTest() throws Exception {
+        LocalDateTime now = LocalDateTime.now();
+
+        mockMvc.perform(post("/auth/login").contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"user\": \"noRoot\", \"password\": \"password\"}"))
+                .andExpect(status().isUnauthorized()).andDo(print());
+
+        ConsumerRecord<String, Object> singleRecord = KafkaTestUtils.getSingleRecord(mockConsumer, authEventsTopic);
+//        ConsumerRecord<String, Object> singleRecord = KafkaTestUtils.getSingleRecord(consumer, authEventsTopic);
+        System.out.println("LALALA2 record: " + singleRecord);
+        assertNotNull(singleRecord);
+        System.out.println("LALALA2 record value: " + singleRecord.value());
+        //AuthEventDto[ipAddress=127.0.0.1, time=2023-08-04T08:20:51.486142584, userName=root, type=AUTHENTICATION_SUCCESS]
+        //{"ipAddress":"127.0.0.1","time":"2023-08-04T08:10:34.965668006","userName":"root","type":"AUTHENTICATION_SUCCESS"}
+        checkAuthEventDto(singleRecord.value(), "noRoot", "AUTHENTICATION_FAILURE", now);
+    }
+
+    @Test
+    @WithMockUser(value = "root", roles = "ADMIN")
+    void authorizationSuccessTest() throws Exception {
+        mockMvc.perform(get("/time/current/utc")).andExpectAll(
+                status().isOk(),
+                content().contentType("application/json")
+        ).andDo(print());
+
+        assertThrows(IllegalStateException.class, () -> KafkaTestUtils.getRecords(mockConsumer, Duration.ofSeconds(4)));
+//        assertThrows(IllegalStateException.class, () -> KafkaTestUtils.getRecords(consumer, Duration.ofSeconds(4)));
+    }
+
+    @Test
+    @WithMockUser(value = "noRoot")
+    void authorizationFailureTest() throws Exception {
+        LocalDateTime now = LocalDateTime.now();
+
+        mockMvc.perform(get("/time/current/utc"))
+                .andExpect(status().isForbidden()).andDo(print());
+
+        ConsumerRecord<String, Object> singleRecord = KafkaTestUtils.getSingleRecord(mockConsumer, authEventsTopic);
+//        ConsumerRecord<String, Object> singleRecord = KafkaTestUtils.getSingleRecord(consumer, authEventsTopic);
+
+        assertNotNull(singleRecord);
+        System.out.println("LALALA2 record value: " + singleRecord.value());
+        checkAuthEventDto(singleRecord.value(), "noRoot", "AUTHORIZATION_FAILURE", now);
+    }
+
+    @Test
+    void authorizationFailureAnonymousUserTest() throws Exception {
+        LocalDateTime now = LocalDateTime.now();
+
+        mockMvc.perform(get("/time/current/utc"))
+                .andExpect(status().isNotFound()).andDo(print());
+
+        ConsumerRecord<String, Object> singleRecord = KafkaTestUtils.getSingleRecord(mockConsumer, authEventsTopic);
+//        ConsumerRecord<String, Object> singleRecord = KafkaTestUtils.getSingleRecord(consumer, authEventsTopic);
+
+        assertNotNull(singleRecord);
+        System.out.println("LALALA2 record value: " + singleRecord.value());
+        checkAuthEventDto(singleRecord.value(), "anonymousUser", "AUTHORIZATION_FAILURE", now);
+    }
+
+
+    private void checkAuthEventDto(Object valueFromKafka, String userName, String authType, LocalDateTime startDate) {
+        assertTrue(valueFromKafka instanceof AuthEventDto);
+        AuthEventDto authEventDto = (AuthEventDto) valueFromKafka;
+        assertEquals("127.0.0.1", authEventDto.ipAddress());
+        assertEquals(userName, authEventDto.userName());
+        assertEquals(authType, authEventDto.type());
+
+        assertTrue(startDate.isBefore(authEventDto.time()));
+        assertTrue(LocalDateTime.now().isAfter(authEventDto.time()));
+    }
+
+    //
+
 }
