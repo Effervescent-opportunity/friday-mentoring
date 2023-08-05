@@ -21,4 +21,3 @@ public class CustomJsonSerializer extends JsonSerializer<Object> {
     }
 
 }
-

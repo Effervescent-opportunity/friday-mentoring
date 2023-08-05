@@ -2,23 +2,13 @@ package com.friday.mentoring.dto;
 
 import java.time.LocalDateTime;
 
-public record AuthEventDto (String ipAddress, LocalDateTime time, String userName, String type) {//looks very similar to AudiEvent
-
-//    private String ipAddress;
-//    private LocalDateTime time;
-//    private String userName;
-//    private String type;
-//
-//    public AuthEventDto(String ipAddress, LocalDateTime time, String userName, String type) {
-//        this.ipAddress = ipAddress;
-//        this.time = time;
-//        this.userName = userName;
-//        this.type = type;
-//    }
-//
-
-
-//IPv4 адрес, время, логин, вид события
-
-
+/**
+ * ДТО с событиями аутентификации и авторизации для отправки в Кафку
+ *
+ * @param ipAddress IPv4 адрес
+ * @param time      время события
+ * @param userName  логин
+ * @param type      вид события
+ */
+public record AuthEventDto(String ipAddress, LocalDateTime time, String userName, String type) {
 }

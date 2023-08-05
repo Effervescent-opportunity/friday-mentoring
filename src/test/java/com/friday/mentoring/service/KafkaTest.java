@@ -2,19 +2,23 @@ package com.friday.mentoring.service;
 
 import com.friday.mentoring.dto.AuthEventDto;
 import com.friday.mentoring.util.AuthEventDtoDeserializer;
-import org.apache.kafka.clients.consumer.*;
-import org.junit.jupiter.api.*;
+import org.apache.kafka.clients.consumer.Consumer;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
-import org.springframework.security.test.context.TestSecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
@@ -37,8 +41,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class KafkaTest {
 
- @Value(value = "${mentoring.auth.events.topic}")
-   String authEventsTopic;
+    @Value(value = "${mentoring.auth.events.topic}")
+    String authEventsTopic;
 
     @Autowired
     MockMvc mockMvc;
@@ -46,18 +50,15 @@ public class KafkaTest {
     @Autowired
     EmbeddedKafkaBroker embeddedKafkaBroker;
 
-Consumer<String, Object> consumer;
+    Consumer<String, Object> consumer;
 
     Map<String, Object> consumerProps;
-
 
     @BeforeEach
     void setUp() {
         consumerProps = KafkaTestUtils.consumerProps("testGroup", "true", embeddedKafkaBroker);
-//        Map<String, Object> consumerProps = KafkaTestUtils.consumerProps("testGroup", "true", embeddedKafkaBroker);
         consumerProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         consumerProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, AuthEventDtoDeserializer.class);
-        System.out.println("LALALA3 " + consumerProps.get(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG));
 
         consumer = new DefaultKafkaConsumerFactory<String, Object>(consumerProps).createConsumer();
         consumer.subscribe(Collections.singletonList(authEventsTopic));
@@ -66,76 +67,10 @@ Consumer<String, Object> consumer;
     @AfterEach
     void tearDown() {
         consumer.close();
-//        TestSecurityContextHolder.clearContext();
     }
-
-//    @BeforeAll
-//    static void beforeAll() {
-//        mockConsumer = new MockConsumer<>(OffsetResetStrategy.EARLIEST);
-//        mockConsumer.subscribe(Collections.singletonList(authEventsTopic));
-////        EmbeddedKafkaBroker embeddedKafkaBroker = new EmbeddedKafkaBroker(1);
-////        Map<String, Object> consumerProps = KafkaTestUtils.consumerProps("testGroup", "true", embeddedKafkaBroker);
-//////        Map<String, Object> consumerProps = KafkaTestUtils.consumerProps("testGroup", "true", embeddedKafkaBroker);
-////        consumerProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-////        consumerProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, AuthEventDtoDeserializer.class);
-////
-////        consumer = new DefaultKafkaConsumerFactory<String, Object>(consumerProps).createConsumer();
-////        consumer.subscribe(Collections.singletonList(authEventsTopic));
-//    }
-
-//    @AfterAll
-//    static void afterAll() {
-//        mockConsumer.close();
-////        consumer.close();
-//    }
-
-//todo this doesn't work((
-
-//    @Test
-//    public void testReceivingKafkaEvents() {
-//        Map<String, Object> consumerProps = KafkaTestUtils.consumerProps("testGroup", "true", embeddedKafkaBroker);
-//        consumerProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-//        Consumer<String, Object> consumer = new DefaultKafkaConsumerFactory<String, Object>(consumerProps)
-//                .createConsumer();
-//        consumer.subscribe(Collections.singletonList(authEventsTopic));
-//
-////        Consumer<Integer, String> consumer = configureConsumer();
-////        Producer<Integer, String> producer = configureProducer();
-//
-////        producer.send(new ProducerRecord<>(TEST_TOPIC, 123, "my-test-value"));
-//
-//        ConsumerRecord<String, Object> singleRecord = KafkaTestUtils.getSingleRecord(consumer, authEventsTopic);
-//        assertThat(singleRecord).isNotNull();
-//        assertThat(singleRecord.key()).isEqualTo(123);
-//        assertThat(singleRecord.value()).isEqualTo("my-test-value");
-//
-//        consumer.close();
-////        producer.close();
-//    }
-
-//    private Consumer<Integer, String> configureConsumer() {
-//        Map<String, Object> consumerProps = KafkaTestUtils.consumerProps("testGroup", "true", embeddedKafkaBroker);
-//        consumerProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-//        Consumer<Integer, String> consumer = new DefaultKafkaConsumerFactory<Integer, String>(consumerProps)
-//                .createConsumer();
-//        consumer.subscribe(Collections.singleton(TEST_TOPIC));
-//        return consumer;
-//    }
-
-//    public class AuthEventDtoDeserializer extends JsonDeserializer<AuthEventDto> {
-//        public AuthEventDtoDeserializer() {
-//            super(AuthEventDto.class);
-//        }
-//    }
 
     @Test
     public void authenticationSuccessTest() throws Exception {
-//        Map<String, Object> consumerProps = KafkaTestUtils.consumerProps("testGroup", "true", embeddedKafkaBroker);
-//        consumerProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-//        consumerProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, AuthEventDtoDeserializer.class);
-//        Consumer<String, Object> consumer = new DefaultKafkaConsumerFactory<String, Object>(consumerProps).createConsumer();
-//        consumer.subscribe(Collections.singletonList(authEventsTopic));
-
         LocalDateTime now = LocalDateTime.now();
 
         mockMvc.perform(post("/auth/login").contentType(MediaType.APPLICATION_JSON)
@@ -143,24 +78,9 @@ Consumer<String, Object> consumer;
                 .andExpect(status().isOk()).andDo(print());
 
         ConsumerRecord<String, Object> singleRecord = KafkaTestUtils.getSingleRecord(consumer, authEventsTopic);
-        System.out.println("LALALA2 record: " + singleRecord);
+
         assertNotNull(singleRecord);
-        System.out.println("LALALA2 record value: " + singleRecord.value());
-        //AuthEventDto[ipAddress=127.0.0.1, time=2023-08-04T08:20:51.486142584, userName=root, type=AUTHENTICATION_SUCCESS]
-        //{"ipAddress":"127.0.0.1","time":"2023-08-04T08:10:34.965668006","userName":"root","type":"AUTHENTICATION_SUCCESS"}
         checkAuthEventDto(singleRecord.value(), "root", "AUTHENTICATION_SUCCESS", now);
-//        assertTrue(singleRecord.value() instanceof AuthEventDto);
-//        AuthEventDto authEventDto = (AuthEventDto) singleRecord.value();
-//        assertEquals("127.0.0.1", authEventDto.ipAddress());
-//        assertEquals("root", authEventDto.userName());
-//        assertEquals("AUTHENTICATION_SUCCESS", authEventDto.type());
-//
-//        assertTrue(now.isBefore(authEventDto.time()));
-//        assertTrue(LocalDateTime.now().isAfter(authEventDto.time()));
-
-//        assertThat(singleRecord.value()).isEqualTo("my-test-value");
-
-//        consumer.close();
     }
 
     @Test
@@ -171,13 +91,9 @@ Consumer<String, Object> consumer;
                         .content("{\"user\": \"noRoot\", \"password\": \"password\"}"))
                 .andExpect(status().isUnauthorized()).andDo(print());
 
-//        ConsumerRecord<String, Object> singleRecord = KafkaTestUtils.getSingleRecord(mockConsumer, authEventsTopic);
         ConsumerRecord<String, Object> singleRecord = KafkaTestUtils.getSingleRecord(consumer, authEventsTopic);
-        System.out.println("LALALA2 record: " + singleRecord);
+
         assertNotNull(singleRecord);
-        System.out.println("LALALA2 record value: " + singleRecord.value());
-        //AuthEventDto[ipAddress=127.0.0.1, time=2023-08-04T08:20:51.486142584, userName=root, type=AUTHENTICATION_SUCCESS]
-        //{"ipAddress":"127.0.0.1","time":"2023-08-04T08:10:34.965668006","userName":"root","type":"AUTHENTICATION_SUCCESS"}
         checkAuthEventDto(singleRecord.value(), "noRoot", "AUTHENTICATION_FAILURE", now);
     }
 
@@ -192,29 +108,20 @@ Consumer<String, Object> consumer;
         Thread.sleep(1000);
         ConsumerRecords<String, Object> records = KafkaTestUtils.getRecords(consumer, Duration.ofSeconds(4));
         assertEquals(0, records.count());
-
-//        assertThrows(IllegalStateException.class, () -> KafkaTestUtils.getRecords(mockConsumer, Duration.ofSeconds(4)));
-//        assertThrows(IllegalStateException.class, () -> {
-//            ConsumerRecords<String, Object> records = KafkaTestUtils.getRecords(consumer, Duration.ofSeconds(4));
-//            System.out.println("LALALA count records = " + records.count());
-//            System.out.println("LALALA records = " + records);
-//        });
     }
 
     @Test
     @WithMockUser(value = "noRoot")
     @Disabled("Не работает - event не создается")
-    void authorizationFailureTest() throws Exception {//doesn't work
+    void authorizationFailureTest() throws Exception {
         LocalDateTime now = LocalDateTime.now();
 
         mockMvc.perform(get("/time/current/utc"))
                 .andExpect(status().isForbidden()).andDo(print());
 
-//        ConsumerRecord<String, Object> singleRecord = KafkaTestUtils.getSingleRecord(mockConsumer, authEventsTopic);
         ConsumerRecord<String, Object> singleRecord = KafkaTestUtils.getSingleRecord(consumer, authEventsTopic);
 
         assertNotNull(singleRecord);
-        System.out.println("LALALA2 record value: " + singleRecord.value());
         checkAuthEventDto(singleRecord.value(), "noRoot", "AUTHORIZATION_FAILURE", now);
     }
 
@@ -226,27 +133,9 @@ Consumer<String, Object> consumer;
         mockMvc.perform(get("/time/current/utc"))
                 .andExpect(status().isNotFound()).andDo(print());
 
-//        ConsumerRecord<String, Object> singleRecord = KafkaTestUtils.getSingleRecord(mockConsumer, authEventsTopic);
         ConsumerRecord<String, Object> singleRecord = KafkaTestUtils.getSingleRecord(consumer, authEventsTopic);
 
         assertNotNull(singleRecord);
-        System.out.println("LALALA2 record value: " + singleRecord.value());
-        checkAuthEventDto(singleRecord.value(), "anonymousUser", "AUTHORIZATION_FAILURE", now);
-    }
-
-    @Test
-//    @Disabled("Не работает - event не создается")
-    void authorizationFailureAnonymousUser1Test() throws Exception {
-        LocalDateTime now = LocalDateTime.now();
-
-        mockMvc.perform(get("/time/current/utc").header("JSESSIONID", "A2B2D5F44C87D5075FAE7F2C302E2AA6"))
-                .andExpect(status().isNotFound()).andDo(print());
-
-//        ConsumerRecord<String, Object> singleRecord = KafkaTestUtils.getSingleRecord(mockConsumer, authEventsTopic);
-        ConsumerRecord<String, Object> singleRecord = KafkaTestUtils.getSingleRecord(consumer, authEventsTopic);
-
-        assertNotNull(singleRecord);
-        System.out.println("LALALA2 record value: " + singleRecord.value());
         checkAuthEventDto(singleRecord.value(), "anonymousUser", "AUTHORIZATION_FAILURE", now);
     }
 
@@ -260,7 +149,5 @@ Consumer<String, Object> consumer;
         assertTrue(startDate.isBefore(authEventDto.time()));
         assertTrue(LocalDateTime.now().isAfter(authEventDto.time()));
     }
-
-    //
 
 }

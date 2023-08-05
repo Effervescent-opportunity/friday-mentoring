@@ -2,14 +2,9 @@ package com.friday.mentoring.configuration;
 
 import org.springframework.boot.actuate.audit.AuditEventRepository;
 import org.springframework.boot.actuate.audit.InMemoryAuditEventRepository;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationEventPublisher;
-import org.springframework.security.authentication.DefaultAuthenticationEventPublisher;
-import org.springframework.security.authorization.AuthorizationEventPublisher;
-import org.springframework.security.authorization.SpringAuthorizationEventPublisher;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -23,12 +18,11 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 
 /**
- * Бины для аутентификации и авторизации
+ * Бины для аутентификации, авторизации, аудита
  */
 @Configuration
 @EnableMethodSecurity
-public class CustomSecurityConfig {//todo look how to stop running docker container - when I stop application, it doesn't stop
-    //and kafka-ui is startinag when laptop is turning on - maybe it's restart: always?
+public class CustomSecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -51,11 +45,7 @@ public class CustomSecurityConfig {//todo look how to stop running docker contai
                 .password("password")
                 .roles("ADMIN")
                 .build();
-        UserDetails otherUser = User.withUsername("other")
-                .password("password1")
-                .roles("USER")
-                .build();
-        return new InMemoryUserDetailsManager(rootUser, otherUser);
+        return new InMemoryUserDetailsManager(rootUser);
     }
 
     @Bean
@@ -63,14 +53,4 @@ public class CustomSecurityConfig {//todo look how to stop running docker contai
         return new InMemoryAuditEventRepository();
     }
 
-    //todo try to delete this and look if they are in eventlistener
-//    @Bean
-//    public AuthenticationEventPublisher authenticationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
-//        return new DefaultAuthenticationEventPublisher(applicationEventPublisher);
-//    }
-//
-//    @Bean
-//    public AuthorizationEventPublisher authorizationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
-//        return new SpringAuthorizationEventPublisher(applicationEventPublisher);
-//    }
 }
