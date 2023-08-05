@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 public class KafkaProducer {
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaProducer.class);
 
-    @Value(value = "${mentoring.auth.events.topic}")
+    @Value(value = "${siem.events.topic}")
     private String authEventsTopic;
 
     private final KafkaTemplate<String, Object> kafkaTemplate;

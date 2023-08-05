@@ -12,7 +12,7 @@ import org.springframework.kafka.config.TopicBuilder;
 @Configuration
 public class CustomKafkaConfig {
 
-    @Value(value = "${mentoring.auth.events.topic}")
+    @Value(value = "${siem.events.topic}")
     private String authEventsTopic;
 
     @Bean

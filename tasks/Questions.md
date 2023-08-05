@@ -1,5 +1,41 @@
 # Вопросы с ответами по заданиям и исправлениям
 
+## Четвертое задание
+
+1. Именование mentoring.auth.events.topic я бы делал в виде siem.events.topic (system.kind.topic).
+
+2. В KafkaTest есть лишние тесты плюс ошибка компиляции.
+
+3. Thread.sleep() не нужен, т.к. KafkaTestUtils корректно обрабатывает таймауты и ожидания, см.
+   org.springframework.kafka.test.utils.KafkaTestUtils#getRecords:332
+
+`do {
+// ...
+}
+while (count < minRecords && remaining > 0);`
+
+4. Использование mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS); по рекомендации https://docs.spring.io/spring-kafka/reference/html/#tip-json 
+всё же приводит к тому, что дата отправляется хоть и в приятном строковом виде, но из-за LocalDateTime — без таймзоны (!) 
+ в виде "time":"2023-08-04T23:26:43.098285293", а реализация тестов эту проблему скрывает (!!) из-за AuthEventDtoDeserializer — мы
+не видим в отладчике то, что ходит "по кабелю", т.е. реальную json-строку.
+
+В некоторых видах интеграций отсутствие таймзоны может классифицироваться как грубая ошибка системного анализа (будем честны, ошибаются все, но это всплывает на первом же тестировании).
+
+Что предлагается:
+
+- использовать Instant, тогда датавремя будет представлено в виде "time":"2023-08-04T20:26:43.098285293Z" или OffsetDateTime, получим "time":"2023-08-04T23:26:43.098285293+03:00";
+- удалить AuthEventDtoDeserializer и для checkAuthEventDto использовать ObjectMapper в духе
+
+`try {
+AuthEventDto authEventDto = objectMapper.readValue(String.valueOf(valueFromKafka), AuthEventDto.class);
+// ...
+} catch (JsonProcessingException e) {
+Assertions.fail(e);
+}`
+
+p.s. чтобы не писать ужас String.valueOf(valueFromKafka), нужно использовать Consumer<String, String> consumer;  со всеми вытекающими —
+ConsumerRecord<String, String> singleRecord - new DefaultKafkaConsumerFactory<String, String>(consumerProps).createConsumer(); и т.п.
+
 ## Третье задание
 
 1. Можно ли как-то протестировать само соединение через TLS, что сертификат работает и тд? И нужно ли в рамках задания?

@@ -9,7 +9,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
 
 /**
@@ -35,7 +35,7 @@ public class AuthEventListener {
             ipAddress = ((WebAuthenticationDetails) details).getRemoteAddress();
         }
 
-        AuthEventDto eventDto = new AuthEventDto(ipAddress, LocalDateTime.ofInstant(auditEvent.getTimestamp(), ZoneId.systemDefault()),
+        AuthEventDto eventDto = new AuthEventDto(ipAddress, OffsetDateTime.ofInstant(auditEvent.getTimestamp(), ZoneId.systemDefault()),
                 auditEvent.getPrincipal(), auditEvent.getType());
 
         LOGGER.debug("Got auth event: [{}]", eventDto);
