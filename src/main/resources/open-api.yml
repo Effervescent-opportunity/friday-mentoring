@@ -1,0 +1,30 @@
+openapi: 3.1.0
+info:
+  title: lalala
+  description: lalala
+servers:
+  - url: https://localhost:8443
+    description: local server description
+paths:
+  /time/current/utc:
+    get:
+      summary: Получение текущей даты и текущего времени в таймзоне UTC
+      responses:
+        '200':
+          description: lalala
+          content:
+            application/json:
+              schema:
+                $ref:
+
+components:
+  schemas:
+    CurrentTimeResponse:
+      type: object
+      required:
+        - timestamp
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          description: lalala
