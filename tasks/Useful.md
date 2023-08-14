@@ -22,16 +22,23 @@ i have this:
 `@SpringBootTest` loads all application context, all layers (web layer, service layer, and data access layer)
 `@WebMvcTest` on the other hand, is used to test only the web layer of your application
 
-## Docker commands
+## Docker
+### Docker commands
+
+`docker -v` Docker version (I have Docker version 20.10.25, build 20.10.25-0ubuntu1~22.04.1)
+
+`docker compose version` Docker compose version (I have Docker Compose version v2.20.2)
 
 `docker system prune -a` - delete all images, containers, volumes and networks
+
+`docker ps` see all running containers
 
 docker-compose
 
 docker-compose logs kafka | grep -i started
 docker logs -f <container-id>
 
-docker ps - see all running containers
+
 
 docker port {container_name} - see ports from container
 
@@ -42,8 +49,13 @@ docker logs -f {container-name} -
 docker compose build --no-cache mentoring-app
 - `docker-compose build --no-cache mentoring-app` - recreate container
 
+### Docker information
+
+[DockerHub search](https://hub.docker.com/search?q=)
+
 ports: 
 - HOST_PORT:CONTAINER_PORT
+
 networked service-to-service communication uses CONTAINER_PORT and service is accessible by HOST_PORT outside the swarm(?)
 in Service image or build. If borh, then no guarantee thatpulled image is strictly the same with builded. Compose will try to build an image firstly
 
@@ -51,10 +63,14 @@ if you have container_name in service then you can't have two or more replicas o
 if you have your service A depends_on service B, then service B will be created before service A, and service A will be removed before B
 And there is more options for this - you can set required false, restart policy and conditions when dependency is satisfying (https://docs.docker.com/compose/compose-file/05-services/#long-syntax-1)
 
+## Security
+
 
 ------------------
 you have to logout with cookie
 I can logout with both GET and POST
+
+
 PKCS12 because it's language-neutral and JKS is only for JAVA
 
 why for anonymous user I get FORBIDDEN - 403

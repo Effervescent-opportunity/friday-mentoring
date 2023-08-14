@@ -16,6 +16,69 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CurrentTimeResponse'
+        '400':
+          description: bad request - bad timezone
+        '401':
+          description: unauthorized
+        '403':
+          description: forbidden
+        '404':
+          description: not found
+  /time/current:
+    get:
+      summary: Получение текущей даты и текущего времени в заданной таймзоне (в запросе задаётся форматом IANA `Area/Location`).
+      parameters:
+        - in: query
+          name: timezone
+          schema:
+            type: string
+          description: заданной таймзоне (в запросе задаётся форматом IANA `Area/Location`)
+          allowReserved: true
+      responses:
+        '200':
+          description: lalala
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrentTimeResponse'
+        '400':
+          description: bad request - bad timezone
+        '401':
+          description: unauthorized
+        '403':
+          description: forbidden
+        '404':
+          description: not found
+  /auth/login:
+    post:
+      summary: aaaa
+      requestBody:
+        description: aaa
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Credentials'
+      responses:
+        '200':
+          description: authorized
+        '401':
+          description: unauthorized
+  /auth/logout:
+    get:
+      summary: aaaa - todo add cookie
+      responses:
+        '200':
+          description: authorized
+        '401':
+          description: unauthorized
+    post:
+      summary: aaaa
+      responses:
+        '200':
+          description: authorized
+        '401':
+          description: unauthorized
 
 components:
   schemas:
@@ -28,3 +91,18 @@ components:
           type: string
           format: date-time
           description: lalala
+          example: 'lalala'
+    Credentials:
+      type: object
+      required:
+        - user
+        - password
+      properties:
+        user:
+          type: string
+          description: username
+          example: 'root'
+        password:
+          type: string
+          description: user password
+          example: password
