@@ -1,12 +1,15 @@
 package com.friday.mentoring.service;
 
 import com.friday.mentoring.dto.AuthEventDto;
+import org.apache.kafka.clients.admin.AdminClient;
+import org.apache.kafka.clients.admin.ListTopicsOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -16,15 +19,23 @@ import java.util.concurrent.TimeUnit;
 public class KafkaProducer {
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaProducer.class);
 
+    private static final int ADMIN_CLIENT_TIMEOUT_MS = 5000;
+
     @Value(value = "${siem.events.topic}")
     private String authEventsTopic;
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
+    private final AdminClient adminClient;
 
-    public KafkaProducer(KafkaTemplate<String, Object> kafkaTemplate) {
+    public KafkaProducer(KafkaTemplate<String, Object> kafkaTemplate, AdminClient adminClient) {
         this.kafkaTemplate = kafkaTemplate;
+        this.adminClient = adminClient;
     }
 
+//    @Lazy
+//    public void setAdminClient(AdminClient adminClient) {
+//        this.adminClient = adminClient;
+//    }
 
     public void sendAuthEvent(AuthEventDto authEvent) {
         if (kafkaIsActive()) {
@@ -42,7 +53,14 @@ public class KafkaProducer {
     }
 
     private boolean kafkaIsActive() {
-        return true;
+        try {
+            adminClient.listTopics(new ListTopicsOptions().timeoutMs(ADMIN_CLIENT_TIMEOUT_MS)).listings().get();
+            return true;
+        } catch (ExecutionException | InterruptedException ex) {
+            LOGGER.error("LALALA KAfka timeout", ex);
+        }
+
+        return false;
     }
 
 }
