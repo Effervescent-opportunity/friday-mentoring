@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 public class KafkaProducer {
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaProducer.class);
 
-    private static final int ADMIN_CLIENT_TIMEOUT_MS = 5000;
+    private static final int ADMIN_CLIENT_TIMEOUT_MS = 1000;
 
     @Value(value = "${siem.events.topic}")
     private String authEventsTopic;
@@ -32,12 +32,8 @@ public class KafkaProducer {
         this.adminClient = adminClient;
     }
 
-//    @Lazy
-//    public void setAdminClient(AdminClient adminClient) {
-//        this.adminClient = adminClient;
-//    }
-
     public void sendAuthEvent(AuthEventDto authEvent) {
+        LOGGER.info("Sending message [{}] to Kafka1", authEvent);
         if (kafkaIsActive()) {
             LOGGER.info("Sending message [{}] to Kafka", authEvent);
 
@@ -54,7 +50,8 @@ public class KafkaProducer {
 
     private boolean kafkaIsActive() {
         try {
-            adminClient.listTopics(new ListTopicsOptions().timeoutMs(ADMIN_CLIENT_TIMEOUT_MS)).listings().get();
+            adminClient.listTopics(new ListTopicsOptions()).listings().get();
+//            adminClient.listTopics(new ListTopicsOptions().timeoutMs(ADMIN_CLIENT_TIMEOUT_MS)).listings().get();
             return true;
         } catch (ExecutionException | InterruptedException ex) {
             LOGGER.error("LALALA KAfka timeout", ex);

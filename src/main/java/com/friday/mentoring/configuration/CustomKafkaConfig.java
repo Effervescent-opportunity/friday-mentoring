@@ -2,11 +2,11 @@ package com.friday.mentoring.configuration;
 
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.AdminClientConfig;
-import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.TopicBuilder;
+import org.springframework.kafka.core.KafkaAdmin;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,8 +24,10 @@ public class CustomKafkaConfig {
     private String bootstrapServers;
 
     @Bean
-    public NewTopic authEventTopic() {
-        return TopicBuilder.name(authEventsTopic).build();
+    public KafkaAdmin.NewTopics authEventTopic(KafkaAdmin admin) {
+        admin.setAutoCreate(false);
+        return new KafkaAdmin.NewTopics(TopicBuilder.name(authEventsTopic).build()
+        );
     }
 
     @Bean
@@ -33,7 +35,8 @@ public class CustomKafkaConfig {
         //this creates adminclient-1, it's strange - look at log1 & log2/ and then they both looks at
         Map<String, Object> configs = new HashMap<>();
         configs.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-        configs.put(AdminClientConfig.REQUEST_TIMEOUT_MS_CONFIG, 2000);
+        configs.put(AdminClientConfig.REQUEST_TIMEOUT_MS_CONFIG, 1000);
+        configs.put(AdminClientConfig.DEFAULT_API_TIMEOUT_MS_CONFIG, 1000);//this is for ListTopics, must be >= request timeout
         return AdminClient.create(configs);
     }
 
