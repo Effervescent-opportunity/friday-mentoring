@@ -39,3 +39,17 @@ services:
     links:
       - kafka
       - zookeeper
+  postgres:
+    image: postgres:15.4-alpine3.18
+    container_name: fm-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=fmdb
+      - POSTGRES_USER=lalala
+      - POSTGRES_PASSWORD=lalala
+#      todo wtf - volumes & tune db https://habr.com/ru/articles/578744/ https://habr.com/ru/articles/490824/
+#      - PGDATA=/var/lib/postgresql/data/pgdata
+#    volumes:
+#      - ../2. Init Database:/docker-entrypoint-initdb.d
+#      - habrdb-data:/var/lib/postgresql/data

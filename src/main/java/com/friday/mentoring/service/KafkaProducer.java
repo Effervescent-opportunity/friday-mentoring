@@ -55,7 +55,7 @@ public class KafkaProducer {
 
             //todo thing for timeouts - here I have 3 seconds, there is "max.block.ms" property which could be useful
             // https://stackoverflow.com/questions/60725906/how-to-verify-sprng-kafka-producer-has-successfully-sent-message-or-not
-            
+
 //                this.kafkaTemplate.send(authEventsTopic, authEvent).get(3, TimeUnit.SECONDS);
 //            } catch (Exception ex) {
 //                LOGGER.warn("Got exception when sending message to Kafka", ex);
