@@ -70,6 +70,31 @@ if you have container_name in service then you can't have two or more replicas o
 if you have your service A depends_on service B, then service B will be created before service A, and service A will be removed before B
 And there is more options for this - you can set required false, restart policy and conditions when dependency is satisfying (https://docs.docker.com/compose/compose-file/05-services/#long-syntax-1)
 
+### Docker storages
+
+[Docker Storages documentation](https://docs.docker.com/storage/)
+
+- __Volumes__ are stored in a part of the host filesystem which is managed by Docker (/var/lib/docker/volumes/ on Linux). Non-Docker processes should not modify this part of the filesystem. Volumes are the best way to persist data in Docker.
+- __Bind mounts__ may be stored anywhere on the host system. They may even be important system files or directories. Non-Docker processes on the Docker host or a Docker container can modify them at any time.
+- __tmpfs mounts__ are stored in the host system's memory only, and are never written to the host system's filesystem.
+
+Вот такое значит, что volume db-data будет доступен в контейнере для serviceA по пути /etc/data
+```
+services:
+  serviceA:
+    volumes:
+      - db-data:/etc/data
+```
+
+Есть еще имя, не понимаю пока, как связано с тем, что написано
+
+```
+volumes:
+  db-data:
+    name: "my-app-data"
+```
+
+
 ## Security
 
 
