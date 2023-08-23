@@ -1,4 +1,9 @@
 package com.friday.mentoring.db.repository;
 
-public interface OutboxRepository {
+import com.friday.mentoring.db.entity.OutboxEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.UUID;
+
+public interface OutboxRepository extends JpaRepository<OutboxEntity, UUID> {
 }

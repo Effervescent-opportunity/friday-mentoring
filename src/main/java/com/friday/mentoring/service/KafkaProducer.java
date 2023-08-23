@@ -32,6 +32,8 @@ public class KafkaProducer {
         this.adminClient = adminClient;
     }
 
+    //todo enable idempotence org.apache.kafka.clients.producer.ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG
+
     public void sendAuthEvent(AuthEventDto authEvent) {
         if (kafkaIsActive()) {
             LOGGER.info("Sending message [{}] to Kafka", authEvent);

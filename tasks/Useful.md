@@ -1,4 +1,8 @@
 
+## Spring JPA
+
+in Spring Boot 3 javax.persistence.Entity was renamed to jakarta.persistence.Entity. So with all annotations from javax
+
 ## Postgres
 ### psql commands
 `psql -d fmdb -U fmuser` connect to db with dbname fmdb, user fmuser
