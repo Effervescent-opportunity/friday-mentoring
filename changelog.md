@@ -2,7 +2,9 @@
 ## Пятое задание
 
 - По умолчанию у Кафки гарантии доставки at least once, поэтому в конфигах ничего не изменено
-- 
+- used [Polling publisher pattern](https://microservices.io/patterns/data/polling-publisher.html)
+- initdb.sql - not flyway\liquibase, because I don't have time
+- lalala this is the hing I need [this link](https://dev.to/aleksk1ng/transactional-outbox-pattern-step-by-step-with-spring-and-kotlin-3gkd)
 
 ## Дополнения к четвертому заданию
 
