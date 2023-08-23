@@ -1,8 +1,5 @@
 version: "3.9"
 services:
-  serviceA:
-    volumes:
-      - db-data:/etc/data
   zookeeper:
     image: confluentinc/cp-zookeeper:7.4.1
     container_name: fm-zookeeper
@@ -43,14 +40,25 @@ services:
       - kafka
       - zookeeper
   postgres:
-    image: postgres:15.4-alpine3.18
+    image: postgres:15.4-alpine
     container_name: fm-postgres
     ports:
       - "5432:5432"
     environment:
       - POSTGRES_DB=fmdb
-      - POSTGRES_USER=lalala
-      - POSTGRES_PASSWORD=lalala
+      - POSTGRES_USER=fmuser
+      - POSTGRES_PASSWORD=fmpass
+#      - PGDATA=/data/postgres
+    volumes:
+      - fmdb-data:/var/lib/postgresql/data
+
+volumes:
+  fmdb-data:
+    driver: local
+    name: "fmdb-data-volume"
+
+#why The files belonging to this database system will be owned by user "postgres".
+#fm-postgres   | This user must also own the server process.
 #      todo wtf - volumes & tune db https://habr.com/ru/articles/578744/ https://habr.com/ru/articles/490824/
 #      - PGDATA=/var/lib/postgresql/data/pgdata
 #    volumes:

@@ -1,4 +1,14 @@
 
+## Postgres
+### psql commands
+`psql -d fmdb -U fmuser` connect to db with dbname fmdb, user fmuser
+
+`\l` get list of databases
+
+`\q` quit
+
+
+
 ## Swagger & OpenAPI
 OpenAPI = Specification
 Swagger = Tools for implementing specification
@@ -35,9 +45,23 @@ to your application’s test dependencies. This allows Mockito to mock and spy o
 
 `docker compose version` Docker compose version (I have Docker Compose version v2.20.2)
 
-`docker system prune -a` - delete all images, containers, volumes and networks
+`docker system prune -a` - delete all images, containers and networks
+
+`docker volume prune -a` - delete all volumes
 
 `docker ps` see all running containers
+
+`docker ps -a` see all containers
+
+`docker images ps` see all images
+
+`docker volume ls` see all volumes
+
+`docker volume inspect {volume name}` 
+
+`docker logs -f {container-name}` see and follow container logs (if `-n 50` added then see only 50 lines)
+
+`docker exec -i {container-id} bash` open bash for container
 
 docker-compose
 
@@ -50,7 +74,7 @@ docker port {container_name} - see ports from container
 
 docker-compose up -d --no-deps --build <service_name>
 
-docker logs -f {container-name} -
+
 
 docker compose build --no-cache mentoring-app
 - `docker-compose build --no-cache mentoring-app` - recreate container
