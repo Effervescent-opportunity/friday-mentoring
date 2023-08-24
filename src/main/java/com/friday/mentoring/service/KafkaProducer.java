@@ -50,6 +50,7 @@ public class KafkaProducer {
                 LOGGER.info("Message was sent");
 //                    messageRepo.save(result.getProducerRecord().key().toString(),result.getProducerRecord().value().toString());
             } catch (Exception ex) {
+                //todo throw some checked  exception and catch in Outbox Retry Service \\or just return false
                 LOGGER.warn("Got exception when sending message to Kafka", ex);
 //                    LOGGER.error("Error publishing message ", e);
 //                    messageRepo.save(result.getProducerRecord().key().toString(),result.getProducerRecord().value().toString());

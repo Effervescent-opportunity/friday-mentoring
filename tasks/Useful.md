@@ -11,6 +11,12 @@ in Spring Boot 3 javax.persistence.Entity was renamed to jakarta.persistence.Ent
 
 `\q` quit
 
+### DB column types
+
+`varchar(n)` column type - stores up to n characters (not bytes). If I have a string with length m<n, then будет храниться строка длины m
+`char(n)` column type - stores n characters (not bytes). If I have a string with length m<n, then остальные символы будут заполнены пробелами. Is the slowest one
+`text` column type - unlimited length
+
 
 
 ## Swagger & OpenAPI

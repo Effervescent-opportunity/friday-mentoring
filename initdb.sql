@@ -1,4 +1,8 @@
-create table auth_event();
+CREATE TABLE auth_event(
+id uuid PRIMARY KEY default gen_random_uuid(),
+ip_address varchar(45) NOT NULL,
+event_time
+);
 
 create table outbox();
 
