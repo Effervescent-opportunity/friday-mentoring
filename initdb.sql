@@ -1,10 +1,14 @@
 CREATE TABLE auth_event(
 id uuid PRIMARY KEY default gen_random_uuid(),
 ip_address varchar(45) NOT NULL,
-event_time
+event_time timestamptz NOT NULL,
+user_name varchar(20) NOT NULL,
+type varchar(20) NOT NULL
 );
 
-create table outbox();
+create table outbox(
+
+);
 
 create table orders.outbox(id int AUTO_INCREMENT primary key, event varchar(1000),event_id int,payload json,created_at timestamp);
 

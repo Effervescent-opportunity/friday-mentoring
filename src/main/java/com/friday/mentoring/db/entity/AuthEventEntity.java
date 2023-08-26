@@ -1,8 +1,6 @@
 package com.friday.mentoring.db.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -20,12 +18,52 @@ import java.util.UUID;
 public class AuthEventEntity {
     //String ipAddress, OffsetDateTime time, String userName, String type
     @Id
+//    @GeneratedValue(strategy = GenerationType.UUID) todo test this and below
+    @GeneratedValue
     private UUID id;
-
 
     private String ipAddress;
     private OffsetDateTime eventTime;
     private String userName;
     private String type;
 
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public String getIpAddress() {
+        return ipAddress;
+    }
+
+    public void setIpAddress(String ipAddress) {
+        this.ipAddress = ipAddress;
+    }
+
+    public OffsetDateTime getEventTime() {
+        return eventTime;
+    }
+
+    public void setEventTime(OffsetDateTime eventTime) {
+        this.eventTime = eventTime;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 }

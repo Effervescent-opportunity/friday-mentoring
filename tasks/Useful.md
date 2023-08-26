@@ -19,6 +19,7 @@ in Spring Boot 3 javax.persistence.Entity was renamed to jakarta.persistence.Ent
 
 
 
+
 ## Swagger & OpenAPI
 OpenAPI = Specification
 Swagger = Tools for implementing specification
