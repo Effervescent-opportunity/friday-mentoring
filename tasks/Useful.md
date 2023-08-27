@@ -62,13 +62,15 @@ to your application’s test dependencies. This allows Mockito to mock and spy o
 
 `docker system prune -a` - delete all images, containers and networks
 
+`docker system prune -a --volumes` - delete all images, containers, networks and volumes
+
 `docker volume prune -a` - delete all volumes
 
 `docker ps` see all running containers
 
 `docker ps -a` see all containers
 
-`docker images ps` see all images
+`docker images -a` or `docker image ls` see all images
 
 `docker volume ls` see all volumes
 
@@ -77,6 +79,10 @@ to your application’s test dependencies. This allows Mockito to mock and spy o
 `docker logs -f {container-name}` see and follow container logs (if `-n 50` added then see only 50 lines)
 
 `docker exec -i {container-id} bash` open bash for container
+
+`docker rm -v {container-name}` remove container and it's anonymous volumes
+
+`docker rmi {image id|image tag}` remove image
 
 docker-compose
 

@@ -3,7 +3,7 @@ id uuid PRIMARY KEY default gen_random_uuid(),
 ip_address varchar(45) NOT NULL,
 event_time timestamptz NOT NULL,
 user_name varchar(20) NOT NULL,
-type varchar(20) NOT NULL
+type varchar(30) NOT NULL
 );
 
 create table outbox(

@@ -29,7 +29,7 @@ public class AuthEventEntity {
     private OffsetDateTime eventTime;
     @Column(name = "user_name", length = 20, nullable = false)
     private String userName;
-    @Column(name = "type", length = 20, nullable = false)
+    @Column(name = "type", length = 30, nullable = false)
     private String type;
 
     public AuthEventEntity() {
@@ -80,5 +80,16 @@ public class AuthEventEntity {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    @Override
+    public String toString() {
+        return "AuthEventEntity{" +
+                "id=" + id +
+                ", ipAddress='" + ipAddress + '\'' +
+                ", eventTime=" + eventTime +
+                ", userName='" + userName + '\'' +
+                ", type='" + type + '\'' +
+                '}';
     }
 }

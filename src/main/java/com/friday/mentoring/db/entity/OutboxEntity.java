@@ -15,7 +15,8 @@ import java.util.UUID;
 @Entity
 @Table(name = "outbox")
 public class OutboxEntity {
-
+//without initdb: alter table if exists auth_event alter column event_time set data type timestamp(6) with time zone
+//without initdb: create table outbox (id uuid not null, created_at timestamp(6) with time zone not null, event json not null, retry_count integer not null, primary key (id))
     @Id
 //    @GeneratedValue(strategy = GenerationType.UUID) todo test this and below
     @GeneratedValue
@@ -27,7 +28,7 @@ public class OutboxEntity {
 
     //    private UUID eventId;
     @Type(JsonType.class)
-    @Column(name = "event", nullable = false)
+    @Column(name = "event", nullable = false, columnDefinition = "json")
     private AuthEventDto event;
 
     public OutboxEntity() {
@@ -68,5 +69,15 @@ public class OutboxEntity {
 
     public void setEvent(AuthEventDto event) {
         this.event = event;
+    }
+
+    @Override
+    public String toString() {
+        return "OutboxEntity{" +
+                "id=" + id +
+                ", createdAt=" + createdAt +
+                ", retryCount=" + retryCount +
+                ", event=" + event +
+                '}';
     }
 }

@@ -19,10 +19,10 @@ import java.time.ZoneId;
 public class AuthEventListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthEventListener.class);
 
-    private final KafkaProducer kafkaProducer;
+    private final AuthEventService authEventService;
 
-    public AuthEventListener(KafkaProducer kafkaProducer) {
-        this.kafkaProducer = kafkaProducer;
+    public AuthEventListener(AuthEventService authEventService) {
+        this.authEventService = authEventService;
     }
 
     @EventListener
@@ -40,7 +40,7 @@ public class AuthEventListener {
 
         LOGGER.debug("Got auth event: [{}]", eventDto);
 
-        kafkaProducer.sendAuthEvent(eventDto);
+        authEventService.saveEvent(eventDto);
     }
 
 }
