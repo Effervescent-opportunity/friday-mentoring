@@ -1,5 +1,6 @@
 package com.friday.mentoring.db.entity;
 
+import com.friday.mentoring.dto.AuthEventDto;
 import jakarta.persistence.*;
 
 import java.time.OffsetDateTime;
@@ -30,6 +31,16 @@ public class AuthEventEntity {
     private String userName;
     @Column(name = "type", length = 20, nullable = false)
     private String type;
+
+    public AuthEventEntity() {
+    }
+
+    public AuthEventEntity(AuthEventDto eventDto) {
+        this.ipAddress = eventDto.ipAddress();
+        this.eventTime = eventDto.time();
+        this.userName = eventDto.userName();
+        this.type = eventDto.type();
+    }
 
     public UUID getId() {
         return id;

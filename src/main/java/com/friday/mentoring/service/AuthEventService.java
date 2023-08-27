@@ -25,11 +25,17 @@ public class AuthEventService {
     @Transactional
     public void saveEvent(AuthEventDto authEventDto) {
 
+        AuthEventEntity authEventEntity = new AuthEventEntity(authEventDto);
+        OutboxEntity outboxEntity = new OutboxEntity(authEventDto);
 
-        AuthEventEntity authEventEntity = new AuthEventEntity();
-        OutboxEntity outboxEntity = new OutboxEntity();
+//todo do in separate transaction
+        //todo read about the difference between save and saveAndFlush()
         authEventRepository.saveAndFlush(authEventEntity);
         outboxRepository.saveAndFlush(outboxEntity);
+
+//todo send to kafka here and delete from outbox OR call outbox retry service
+
+
     }
 
     //todo this here:

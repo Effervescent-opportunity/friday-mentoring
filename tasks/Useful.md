@@ -20,7 +20,8 @@ in Spring Boot 3 javax.persistence.Entity was renamed to jakarta.persistence.Ent
 `char(n)` column type - stores n characters (not bytes). If I have a string with length m<n, then остальные символы будут заполнены пробелами. Is the slowest one
 `text` column type - unlimited length
 
-
+`json` column type - stores json as is, reparse on each execution
+`jsonb` column type - stores decompiled binary format, slower to input, faster to process, supports indexing
 
 
 ## Swagger & OpenAPI

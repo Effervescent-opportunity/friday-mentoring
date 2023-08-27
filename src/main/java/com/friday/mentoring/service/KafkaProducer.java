@@ -34,38 +34,31 @@ public class KafkaProducer {
 
     //todo enable idempotence org.apache.kafka.clients.producer.ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG
 
-    public void sendAuthEvent(AuthEventDto authEvent) {
+    //todo thing for timeouts - here I have 3 seconds, there is "max.block.ms" property which could be useful
+    // https://stackoverflow.com/questions/60725906/how-to-verify-sprng-kafka-producer-has-successfully-sent-message-or-not
+
+    /**
+     * Sends event
+     *
+     * @param authEvent
+     * @return true if an event was sent, false otherwise
+     */
+    public boolean sendAuthEvent(AuthEventDto authEvent) {
         if (kafkaIsActive()) {
             LOGGER.info("Sending message [{}] to Kafka", authEvent);
-
-//            try {
-            CompletableFuture<SendResult<String, Object>> future = kafkaTemplate.send(authEventsTopic, authEvent);
-
-            SendResult<String, Object> result;
-
             try {
-                result = future.get(3, TimeUnit.SECONDS);
-                LOGGER.info("Send Result : {}", result);
-                LOGGER.info("Saving entry in db");
+                CompletableFuture<SendResult<String, Object>> future = kafkaTemplate.send(authEventsTopic, authEvent);
+                SendResult<String, Object> result = future.get(3, TimeUnit.SECONDS);
+                LOGGER.info("Send Result : {}", result);//todo wtf
                 LOGGER.info("Message was sent");
-//                    messageRepo.save(result.getProducerRecord().key().toString(),result.getProducerRecord().value().toString());
+                return true;
             } catch (Exception ex) {
-                //todo throw some checked  exception and catch in Outbox Retry Service \\or just return false
                 LOGGER.warn("Got exception when sending message to Kafka", ex);
-//                    LOGGER.error("Error publishing message ", e);
-//                    messageRepo.save(result.getProducerRecord().key().toString(),result.getProducerRecord().value().toString());
             }
-
-            //todo thing for timeouts - here I have 3 seconds, there is "max.block.ms" property which could be useful
-            // https://stackoverflow.com/questions/60725906/how-to-verify-sprng-kafka-producer-has-successfully-sent-message-or-not
-
-//                this.kafkaTemplate.send(authEventsTopic, authEvent).get(3, TimeUnit.SECONDS);
-//            } catch (Exception ex) {
-//                LOGGER.warn("Got exception when sending message to Kafka", ex);
-//            }
         } else {
             LOGGER.info("Auth event [{}] won't be sent to Kafka - Kafka is inactive", authEvent);
         }
+        return false;
     }
 
     private boolean kafkaIsActive() {
