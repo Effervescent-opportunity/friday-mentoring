@@ -7,6 +7,10 @@ type varchar(20) NOT NULL
 );
 
 create table outbox(
+id uuid PRIMARY KEY default gen_random_uuid(),
+created_at timestamptz NOT NULL,
+retry_count numeric(3) NOT NULL,
+event_id uuid,
 
 );
 

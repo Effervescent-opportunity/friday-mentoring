@@ -22,7 +22,7 @@ public class OutboxEntity {
 
     private OffsetDateTime createdAt;
 
-    private Integer retry;
+    private Integer retryCount;
 
     private
 

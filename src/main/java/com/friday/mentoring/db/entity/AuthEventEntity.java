@@ -21,10 +21,14 @@ public class AuthEventEntity {
 //    @GeneratedValue(strategy = GenerationType.UUID) todo test this and below
     @GeneratedValue
     private UUID id;
-
+    //todo test without columns without initdb script & with columns and db script & ... - just clean docker volumes & other for postgres
+    @Column(name = "ip_address", length = 45, nullable = false)
     private String ipAddress;
+    @Column(name = "event_time", nullable = false)
     private OffsetDateTime eventTime;
+    @Column(name = "user_name", length = 20, nullable = false)
     private String userName;
+    @Column(name = "type", length = 20, nullable = false)
     private String type;
 
     public UUID getId() {

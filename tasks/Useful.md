@@ -3,6 +3,9 @@
 
 in Spring Boot 3 javax.persistence.Entity was renamed to jakarta.persistence.Entity. So with all annotations from javax
 
+`spring.jpa.hibernate.ddl-auto=update` таблички будут созданы автоматически и будут меняться в соответствии с изменением модели. Для прода нужно `validation`
+`spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation=true` his entry is put just to avoid a warning message in the logs when you start the spring-boot application. This bug is from hibernate which tries to retrieve some metadata from postgresql db and failed to find that and logs as a warning. It doesn't cause any issue though
+
 ## Postgres
 ### psql commands
 `psql -d fmdb -U fmuser` connect to db with dbname fmdb, user fmuser
