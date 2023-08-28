@@ -32,7 +32,7 @@ public class OutboxRetryService {
         this.outboxRepository = outboxRepository;
     }
 
-    @Scheduled(timeUnit = TimeUnit.SECONDS, fixedDelay = 1L)
+    @Scheduled(timeUnit = TimeUnit.MINUTES, fixedDelay = 1L)
     public void retrySendingToKafka() {
         List<OutboxEntity> outboxEntities = outboxRepository.findTop10ByCreatedAtBetween(OffsetDateTime.ofInstant(Instant.now().minus(1, ChronoUnit.DAYS), ZoneId.systemDefault()),
                 OffsetDateTime.ofInstant(Instant.now().minusSeconds(2), ZoneId.systemDefault()));

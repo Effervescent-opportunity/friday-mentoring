@@ -51,7 +51,7 @@ services:
 #      - PGDATA=/data/postgres
     volumes:
       - fmdb-data:/var/lib/postgresql/data
-#      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./initdb.sql:/docker-entrypoint-initdb.d/init.sql
 # todo uncomment line above
 volumes:
   fmdb-data:

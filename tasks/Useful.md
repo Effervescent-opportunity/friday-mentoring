@@ -12,6 +12,8 @@ in Spring Boot 3 javax.persistence.Entity was renamed to jakarta.persistence.Ent
 
 `\l` get list of databases
 
+`\dt` get list of tables in public schemas
+
 `\q` quit
 
 ### DB column types
@@ -60,6 +62,8 @@ to your application’s test dependencies. This allows Mockito to mock and spy o
 
 `docker compose version` Docker compose version (I have Docker Compose version v2.20.2)
 
+`docker compose up --no-attach {container-name1 container-name2}`
+
 `docker system prune -a` - delete all images, containers and networks
 
 `docker system prune -a --volumes` - delete all images, containers, networks and volumes
@@ -78,11 +82,17 @@ to your application’s test dependencies. This allows Mockito to mock and spy o
 
 `docker logs -f {container-name}` see and follow container logs (if `-n 50` added then see only 50 lines)
 
-`docker exec -i {container-id} bash` open bash for container
+`docker logs {container-name} 2>&1|grep "idempotence"` search in log
+
+`docker inspect -f '{{.Mounts}}' {container-name}` see volumes of container (without -f ... see all info)
+
+`docker exec -i {container-name|container-id} bash` open bash for container
 
 `docker rm -v {container-name}` remove container and it's anonymous volumes
 
 `docker rmi {image id|image tag}` remove image
+
+`docker volume rm {volume name}` remove volume
 
 docker-compose
 
