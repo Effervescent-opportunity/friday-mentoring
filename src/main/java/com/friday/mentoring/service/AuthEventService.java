@@ -9,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.reactive.TransactionalOperator;
+import org.springframework.transaction.support.TransactionTemplate;
 
 /**
  * gets auth event, puts it into auth event and outbox table in one transaction
@@ -21,30 +23,40 @@ public class AuthEventService {
     private final AuthEventRepository authEventRepository;
     private final OutboxRepository outboxRepository;
 
-    public AuthEventService(AuthEventRepository authEventRepository, OutboxRepository outboxRepository) {
+    private final TransactionTemplate transactionTemplate;
+    private final KafkaProducer kafkaProducer;
+
+    public AuthEventService(AuthEventRepository authEventRepository, OutboxRepository outboxRepository,
+                            TransactionTemplate transactionTemplate, KafkaProducer kafkaProducer) {
         this.authEventRepository = authEventRepository;
         this.outboxRepository = outboxRepository;
+        this.transactionTemplate = transactionTemplate;
+        this.kafkaProducer = kafkaProducer;
     }
 
-    @Transactional
     public void saveEvent(AuthEventDto authEventDto) {
-
         AuthEventEntity authEventEntity = new AuthEventEntity(authEventDto);
         OutboxEntity outboxEntity = new OutboxEntity(authEventDto);
 
         LOGGER.info("LALALA Has authEventEntity [{}] and outboxEntity [{}]", authEventEntity, outboxEntity);
 
-//todo do in separate transaction
-        //todo read about the difference between save and saveAndFlush()
-        AuthEventEntity authEventEntity1 = authEventRepository.saveAndFlush(authEventEntity);
-        OutboxEntity outboxEntity1 = outboxRepository.saveAndFlush(outboxEntity);
+        transactionTemplate.executeWithoutResult(transactionStatus -> {
+            authEventRepository.save(authEventEntity);
+            outboxRepository.save(outboxEntity);
+        });
 
-        LOGGER.info("LALALA Has authEventEntity [{}] and outboxEntity [{}] after saving: authEventEntity1 [{}] outboxEntity1 [{}]",
-                authEventEntity, outboxEntity, authEventEntity1, outboxEntity1);
+        LOGGER.info("LALALA Has authEventEntity [{}] and outboxEntity [{}] after saving",
+                authEventEntity, outboxEntity);
 
 //todo send to kafka here and delete from outbox OR call outbox retry service
 
-
+        boolean wasSent = kafkaProducer.sendAuthEvent(authEventDto);
+        if (wasSent) {
+            LOGGER.info("LALALA outbox [{}] was sent", outboxEntity);
+                outboxRepository.delete(outboxEntity);
+        } else {
+            LOGGER.info("LALALA outbox [{}] was not sent", outboxEntity);
+        }
     }
 
     //todo this here:

@@ -38,18 +38,21 @@ public class OutboxRetryService {
                 OffsetDateTime.ofInstant(Instant.now().minusSeconds(2), ZoneId.systemDefault()));
 
 
-
         for (OutboxEntity outbox : outboxEntities) {
             //outbox.createdAt with offset Z (UTC)
             //outbox.getEvent.time() with offset 3 (Moscow)
 
             //2023-08-27T22:14:26.274+03:00  INFO 10519 --- [0.1-8443-exec-5] c.f.mentoring.service.AuthEventService   : LALALA Has authEventEntity [AuthEventEntity{id=fcb4f986-ccaa-4de8-8770-069729edef18, ipAddress='127.0.0.1', eventTime=2023-08-27T22:14:26.180573141+03:00, userName='anonymousUser', type='AUTHORIZATION_FAILURE'}] and outboxEntity [OutboxEntity{id=8bc9dda3-d794-403b-a5ee-ca1a8cf6fe6b, createdAt=2023-08-27T22:14:26.187450224+03:00, retryCount=5, event=AuthEventDto[ipAddress=127.0.0.1, time=2023-08-27T22:14:26.180573141+03:00, userName=anonymousUser, type=AUTHORIZATION_FAILURE]}] after saving: authEventEntity1 [AuthEventEntity{id=fcb4f986-ccaa-4de8-8770-069729edef18, ipAddress='127.0.0.1', eventTime=2023-08-27T22:14:26.180573141+03:00, userName='anonymousUser', type='AUTHORIZATION_FAILURE'}] outboxEntity1 [OutboxEntity{id=8bc9dda3-d794-403b-a5ee-ca1a8cf6fe6b, createdAt=2023-08-27T22:14:26.187450224+03:00, retryCount=5, event=AuthEventDto[ipAddress=127.0.0.1, time=2023-08-27T22:14:26.180573141+03:00, userName=anonymousUser, type=AUTHORIZATION_FAILURE]}]
             //2023-08-27T22:14:30.012+03:00  INFO 10519 --- [   scheduling-1] c.f.m.service.OutboxRetryService         : LALALA outbox [OutboxEntity{id=8bc9dda3-d794-403b-a5ee-ca1a8cf6fe6b, createdAt=2023-08-27T19:14:26.187450Z, retryCount=5, event=AuthEventDto[ipAddress=127.0.0.1, time=2023-08-27T22:14:26.180573141+03:00, userName=anonymousUser, type=AUTHORIZATION_FAILURE]}] was sent
-            //todo turn on debug and see what converter is used - my custom Json serializer or what?
+            //todo turn on debug and see what converter is used - my custom Json serializer or what? - no info in logs :(
             boolean wasSent = kafkaProducer.sendAuthEvent(outbox.getEvent());
             if (wasSent) {
                 LOGGER.info("LALALA outbox [{}] was sent", outbox);
-//                outboxRepository.delete(outbox);
+                outboxRepository.delete(outbox);
+            } else {
+                LOGGER.info("LALALA outbox [{}] was not sent", outbox);
+                outbox.setRetryCount(outbox.getRetryCount() - 1);
+                outboxRepository.save(outbox);
             }
         }
     }

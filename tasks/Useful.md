@@ -64,6 +64,8 @@ to your application’s test dependencies. This allows Mockito to mock and spy o
 
 `docker compose up --no-attach {container-name1 container-name2}`
 
+`docker compose up -d` start docker compose without showing logs
+
 `docker system prune -a` - delete all images, containers and networks
 
 `docker system prune -a --volumes` - delete all images, containers, networks and volumes
