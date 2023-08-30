@@ -48,7 +48,6 @@ services:
       - POSTGRES_DB=fmdb
       - POSTGRES_USER=fmuser
       - POSTGRES_PASSWORD=fmpass
-#      - PGDATA=/data/postgres
     volumes:
       - fmdb-data:/var/lib/postgresql/data
       - ./initdb.sql:/docker-entrypoint-initdb.d/init.sql
@@ -57,11 +56,3 @@ volumes:
   fmdb-data:
     driver: local
     name: "fmdb-data-volume"
-
-#why The files belonging to this database system will be owned by user "postgres".
-#fm-postgres   | This user must also own the server process.
-#      todo wtf - volumes & tune db https://habr.com/ru/articles/578744/ https://habr.com/ru/articles/490824/
-#      - PGDATA=/var/lib/postgresql/data/pgdata
-#    volumes:
-#      - ../2. Init Database:/docker-entrypoint-initdb.d
-#      - habrdb-data:/var/lib/postgresql/data

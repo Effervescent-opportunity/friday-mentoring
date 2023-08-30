@@ -18,17 +18,17 @@ public class OutboxEntity {
 //without initdb: alter table if exists auth_event alter column event_time set data type timestamp(6) with time zone
 //without initdb: create table outbox (id uuid not null, created_at timestamp(6) with time zone not null, event json not null, retry_count integer not null, primary key (id))
     @Id
-//    @GeneratedValue(strategy = GenerationType.UUID) todo test this and below
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.UUID) //todo test this and below //this works
+//    @GeneratedValue //this works good
     private UUID id;
-    @Column(name = "created_at", nullable = false)
+//    @Column(name = "created_at", nullable = false)
     private OffsetDateTime createdAt;
-    @Column(name = "retry_count", nullable = false)
+//    @Column(name = "retry_count", nullable = false)
     private Integer retryCount = 5;
 
     //    private UUID eventId;
     @Type(JsonType.class)
-    @Column(name = "event", nullable = false, columnDefinition = "json")
+//    @Column(name = "event", nullable = false, columnDefinition = "json") //without this works
     private AuthEventDto event;
 
     public OutboxEntity() {

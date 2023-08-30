@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @SpringBootTest
 @AutoConfigureMockMvc
-public class KafkaDisabledTest {
+public class KafkaDisabledTest {//todo fix
 
     @Autowired
     MockMvc mockMvc;

@@ -40,7 +40,7 @@ public class AuthEventListener {
 
         LOGGER.debug("Got auth event: [{}]", eventDto);
 
-        authEventService.saveEvent(eventDto);
+        authEventService.processEvent(eventDto);
     }
 
 }

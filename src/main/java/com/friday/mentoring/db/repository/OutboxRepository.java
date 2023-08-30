@@ -9,5 +9,5 @@ import java.util.List;
 
 public interface OutboxRepository extends JpaRepository<OutboxEntity, UUID> {
 
-    List<OutboxEntity> findTop10ByCreatedAtBetween(OffsetDateTime from, OffsetDateTime to);
+    List<OutboxEntity> findTop10ByRetryCountGreaterThanAndCreatedAtBetween(Integer minRetryCount, OffsetDateTime from, OffsetDateTime to);
 }

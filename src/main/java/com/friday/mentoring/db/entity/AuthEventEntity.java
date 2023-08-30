@@ -19,14 +19,15 @@ import java.util.UUID;
 public class AuthEventEntity {
     //String ipAddress, OffsetDateTime time, String userName, String type
     @Id
-//    @GeneratedValue(strategy = GenerationType.UUID) todo test this and below
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.UUID) //todo test this and below - this works too
+//    @GeneratedValue
     private UUID id;
     //todo test without columns without initdb script & with columns and db script & ... - just clean docker volumes & other for postgres
     //with columns & without script - works
     //with columns & with script - works and recreates columns and ruins its types
-    //todo run with columns & with script as is now
-    //todo run with columns & with script & with ddl-auto not update
+    //todo run with columns & with script as is now +
+    //todo run with columns & with script & with ddl-auto not update + works correctly
+    //todo run with script & without column annotation + works
     //2023-08-28T09:17:47.531+03:00 DEBUG 9830 --- [           main] org.hibernate.SQL                        : alter table if exists auth_event alter column event_time set data type timestamp(6) with time zone
     //Hibernate: alter table if exists auth_event alter column event_time set data type timestamp(6) with time zone
     //2023-08-28T09:17:47.534+03:00 DEBUG 9830 --- [           main] org.hibernate.SQL                        : alter table if exists auth_event alter column user_name set data type varchar(20)
@@ -36,13 +37,13 @@ public class AuthEventEntity {
     //2023-08-28T09:17:47.552+03:00 DEBUG 9830 --- [           main] org.hibernate.SQL                        : alter table if exists outbox add column event json not null
     //Hibernate: alter table if exists outbox add column event json not null
     //2023-08-28T09:17:47.554+03:00 DEBUG 9830 --- [           main] org.hibernate.SQL                        : alter table if exists outbox alter column retry_count set data type integer
-    @Column(name = "ip_address", length = 45, nullable = false)
+//    @Column(name = "ip_address", length = 45, nullable = false)
     private String ipAddress;
-    @Column(name = "event_time", nullable = false)
+//    @Column(name = "event_time", nullable = false)
     private OffsetDateTime eventTime;
-    @Column(name = "user_name", length = 30, nullable = false)
+//    @Column(name = "user_name", length = 30, nullable = false)
     private String userName;
-    @Column(name = "type", length = 30, nullable = false)
+//    @Column(name = "type", length = 30, nullable = false)
     private String type;
 
     public AuthEventEntity() {

@@ -34,7 +34,7 @@ public class OutboxRetryService {
 
     @Scheduled(timeUnit = TimeUnit.MINUTES, fixedDelay = 1L)
     public void retrySendingToKafka() {
-        List<OutboxEntity> outboxEntities = outboxRepository.findTop10ByCreatedAtBetween(OffsetDateTime.ofInstant(Instant.now().minus(1, ChronoUnit.DAYS), ZoneId.systemDefault()),
+        List<OutboxEntity> outboxEntities = outboxRepository.findTop10ByRetryCountGreaterThanAndCreatedAtBetween(0, OffsetDateTime.ofInstant(Instant.now().minus(1, ChronoUnit.DAYS), ZoneId.systemDefault()),
                 OffsetDateTime.ofInstant(Instant.now().minusSeconds(2), ZoneId.systemDefault()));
 
 
@@ -48,7 +48,7 @@ public class OutboxRetryService {
             boolean wasSent = kafkaProducer.sendAuthEvent(outbox.getEvent());
             if (wasSent) {
                 LOGGER.info("LALALA outbox [{}] was sent", outbox);
-                outboxRepository.delete(outbox);
+                outboxRepository.deleteById(outbox.getId());
             } else {
                 LOGGER.info("LALALA outbox [{}] was not sent", outbox);
                 outbox.setRetryCount(outbox.getRetryCount() - 1);
@@ -57,5 +57,5 @@ public class OutboxRetryService {
         }
     }
 
-//todo how kafka checks uniqueness& I have same messages in Kafka UI
+//todo how kafka checks uniqueness& I have same messages in Kafka UI - just don't send same messages
 }

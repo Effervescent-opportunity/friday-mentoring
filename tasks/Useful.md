@@ -14,6 +14,10 @@ in Spring Boot 3 javax.persistence.Entity was renamed to jakarta.persistence.Ent
 
 `\dt` get list of tables in public schemas
 
+`\d+` get list of relations
+
+`\d+ {table name}` get list of table columns
+
 `\q` quit
 
 ### DB column types

@@ -8,8 +8,6 @@ import com.friday.mentoring.dto.AuthEventDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.reactive.TransactionalOperator;
 import org.springframework.transaction.support.TransactionTemplate;
 
 /**
@@ -34,7 +32,7 @@ public class AuthEventService {
         this.kafkaProducer = kafkaProducer;
     }
 
-    public void saveEvent(AuthEventDto authEventDto) {
+    public void processEvent(AuthEventDto authEventDto) {
         AuthEventEntity authEventEntity = new AuthEventEntity(authEventDto);
         OutboxEntity outboxEntity = new OutboxEntity(authEventDto);
 
