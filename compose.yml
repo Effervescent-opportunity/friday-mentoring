@@ -51,7 +51,7 @@ services:
     volumes:
       - fmdb-data:/var/lib/postgresql/data
       - ./initdb.sql:/docker-entrypoint-initdb.d/init.sql
-# todo uncomment line above
+
 volumes:
   fmdb-data:
     driver: local

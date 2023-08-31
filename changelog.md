@@ -1,13 +1,6 @@
 
 ## Пятое задание
 
-- По умолчанию у Кафки гарантии доставки at least once, поэтому в конфигах только идемпотентность добавлена
-- used [Polling publisher pattern](https://microservices.io/patterns/data/polling-publisher.html)
-- initdb.sql - not flyway\liquibase, because I don't have time
-- lalala this is the thing I need [this link](https://dev.to/aleksk1ng/transactional-outbox-pattern-step-by-step-with-spring-and-kotlin-3gkd)
-- Выбрана БД Postgres, потому что с ней я работала, плюс она бесплатна и используется много где, в том числе на текущем месте работы
-- Добавлены две таблицы: auth_event и outbox, в первой хранятся все event'ы, вторая - для реализации паттерна Transactional outbox, из нее будут удаляться записи при успешной отправке в Кафку
-todo delete unnecessary
 - По умолчанию у Кафки гарантии доставки at least once, поэтому в конфигах только идемпотентность добавлена (на случай дублирования отправки, что допускается паттерном)
 - Для публикации сообщений в Кафку используется паттерн [Polling publisher](https://microservices.io/patterns/data/polling-publisher.html), по сути просто шедулер.
   Используется он, а не Transaction log tailing, потому что базонезависим

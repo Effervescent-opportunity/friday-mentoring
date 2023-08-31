@@ -39,17 +39,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
-public class KafkaDisabledTest {//todo fix
+public class KafkaDisabledTest {
 
     @Autowired
     MockMvc mockMvc;
-
     @Autowired
     AuthEventRepository authEventRepository;
-
     @Autowired
     OutboxRepository outboxRepository;
-
     @MockBean
     KafkaTemplate<String, Object> kafkaTemplate;
 
@@ -68,7 +65,6 @@ public class KafkaDisabledTest {//todo fix
                 .andExpect(status().isOk()).andDo(print());
 
         checkDatabase(AUTHENTICATION_SUCCESS_TYPE, ROOT_USERNAME, LOCAL_IP_ADDRESS, now);
-
         Mockito.verify(kafkaTemplate, never()).send(anyString(), any());
     }
 
@@ -87,8 +83,6 @@ public class KafkaDisabledTest {//todo fix
     @Test
     @WithMockUser(value = "root", roles = "ADMIN")
     void authorizationSuccessTest() throws Exception {
-        OffsetDateTime now = OffsetDateTime.now();
-
         mockMvc.perform(get("/time/current/utc")).andExpectAll(
                 status().isOk(),
                 content().contentType("application/json")

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionTemplate;
 
 /**
- * gets auth event, puts it into auth event and outbox table in one transaction
+ * Обрабатывает события аудита (сохраняет в базу, отправляет в Кафку)
  */
 @Component
 public class AuthEventService {
@@ -36,49 +36,23 @@ public class AuthEventService {
         AuthEventEntity authEventEntity = new AuthEventEntity(authEventDto);
         OutboxEntity outboxEntity = new OutboxEntity(authEventDto);
 
-        LOGGER.info("LALALA Has authEventEntity [{}] and outboxEntity [{}]", authEventEntity, outboxEntity);
-
         transactionTemplate.executeWithoutResult(transactionStatus -> {
             authEventRepository.save(authEventEntity);
             outboxRepository.save(outboxEntity);
         });
 
-        LOGGER.info("LALALA Has authEventEntity [{}] and outboxEntity [{}] after saving",
-                authEventEntity, outboxEntity);
-
-//todo send to kafka here and delete from outbox OR call outbox retry service
+        LOGGER.debug("AuthEventEntity [{}] and outboxEntity [{}] were saved", authEventEntity, outboxEntity);
 
         boolean wasSent = kafkaProducer.sendAuthEvent(authEventDto);
+
         if (wasSent) {
-            LOGGER.info("LALALA outbox [{}] was sent", outboxEntity);
-                outboxRepository.deleteById(outboxEntity.getId());
+            LOGGER.debug("OutboxEntity [{}] was sent to Kafka, it will be deleted", outboxEntity);
+            outboxRepository.deleteById(outboxEntity.getId());
         } else {
-            LOGGER.info("LALALA outbox [{}] was not sent", outboxEntity);
+            LOGGER.info("OutboxEntity [{}] was not sent to Kafka, it's retry count will be decremented", outboxEntity);
             outboxEntity.setRetryCount(outboxEntity.getRetryCount() - 1);
             outboxRepository.save(outboxEntity);
-        }//todo check
+        }
     }
-
-    //todo this here:
-
-    //    @Override
-    //    public void create(int id, String description) {
-    //        UUID outboxId = UUID.randomUUID();
-    //        String message = buildMessage(id, description);
-    //
-    //        transactionTemplate.executeWithoutResult(transactionStatus -> {
-    //            orderRepository.save(id, description);
-    //            outboxRepository.save(new OutboxEntity(outboxId, message));
-    //        });
-    //
-    //        deliveryMessageQueueService.send(message);
-    //
-    //        // it is better to execute this line asynchonically
-    //        outboxRepository.delete(outboxId);
-    //    }
-    //
-    //    private String buildMessage(int id, String description) {
-    //        // ...
-    //    }
 
 }

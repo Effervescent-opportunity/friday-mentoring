@@ -3,7 +3,7 @@ package com.friday.mentoring.util;
 /**
  * Константы для тестов
  */
-public class TestConstants {
+public final class TestConstants {
     public static final String LOCAL_IP_ADDRESS = "127.0.0.1";
     public static final String ROOT_USERNAME = "root";
     public static final String AUTHENTICATION_SUCCESS_TYPE = "AUTHENTICATION_SUCCESS";

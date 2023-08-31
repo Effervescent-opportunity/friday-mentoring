@@ -32,16 +32,10 @@ public class KafkaProducer {
         this.adminClient = adminClient;
     }
 
-    //todo enable idempotence org.apache.kafka.clients.producer.ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG
-
-    //todo thing for timeouts - here I have 3 seconds, there is "max.block.ms" property which could be useful
-    // https://stackoverflow.com/questions/60725906/how-to-verify-sprng-kafka-producer-has-successfully-sent-message-or-not
-
     /**
-     * Sends event
+     * Отправка события в Кафку
      *
-     * @param authEvent
-     * @return true if an event was sent, false otherwise
+     * @return true если событие было отправлено, иначе false
      */
     public boolean sendAuthEvent(AuthEventDto authEvent) {
         if (kafkaIsActive()) {
@@ -49,7 +43,7 @@ public class KafkaProducer {
             try {
                 CompletableFuture<SendResult<String, Object>> future = kafkaTemplate.send(authEventsTopic, authEvent);
                 SendResult<String, Object> result = future.get(3, TimeUnit.SECONDS);
-                LOGGER.info("Send Result : {}", result);//todo wtf
+                LOGGER.info("Send Result : {}", result);//todo delete
                 LOGGER.info("Message was sent");
                 return true;
             } catch (Exception ex) {

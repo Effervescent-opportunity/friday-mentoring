@@ -7,5 +7,4 @@ import java.util.UUID;
 
 public interface AuthEventRepository extends JpaRepository<AuthEventEntity, UUID> {
 
-
 }

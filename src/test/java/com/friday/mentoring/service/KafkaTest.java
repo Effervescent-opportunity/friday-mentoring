@@ -55,21 +55,15 @@ public class KafkaTest {
 
     @Value(value = "${siem.events.topic}")
     String authEventsTopic;
-
     @Autowired
     MockMvc mockMvc;
-
     @Autowired
     EmbeddedKafkaBroker embeddedKafkaBroker;
-
     @Autowired
     AuthEventRepository authEventRepository;
-
     @Autowired
     OutboxRepository outboxRepository;
-
     Consumer<String, String> consumer;
-
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
     @BeforeEach
