@@ -39,3 +39,20 @@ services:
     links:
       - kafka
       - zookeeper
+  postgres:
+    image: postgres:15.4-alpine
+    container_name: fm-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=fmdb
+      - POSTGRES_USER=fmuser
+      - POSTGRES_PASSWORD=fmpass
+    volumes:
+      - fmdb-data:/var/lib/postgresql/data
+      - ./initdb.sql:/docker-entrypoint-initdb.d/init.sql
+
+volumes:
+  fmdb-data:
+    driver: local
+    name: "fmdb-data-volume"
