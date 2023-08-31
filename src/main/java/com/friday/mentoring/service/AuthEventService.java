@@ -51,10 +51,12 @@ public class AuthEventService {
         boolean wasSent = kafkaProducer.sendAuthEvent(authEventDto);
         if (wasSent) {
             LOGGER.info("LALALA outbox [{}] was sent", outboxEntity);
-                outboxRepository.delete(outboxEntity);
+                outboxRepository.deleteById(outboxEntity.getId());
         } else {
             LOGGER.info("LALALA outbox [{}] was not sent", outboxEntity);
-        }
+            outboxEntity.setRetryCount(outboxEntity.getRetryCount() - 1);
+            outboxRepository.save(outboxEntity);
+        }//todo check
     }
 
     //todo this here:
