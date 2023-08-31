@@ -9,7 +9,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.TestSecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.testcontainers.containers.PostgreSQLContainer;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -19,10 +21,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @SpringBootTest
+@ActiveProfiles("test")
 @AutoConfigureMockMvc
 public class SecurityTest {//todo fix
     @Autowired
     MockMvc mockMvc;
+
+//    static PostgreSQLContainer<?> setupPostgreSQLContainer() {
+//        PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:15.4-alpine")
+//                .withDatabaseName("fmdb")
+//                .withUsername("fmuser")
+//                .withPassword("fmpass");
+//        postgreSQLContainer.withInitScript("initdb.sql");
+//        return postgreSQLContainer;
+//    }
 
     @AfterEach
     void tearDown() {

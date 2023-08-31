@@ -6,6 +6,8 @@ user_name varchar(30) NOT NULL,
 type varchar(30) NOT NULL
 );
 
+--Caused by: org.postgresql.util.PSQLException: ERROR: function gen_random_uuid() does not exist
+--  Hint: No function matches the given name and argument types. You might need to add explicit type casts.
 create table outbox(
 id uuid PRIMARY KEY default gen_random_uuid(),
 created_at timestamptz NOT NULL,
