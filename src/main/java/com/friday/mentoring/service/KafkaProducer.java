@@ -30,19 +30,25 @@ public class KafkaProducer {
         this.adminClient = adminClient;
     }
 
-    public void sendAuthEvent(AuthEventDto authEvent) {
+    /**
+     * Отправка события в Кафку
+     *
+     * @return true если событие было отправлено, иначе false
+     */
+    public boolean sendAuthEvent(AuthEventDto authEvent) {
         if (kafkaIsActive()) {
             LOGGER.info("Sending message [{}] to Kafka", authEvent);
-
             try {
-                this.kafkaTemplate.send(authEventsTopic, authEvent).get(3, TimeUnit.SECONDS);
+                kafkaTemplate.send(authEventsTopic, authEvent).get(3, TimeUnit.SECONDS);
                 LOGGER.info("Message was sent");
+                return true;
             } catch (Exception ex) {
                 LOGGER.warn("Got exception when sending message to Kafka", ex);
             }
         } else {
             LOGGER.info("Auth event [{}] won't be sent to Kafka - Kafka is inactive", authEvent);
         }
+        return false;
     }
 
     private boolean kafkaIsActive() {
