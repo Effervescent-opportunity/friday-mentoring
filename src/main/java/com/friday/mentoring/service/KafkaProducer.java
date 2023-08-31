@@ -7,10 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
@@ -41,9 +39,7 @@ public class KafkaProducer {
         if (kafkaIsActive()) {
             LOGGER.info("Sending message [{}] to Kafka", authEvent);
             try {
-                CompletableFuture<SendResult<String, Object>> future = kafkaTemplate.send(authEventsTopic, authEvent);
-                SendResult<String, Object> result = future.get(3, TimeUnit.SECONDS);
-                LOGGER.info("Send Result : {}", result);//todo delete
+                kafkaTemplate.send(authEventsTopic, authEvent).get(3, TimeUnit.SECONDS);
                 LOGGER.info("Message was sent");
                 return true;
             } catch (Exception ex) {

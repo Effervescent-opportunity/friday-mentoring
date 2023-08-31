@@ -116,7 +116,6 @@ public class KafkaDisabledTest {
         Mockito.verify(kafkaTemplate, never()).send(anyString(), any());
     }
 
-
     private void checkDatabase(String eventType, String userName, String ipAddress, OffsetDateTime startDate) {
         List<AuthEventEntity> authEventEntities = authEventRepository.findAll();
         assertEquals(1, authEventEntities.size());
