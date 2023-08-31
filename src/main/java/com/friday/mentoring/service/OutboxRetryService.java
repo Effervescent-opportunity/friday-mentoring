@@ -5,19 +5,17 @@ import com.friday.mentoring.db.repository.OutboxRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.scheduling.annotation.Schedules;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Resends events to Kafka and deletes sent
+ * Сервис, переотправляющий события в Кафку и удаляющий отправленные из базы
  */
 @Component
 public class OutboxRetryService {

@@ -7,7 +7,7 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 /**
- * ДТО с событиями аутентификации и авторизации для отправки в Кафку
+ * Таблица в базе с событиями аутентификации и авторизации
  *
  * @param ipAddress IPv4 адрес
  * @param time      время события

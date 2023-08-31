@@ -10,7 +10,7 @@ import java.time.ZoneId;
 import java.util.UUID;
 
 /**
- * outbox table for auth events - they will be deleted after sending
+ * Таблица в базе для событий, которые нужно отправить в Кафку
  */
 @Entity
 @Table(name = "outbox")
