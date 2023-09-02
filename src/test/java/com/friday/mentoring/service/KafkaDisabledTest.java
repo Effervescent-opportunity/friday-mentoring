@@ -1,5 +1,6 @@
 package com.friday.mentoring.service;
 
+import com.friday.mentoring.BaseIntegrationTest;
 import com.friday.mentoring.db.entity.AuthEventEntity;
 import com.friday.mentoring.db.entity.OutboxEntity;
 import com.friday.mentoring.db.repository.AuthEventRepository;
@@ -10,12 +11,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.OffsetDateTime;
@@ -36,10 +35,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Тест KafkaProducer и базы при отсутствии доступа к Кафке
  */
-@SpringBootTest
-@ActiveProfiles("test")
 @AutoConfigureMockMvc
-public class KafkaDisabledTest {
+public class KafkaDisabledTest extends BaseIntegrationTest {
 
     @Autowired
     MockMvc mockMvc;

@@ -3,6 +3,7 @@ package com.friday.mentoring.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.friday.mentoring.BaseIntegrationTest;
 import com.friday.mentoring.db.entity.AuthEventEntity;
 import com.friday.mentoring.db.repository.AuthEventRepository;
 import com.friday.mentoring.db.repository.OutboxRepository;
@@ -17,7 +18,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
@@ -25,7 +25,6 @@ import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.Duration;
@@ -47,11 +46,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Тест KafkaProducer и базы при наличии Кафки
  */
 @EmbeddedKafka(ports = {29092}, zkSessionTimeout = 3000, zkConnectionTimeout = 2000, adminTimeout = 1, partitions = 1)
-@SpringBootTest
-@ActiveProfiles("test")
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-public class KafkaTest {
+public class KafkaTest extends BaseIntegrationTest {
 
     @Value(value = "${siem.events.topic}")
     String authEventsTopic;
