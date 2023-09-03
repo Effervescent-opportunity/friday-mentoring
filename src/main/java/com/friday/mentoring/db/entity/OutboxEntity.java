@@ -1,9 +1,9 @@
 package com.friday.mentoring.db.entity;
 
 import com.friday.mentoring.dto.AuthEventDto;
-import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
@@ -28,7 +28,7 @@ public class OutboxEntity {
     /**
      * Событие аутентификации или авторизации
      */
-    @Type(JsonType.class)
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "event", nullable = false, columnDefinition = "json")
     private AuthEventDto event;
 

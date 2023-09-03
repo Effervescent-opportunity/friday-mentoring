@@ -118,7 +118,7 @@ public class KafkaDisabledTest extends BaseIntegrationTest {
         assertEquals(1, authEventEntities.size());
         AuthEventEntity authEventEntity = authEventEntities.get(0);
 
-        assertEquals(eventType, authEventEntity.getType());
+        assertEquals(eventType, authEventEntity.getEventType());
         assertEquals(ipAddress, authEventEntity.getIpAddress());
         assertEquals(userName, authEventEntity.getUserName());
         assertTrue(startDate.isBefore(authEventEntity.getEventTime()));

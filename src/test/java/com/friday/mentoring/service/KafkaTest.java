@@ -167,7 +167,7 @@ public class KafkaTest extends BaseIntegrationTest {
 
             assertEquals(ipAddress, authEventEntity.getIpAddress());
             assertEquals(userName, authEventEntity.getUserName());
-            assertEquals(authType, authEventEntity.getType());
+            assertEquals(authType, authEventEntity.getEventType());
 
             assertTrue(startDate.isBefore(authEventEntity.getEventTime()));
             assertTrue(OffsetDateTime.now().isAfter(authEventEntity.getEventTime()));
