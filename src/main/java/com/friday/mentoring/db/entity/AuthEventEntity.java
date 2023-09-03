@@ -33,8 +33,8 @@ public class AuthEventEntity {
     /**
      * Вид события
      */
-    @Column(name = "type", length = 30, nullable = false)
-    private String type;
+    @Column(name = "event_type", length = 30, nullable = false)
+    private String eventType;
 
     public AuthEventEntity() {
     }
@@ -43,7 +43,7 @@ public class AuthEventEntity {
         this.ipAddress = eventDto.ipAddress();
         this.eventTime = eventDto.time();
         this.userName = eventDto.userName();
-        this.type = eventDto.type();
+        this.eventType = eventDto.type();
     }
 
     public UUID getId() {
@@ -78,12 +78,12 @@ public class AuthEventEntity {
         this.userName = userName;
     }
 
-    public String getType() {
-        return type;
+    public String getEventType() {
+        return eventType;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setEventType(String eventType) {
+        this.eventType = eventType;
     }
 
     @Override
@@ -93,7 +93,7 @@ public class AuthEventEntity {
                 ", ipAddress='" + ipAddress + '\'' +
                 ", eventTime=" + eventTime +
                 ", userName='" + userName + '\'' +
-                ", type='" + type + '\'' +
+                ", eventType='" + eventType + '\'' +
                 '}';
     }
 }
