@@ -4,7 +4,7 @@ CREATE TABLE auth_event
     ip_address varchar(45) NOT NULL,
     event_time timestamptz NOT NULL,
     user_name  varchar(30) NOT NULL,
-    type       varchar(30) NOT NULL
+    event_type varchar(30) NOT NULL
 );
 
 create table outbox
