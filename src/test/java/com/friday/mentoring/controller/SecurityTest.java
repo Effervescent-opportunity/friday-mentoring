@@ -18,7 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @AutoConfigureMockMvc
-public class SecurityTest extends BaseIntegrationTest {
+public class SecurityTest extends BaseIntegrationTest {//todo this is integrationTest
     @Autowired
     MockMvc mockMvc;
 

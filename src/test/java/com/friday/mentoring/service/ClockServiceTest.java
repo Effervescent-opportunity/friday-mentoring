@@ -10,7 +10,7 @@ import java.time.zone.ZoneRulesException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ClockServiceTest {
+class ClockServiceTest {//todo this is test
     private final ClockService clockService = new ClockService();
 
     @Test

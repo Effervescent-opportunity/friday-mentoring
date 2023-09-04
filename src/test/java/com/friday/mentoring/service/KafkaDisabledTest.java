@@ -36,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Тест KafkaProducer и базы при отсутствии доступа к Кафке
  */
 @AutoConfigureMockMvc
-public class KafkaDisabledTest extends BaseIntegrationTest {
+public class KafkaDisabledTest extends BaseIntegrationTest {//todo this is integrationTest
 
     @Autowired
     MockMvc mockMvc;

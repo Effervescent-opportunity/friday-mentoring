@@ -48,7 +48,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @EmbeddedKafka(ports = {29092}, zkSessionTimeout = 3000, zkConnectionTimeout = 2000, adminTimeout = 1, partitions = 1)
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-public class KafkaTest extends BaseIntegrationTest {
+public class KafkaTest extends BaseIntegrationTest {//todo this is integrationTest
 
     @Value(value = "${siem.events.topic}")
     String authEventsTopic;

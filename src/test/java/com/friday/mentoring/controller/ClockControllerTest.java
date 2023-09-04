@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = ClockController.class, excludeAutoConfiguration = SecurityAutoConfiguration.class)
-class ClockControllerTest {
+class ClockControllerTest {//todo this is test? or integrationTest
     DateTimeFormatter ISO_FORMATTER = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 
     @MockBean
