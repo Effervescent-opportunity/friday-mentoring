@@ -57,37 +57,37 @@ public class KafkaDisabledTest extends BaseIntegrationTest {//todo this is integ
     public void authenticationSuccessTest() throws Exception {
         OffsetDateTime now = OffsetDateTime.now();
 
-        mockMvc.perform(post("/auth/login").contentType(MediaType.APPLICATION_JSON)
+        mockMvc.perform(MockMvcRequestBuilders.post("/auth/login").contentType(MediaType.APPLICATION_JSON)
                         .content("{\"user\": \"root\", \"password\": \"password\"}"))
-                .andExpect(status().isOk()).andDo(print());
+                .andExpect(MockMvcResultMatchers.status().isOk()).andDo(MockMvcResultHandlers.print());
 
-        checkDatabase(AUTHENTICATION_SUCCESS_TYPE, ROOT_USERNAME, LOCAL_IP_ADDRESS, now);
-        Mockito.verify(kafkaTemplate, never()).send(anyString(), any());
+        checkDatabase(TestConstants.AUTHENTICATION_SUCCESS_TYPE, TestConstants.ROOT_USERNAME, TestConstants.LOCAL_IP_ADDRESS, now);
+        Mockito.verify(kafkaTemplate, Mockito.never()).send(ArgumentMatchers.anyString(), ArgumentMatchers.any());
     }
 
     @Test
     void authenticationFailureTest() throws Exception {
         OffsetDateTime now = OffsetDateTime.now();
 
-        mockMvc.perform(post("/auth/login").contentType(MediaType.APPLICATION_JSON)
+        mockMvc.perform(MockMvcRequestBuilders.post("/auth/login").contentType(MediaType.APPLICATION_JSON)
                         .content("{\"user\": \"noRoot\", \"password\": \"password\"}"))
-                .andExpect(status().isUnauthorized()).andDo(print());
+                .andExpect(MockMvcResultMatchers.status().isUnauthorized()).andDo(MockMvcResultHandlers.print());
 
-        checkDatabase(AUTHENTICATION_FAILURE_TYPE, "noRoot", LOCAL_IP_ADDRESS, now);
-        Mockito.verify(kafkaTemplate, never()).send(anyString(), any());
+        checkDatabase(TestConstants.AUTHENTICATION_FAILURE_TYPE, "noRoot", TestConstants.LOCAL_IP_ADDRESS, now);
+        Mockito.verify(kafkaTemplate, Mockito.never()).send(ArgumentMatchers.anyString(), ArgumentMatchers.any());
     }
 
     @Test
     @WithMockUser(value = "root", roles = "ADMIN")
     void authorizationSuccessTest() throws Exception {
-        mockMvc.perform(get("/time/current/utc")).andExpectAll(
-                status().isOk(),
-                content().contentType("application/json")
-        ).andDo(print());
+        mockMvc.perform(MockMvcRequestBuilders.get("/time/current/utc")).andExpectAll(
+                MockMvcResultMatchers.status().isOk(),
+                MockMvcResultMatchers.content().contentType("application/json")
+        ).andDo(MockMvcResultHandlers.print());
 
-        assertEquals(0, authEventRepository.count());
-        assertEquals(0, outboxRepository.count());
-        Mockito.verify(kafkaTemplate, never()).send(anyString(), any());
+        Assertions.assertEquals(0, authEventRepository.count());
+        Assertions.assertEquals(0, outboxRepository.count());
+        Mockito.verify(kafkaTemplate, Mockito.never()).send(ArgumentMatchers.anyString(), ArgumentMatchers.any());
     }
 
     @Test
@@ -95,50 +95,50 @@ public class KafkaDisabledTest extends BaseIntegrationTest {//todo this is integ
     void authorizationFailureTest() throws Exception {
         OffsetDateTime now = OffsetDateTime.now();
 
-        mockMvc.perform(get("/time/current/utc"))
-                .andExpect(status().isForbidden()).andDo(print());
+        mockMvc.perform(MockMvcRequestBuilders.get("/time/current/utc"))
+                .andExpect(MockMvcResultMatchers.status().isForbidden()).andDo(MockMvcResultHandlers.print());
 
-        checkDatabase(AUTHORIZATION_FAILURE_TYPE, "noRoot", "Unknown", now);
-        Mockito.verify(kafkaTemplate, never()).send(anyString(), any());
+        checkDatabase(TestConstants.AUTHORIZATION_FAILURE_TYPE, "noRoot", "Unknown", now);
+        Mockito.verify(kafkaTemplate, Mockito.never()).send(ArgumentMatchers.anyString(), ArgumentMatchers.any());
     }
 
     @Test
     void authorizationFailureAnonymousUserTest() throws Exception {
         OffsetDateTime now = OffsetDateTime.now();
 
-        mockMvc.perform(get("/time/current/utc"))
-                .andExpect(status().isNotFound()).andDo(print());
+        mockMvc.perform(MockMvcRequestBuilders.get("/time/current/utc"))
+                .andExpect(MockMvcResultMatchers.status().isNotFound()).andDo(MockMvcResultHandlers.print());
 
-        checkDatabase(AUTHORIZATION_FAILURE_TYPE, "anonymousUser", LOCAL_IP_ADDRESS, now);
-        Mockito.verify(kafkaTemplate, never()).send(anyString(), any());
+        checkDatabase(TestConstants.AUTHORIZATION_FAILURE_TYPE, "anonymousUser", TestConstants.LOCAL_IP_ADDRESS, now);
+        Mockito.verify(kafkaTemplate, Mockito.never()).send(ArgumentMatchers.anyString(), ArgumentMatchers.any());
     }
 
     private void checkDatabase(String eventType, String userName, String ipAddress, OffsetDateTime startDate) {
         List<AuthEventEntity> authEventEntities = authEventRepository.findAll();
-        assertEquals(1, authEventEntities.size());
+        Assertions.assertEquals(1, authEventEntities.size());
         AuthEventEntity authEventEntity = authEventEntities.get(0);
 
-        assertEquals(eventType, authEventEntity.getEventType());
-        assertEquals(ipAddress, authEventEntity.getIpAddress());
-        assertEquals(userName, authEventEntity.getUserName());
-        assertTrue(startDate.isBefore(authEventEntity.getEventTime()));
-        assertTrue(OffsetDateTime.now().isAfter(authEventEntity.getEventTime()));
+        Assertions.assertEquals(eventType, authEventEntity.getEventType());
+        Assertions.assertEquals(ipAddress, authEventEntity.getIpAddress());
+        Assertions.assertEquals(userName, authEventEntity.getUserName());
+        Assertions.assertTrue(startDate.isBefore(authEventEntity.getEventTime()));
+        Assertions.assertTrue(OffsetDateTime.now().isAfter(authEventEntity.getEventTime()));
 
         List<OutboxEntity> outboxEntities = outboxRepository.findAll();
-        assertEquals(1, outboxEntities.size());
+        Assertions.assertEquals(1, outboxEntities.size());
         OutboxEntity outboxEntity = outboxEntities.get(0);
 
-        assertEquals(4, outboxEntity.getRetryCount());
-        assertTrue(startDate.isBefore(outboxEntity.getCreatedAt()));
-        assertTrue(OffsetDateTime.now().isAfter(outboxEntity.getCreatedAt()));
+        Assertions.assertEquals(4, outboxEntity.getRetryCount());
+        Assertions.assertTrue(startDate.isBefore(outboxEntity.getCreatedAt()));
+        Assertions.assertTrue(OffsetDateTime.now().isAfter(outboxEntity.getCreatedAt()));
 
         AuthEventDto authEventDto = outboxEntity.getEvent();
 
-        assertEquals(eventType, authEventDto.type());
-        assertEquals(ipAddress, authEventDto.ipAddress());
-        assertEquals(userName, authEventDto.userName());
+        Assertions.assertEquals(eventType, authEventDto.type());
+        Assertions.assertEquals(ipAddress, authEventDto.ipAddress());
+        Assertions.assertEquals(userName, authEventDto.userName());
 
-        assertTrue(startDate.isBefore(authEventDto.time()));
-        assertTrue(OffsetDateTime.now().isAfter(authEventDto.time()));
+        Assertions.assertTrue(startDate.isBefore(authEventDto.time()));
+        Assertions.assertTrue(OffsetDateTime.now().isAfter(authEventDto.time()));
     }
 }

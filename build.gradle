@@ -45,6 +45,9 @@ sourceSets {
     integrationTestSourceSet {
         compileClasspath += sourceSets.main.output
         runtimeClasspath += sourceSets.main.output
+
+        compileClasspath.println()
+//this doesn't work
     }
 }
 
@@ -56,9 +59,19 @@ configurations {
 tasks.register('integrationTest', Test) {
     description = 'Runs integration tests.'
     group = 'verification'
+
+
+
+    testClassesDirs = sourceSets.integrationTestSourceSet.output.classesDirs
+    classpath = sourceSets.integrationTestSourceSet.runtimeClasspath
+    shouldRunAfter test
+
+    useJUnitPlatform()
+
+    failFast = true
 }
 
-integrationTest.dependsOn tasks.test
+check.dependsOn integrationTest
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -71,6 +84,8 @@ dependencies {
     runtimeOnly 'org.postgresql:postgresql'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
+    integrationTestImplementation 'org.springframework.boot:spring-boot-starter-test'
+    integrationTestImplementation 'org.springframework.security:spring-security-test'
     integrationTestImplementation 'org.springframework.kafka:spring-kafka-test'
     integrationTestImplementation 'org.testcontainers:postgresql:1.19.0'
     integrationTestImplementation 'org.testcontainers:junit-jupiter:1.19.0'

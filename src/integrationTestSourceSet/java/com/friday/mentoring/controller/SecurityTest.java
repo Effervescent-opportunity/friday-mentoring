@@ -29,50 +29,50 @@ public class SecurityTest extends BaseIntegrationTest {//todo this is integratio
 
     @Test
     void successfulAuthTest() throws Exception {
-        mockMvc.perform(post("/auth/login").contentType(MediaType.APPLICATION_JSON)
+        mockMvc.perform(MockMvcRequestBuilders.post("/auth/login").contentType(MediaType.APPLICATION_JSON)
                         .content("{\"user\": \"root\", \"password\": \"password\"}"))
-                .andExpect(status().isOk()).andDo(print());
+                .andExpect(MockMvcResultMatchers.status().isOk()).andDo(MockMvcResultHandlers.print());
     }
 
     @Test
     void unSuccessfulAuthTest() throws Exception {
-        mockMvc.perform(post("/auth/login").contentType(MediaType.APPLICATION_JSON)
+        mockMvc.perform(MockMvcRequestBuilders.post("/auth/login").contentType(MediaType.APPLICATION_JSON)
                         .content("{\"user\": \"noRoot\", \"password\": \"password\"}"))
-                .andExpect(status().isUnauthorized()).andDo(print());
+                .andExpect(MockMvcResultMatchers.status().isUnauthorized()).andDo(MockMvcResultHandlers.print());
     }
 
     @Test
     @WithMockUser(value = "root", roles = "ADMIN")
     void clockSuccessfulAuthTest() throws Exception {
-        mockMvc.perform(get("/time/current/utc")).andExpectAll(
-                status().isOk(),
-                content().contentType("application/json")
-        ).andDo(print());
+        mockMvc.perform(MockMvcRequestBuilders.get("/time/current/utc")).andExpectAll(
+                MockMvcResultMatchers.status().isOk(),
+                MockMvcResultMatchers.content().contentType("application/json")
+        ).andDo(MockMvcResultHandlers.print());
 
-        mockMvc.perform(get("/time/current").param("timezone", "Europe/Paris"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/time/current").param("timezone", "Europe/Paris"))
                 .andExpectAll(
-                        status().isOk(),
-                        content().contentType("application/json")
-                ).andDo(print());
+                        MockMvcResultMatchers.status().isOk(),
+                        MockMvcResultMatchers.content().contentType("application/json")
+                ).andDo(MockMvcResultHandlers.print());
     }
 
     @Test
     void clockNoUserNotFoundTest() throws Exception {
-        mockMvc.perform(get("/time/current/utc"))
-                .andExpect(status().isNotFound()).andDo(print());
+        mockMvc.perform(MockMvcRequestBuilders.get("/time/current/utc"))
+                .andExpect(MockMvcResultMatchers.status().isNotFound()).andDo(MockMvcResultHandlers.print());
 
-        mockMvc.perform(get("/time/current").param("timezone", "Europe/Paris"))
-                .andExpect(status().isNotFound()).andDo(print());
+        mockMvc.perform(MockMvcRequestBuilders.get("/time/current").param("timezone", "Europe/Paris"))
+                .andExpect(MockMvcResultMatchers.status().isNotFound()).andDo(MockMvcResultHandlers.print());
     }
 
     @Test
     @WithMockUser(value = "noRoot")
     void clockNotRootUserForbiddenTest() throws Exception {
-        mockMvc.perform(get("/time/current/utc"))
-                .andExpect(status().isForbidden()).andDo(print());
+        mockMvc.perform(MockMvcRequestBuilders.get("/time/current/utc"))
+                .andExpect(MockMvcResultMatchers.status().isForbidden()).andDo(MockMvcResultHandlers.print());
 
-        mockMvc.perform(get("/time/current").param("timezone", "Europe/Paris"))
-                .andExpect(status().isForbidden()).andDo(print());
+        mockMvc.perform(MockMvcRequestBuilders.get("/time/current").param("timezone", "Europe/Paris"))
+                .andExpect(MockMvcResultMatchers.status().isForbidden()).andDo(MockMvcResultHandlers.print());
     }
 
 }
