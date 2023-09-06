@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'jacoco'
+//    id 'jvm-test-suite' this is unnecessary - java plugin includes this
     id 'org.springframework.boot' version '3.1.2'
     id 'io.spring.dependency-management' version '1.1.2'
 }
@@ -20,6 +21,45 @@ bootJar {
     archiveFileName = 'application.jar'
 }
 
+//dependencies {
+//    implementation 'org.springframework.boot:spring-boot-starter-web'
+//    implementation 'org.springframework.boot:spring-boot-starter-security'
+//    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+//    implementation 'org.springframework.kafka:spring-kafka'
+//    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+//    implementation 'org.flywaydb:flyway-core'
+//    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+//    runtimeOnly 'org.postgresql:postgresql'
+//    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+//    testImplementation 'org.springframework.security:spring-security-test'
+//    testImplementation 'org.springframework.kafka:spring-kafka-test'
+//    testImplementation 'org.testcontainers:postgresql:1.19.0'
+//    testImplementation 'org.testcontainers:junit-jupiter:1.19.0'
+//}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+sourceSets {
+    integrationTestSourceSet {
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+    }
+}
+
+configurations {
+    integrationTestImplementation.extendsFrom implementation//todo try testImplementation
+    integrationTestRuntimeOnly.extendsFrom runtimeOnly
+}
+
+tasks.register('integrationTest', Test) {
+    description = 'Runs integration tests.'
+    group = 'verification'
+}
+
+integrationTest.dependsOn tasks.test
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -31,12 +71,16 @@ dependencies {
     runtimeOnly 'org.postgresql:postgresql'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
-    testImplementation 'org.springframework.kafka:spring-kafka-test'
-    testImplementation 'org.testcontainers:postgresql:1.19.0'
-    testImplementation 'org.testcontainers:junit-jupiter:1.19.0'
-    testRuntimeOnly 'org.postgresql:postgresql'
+    integrationTestImplementation 'org.springframework.kafka:spring-kafka-test'
+    integrationTestImplementation 'org.testcontainers:postgresql:1.19.0'
+    integrationTestImplementation 'org.testcontainers:junit-jupiter:1.19.0'
+//    integrationTestRuntimeOnly 'org.postgresql:postgresql' this isn't needed - testRuntimeOnly включает в себя runtimeOnlyя
 }
 
-tasks.named('test') {
-    useJUnitPlatform()
-}
+//:compileJava SKIPPED           :compileJava SKIPPED
+//:processResources SKIPPED      :processResources SKIPPED
+//:classes SKIPPED               :classes SKIPPED
+//:compileTestJava SKIPPED       :compileTestJava SKIPPED
+//:processTestResources SKIPPED  :processTestResources SKIPPED
+//:testClasses SKIPPED           :testClasses SKIPPED
+//:integrationTest SKIPPED       :test SKIPPED
