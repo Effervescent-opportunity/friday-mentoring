@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'jacoco'
+//    id 'test-report-aggregation'
 //    id 'jvm-test-suite' this is unnecessary - java plugin includes this
     id 'org.springframework.boot' version '3.1.2'
     id 'io.spring.dependency-management' version '1.1.2'
@@ -39,6 +40,7 @@ bootJar {
 
 tasks.withType(Test).configureEach {
     useJUnitPlatform()
+    reports.junitXml.outputPerTestCase = true
 }
 
 sourceSets {
@@ -67,20 +69,46 @@ tasks.register('integrationTest', Test) {
         events "failed"
     }
 }
-//todo merge index.html with test results from friday-mentoring/build/reports/tests/integrationTest/index.html
+
+
+//todo может можно объединить эту и jacocoTestReport?
+//this merges 2 index.html into 1 (todo1)
+tasks.register('allTestsReport', TestReport) {
+    destinationDirectory = file("$buildDir/reports/allTests")
+//    testResults.from("$buildDir/test-results/test", "$buildDir/test-results/integrationTest")
+    testResults.from(test, integrationTest)
+
+//    reportOn("$buildDir/test-results/test", "$buildDir/test-results/integrationTest")
+
+    doFirst {
+        println "Consolidating tests in $buildDir/reports/allTests"
+        project.file("$buildDir/reports/allTests").mkdirs()
+    }
+}
+
+
+
+//todo1 merge index.html with test results from friday-mentoring/build/reports/tests/integrationTest/index.html
 //and friday-mentoring/build/reports/tests/test/index.html
 
-//todo merge integrationTest.exec and test.exec //or maybe it's okey now? I have friday-mentoring/build/reports/jacoco/test/html/index.html 
+//todo2 merge integrationTest.exec and test.exec //or maybe it's okey now? I have friday-mentoring/build/reports/jacoco/test/html/index.html
 //with correct coverage
 
-//todo make code coverage violations
+//todo3 make code coverage violations
 check.dependsOn integrationTest
+
 
 jacocoTestReport {
     dependsOn test, integrationTest
     executionData(test, integrationTest)
     reports.xml.required = true
+    reports.xml.outputType =
+
+    //this is not what I need, this is correct coverage and is done from binaries (look at todo2)
+    reports.html.destination file("${buildDir}/reports/jacoco/all")
 }
+
+
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
