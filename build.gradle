@@ -37,7 +37,7 @@ bootJar {
 //    testImplementation 'org.testcontainers:junit-jupiter:1.19.0'
 //}
 
-tasks.named('test') {
+tasks.withType(Test).configureEach {
     useJUnitPlatform()
 }
 
@@ -63,17 +63,23 @@ tasks.register('integrationTest', Test) {
 
     failFast = true
 
-    reports {
-        junitXml.required = true
-        //todo I don't have xml and html test results for int test
-        //todo in jacoco test.exec integration tests looks like main code(
+    testLogging {
+        events "failed"
     }
 }
+//todo merge index.html with test results from friday-mentoring/build/reports/tests/integrationTest/index.html
+//and friday-mentoring/build/reports/tests/test/index.html
 
+//todo merge integrationTest.exec and test.exec //or maybe it's okey now? I have friday-mentoring/build/reports/jacoco/test/html/index.html 
+//with correct coverage
+
+//todo make code coverage violations
 check.dependsOn integrationTest
 
 jacocoTestReport {
-    sourceSets
+    dependsOn test, integrationTest
+    executionData(test, integrationTest)
+    reports.xml.required = true
 }
 
 dependencies {
