@@ -48,7 +48,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @EmbeddedKafka(ports = {29092}, zkSessionTimeout = 3000, zkConnectionTimeout = 2000, adminTimeout = 1, partitions = 1)
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-public class KafkaTest extends BaseIntegrationTest {//todo this is integrationTest
+public class KafkaTest extends BaseIntegrationTest {
 
     @Value(value = "${siem.events.topic}")
     String authEventsTopic;
@@ -82,42 +82,43 @@ public class KafkaTest extends BaseIntegrationTest {//todo this is integrationTe
     public void authenticationSuccessTest() throws Exception {
         OffsetDateTime now = OffsetDateTime.now();
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/auth/login").contentType(MediaType.APPLICATION_JSON)
+        mockMvc.perform(post("/auth/login").contentType(MediaType.APPLICATION_JSON)
                         .content("{\"user\": \"root\", \"password\": \"password\"}"))
-                .andExpect(MockMvcResultMatchers.status().isOk()).andDo(MockMvcResultHandlers.print());
+                .andExpect(status().isOk()).andDo(print());
 
         ConsumerRecord<String, String> singleRecord = KafkaTestUtils.getSingleRecord(consumer, authEventsTopic);
 
-        Assertions.assertNotNull(singleRecord);
-        checkRecordedValues(singleRecord.value(), TestConstants.LOCAL_IP_ADDRESS, TestConstants.ROOT_USERNAME, TestConstants.AUTHENTICATION_SUCCESS_TYPE, now);
+//        assertNull(singleRecord); todo delete
+        assertNotNull(singleRecord);
+        checkRecordedValues(singleRecord.value(), LOCAL_IP_ADDRESS, ROOT_USERNAME, AUTHENTICATION_SUCCESS_TYPE, now);
     }
 
     @Test
     void authenticationFailureTest() throws Exception {
         OffsetDateTime now = OffsetDateTime.now();
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/auth/login").contentType(MediaType.APPLICATION_JSON)
+        mockMvc.perform(post("/auth/login").contentType(MediaType.APPLICATION_JSON)
                         .content("{\"user\": \"noRoot\", \"password\": \"password\"}"))
-                .andExpect(MockMvcResultMatchers.status().isUnauthorized()).andDo(MockMvcResultHandlers.print());
+                .andExpect(status().isUnauthorized()).andDo(print());
 
         ConsumerRecord<String, String> singleRecord = KafkaTestUtils.getSingleRecord(consumer, authEventsTopic);
 
-        Assertions.assertNotNull(singleRecord);
-        checkRecordedValues(singleRecord.value(), TestConstants.LOCAL_IP_ADDRESS, "noRoot", TestConstants.AUTHENTICATION_FAILURE_TYPE, now);
+        assertNotNull(singleRecord);
+        checkRecordedValues(singleRecord.value(), LOCAL_IP_ADDRESS, "noRoot", AUTHENTICATION_FAILURE_TYPE, now);
     }
 
     @Test
     @WithMockUser(value = "root", roles = "ADMIN")
     void authorizationSuccessTest() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/time/current/utc")).andExpectAll(
-                MockMvcResultMatchers.status().isOk(),
-                MockMvcResultMatchers.content().contentType("application/json")
-        ).andDo(MockMvcResultHandlers.print());
+        mockMvc.perform(get("/time/current/utc")).andExpectAll(
+                status().isOk(),
+                content().contentType("application/json")
+        ).andDo(print());
 
         ConsumerRecords<String, String> records = KafkaTestUtils.getRecords(consumer, Duration.ofSeconds(4));
-        Assertions.assertEquals(0, records.count());
-        Assertions.assertEquals(0, authEventRepository.count());
-        Assertions.assertEquals(0, outboxRepository.count());
+        assertEquals(0, records.count());
+        assertEquals(0, authEventRepository.count());
+        assertEquals(0, outboxRepository.count());
     }
 
     @Test
@@ -125,53 +126,53 @@ public class KafkaTest extends BaseIntegrationTest {//todo this is integrationTe
     void authorizationFailureTest() throws Exception {
         OffsetDateTime now = OffsetDateTime.now();
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/time/current/utc"))
-                .andExpect(MockMvcResultMatchers.status().isForbidden()).andDo(MockMvcResultHandlers.print());
+        mockMvc.perform(get("/time/current/utc"))
+                .andExpect(status().isForbidden()).andDo(print());
 
         ConsumerRecord<String, String> singleRecord = KafkaTestUtils.getSingleRecord(consumer, authEventsTopic);
 
-        Assertions.assertNotNull(singleRecord);
-        checkRecordedValues(singleRecord.value(), "Unknown", "noRoot", TestConstants.AUTHORIZATION_FAILURE_TYPE, now);
+        assertNotNull(singleRecord);
+        checkRecordedValues(singleRecord.value(), "Unknown", "noRoot", AUTHORIZATION_FAILURE_TYPE, now);
     }
 
     @Test
     void authorizationFailureAnonymousUserTest() throws Exception {
         OffsetDateTime now = OffsetDateTime.now();
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/time/current/utc"))
-                .andExpect(MockMvcResultMatchers.status().isNotFound()).andDo(MockMvcResultHandlers.print());
+        mockMvc.perform(get("/time/current/utc"))
+                .andExpect(status().isNotFound()).andDo(print());
 
         ConsumerRecord<String, String> singleRecord = KafkaTestUtils.getSingleRecord(consumer, authEventsTopic);
 
 
-        Assertions.assertNotNull(singleRecord);
-        checkRecordedValues(singleRecord.value(), TestConstants.LOCAL_IP_ADDRESS, "anonymousUser", TestConstants.AUTHORIZATION_FAILURE_TYPE, now);
+        assertNotNull(singleRecord);
+        checkRecordedValues(singleRecord.value(), LOCAL_IP_ADDRESS, "anonymousUser", AUTHORIZATION_FAILURE_TYPE, now);
     }
 
     private void checkRecordedValues(String valueFromKafka, String ipAddress, String userName, String authType, OffsetDateTime startDate) {
         try {
             AuthEventDto authEventDto = objectMapper.readValue(valueFromKafka, AuthEventDto.class);
 
-            Assertions.assertEquals(ipAddress, authEventDto.ipAddress());
-            Assertions.assertEquals(userName, authEventDto.userName());
-            Assertions.assertEquals(authType, authEventDto.type());
+            assertEquals(ipAddress, authEventDto.ipAddress());
+            assertEquals(userName, authEventDto.userName());
+            assertEquals(authType, authEventDto.type());
 
-            Assertions.assertTrue(startDate.isBefore(authEventDto.time()));
-            Assertions.assertTrue(OffsetDateTime.now().isAfter(authEventDto.time()));
+            assertTrue(startDate.isBefore(authEventDto.time()));
+            assertTrue(OffsetDateTime.now().isAfter(authEventDto.time()));
 
-            Assertions.assertEquals(0, outboxRepository.count());
+            assertEquals(0, outboxRepository.count());
 
             List<AuthEventEntity> authEventEntities = authEventRepository.findAll();
-            Assertions.assertEquals(1, authEventEntities.size());
+            assertEquals(1, authEventEntities.size());
             AuthEventEntity authEventEntity = authEventEntities.get(0);
 
-            Assertions.assertEquals(ipAddress, authEventEntity.getIpAddress());
-            Assertions.assertEquals(userName, authEventEntity.getUserName());
-            Assertions.assertEquals(authType, authEventEntity.getEventType());
+            assertEquals(ipAddress, authEventEntity.getIpAddress());
+            assertEquals(userName, authEventEntity.getUserName());
+            assertEquals(authType, authEventEntity.getEventType());
 
-            Assertions.assertTrue(startDate.isBefore(authEventEntity.getEventTime()));
-            Assertions.assertTrue(OffsetDateTime.now().isAfter(authEventEntity.getEventTime()));
-            Assertions.assertEquals(authEventDto.time().truncatedTo(ChronoUnit.MILLIS), authEventEntity.getEventTime().truncatedTo(ChronoUnit.MILLIS));
+            assertTrue(startDate.isBefore(authEventEntity.getEventTime()));
+            assertTrue(OffsetDateTime.now().isAfter(authEventEntity.getEventTime()));
+            assertEquals(authEventDto.time().truncatedTo(ChronoUnit.MILLIS), authEventEntity.getEventTime().truncatedTo(ChronoUnit.MILLIS));
         } catch (JsonProcessingException ex) {
             Assertions.fail("Cannot get AuthEventDto from json string", ex);
         }
