@@ -15,7 +15,6 @@ import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.UUID;
 
-import static com.friday.mentoring.util.TestConstants.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -59,7 +58,7 @@ public class OutboxRetryServiceTest {
     }
 
     private void sendToKafka(boolean wasSent) {
-        AuthEventDto authEvent = new AuthEventDto(LOCAL_IP_ADDRESS, OffsetDateTime.now(), ROOT_USERNAME, AUTHENTICATION_FAILURE_TYPE);
+        AuthEventDto authEvent = new AuthEventDto("127.0.0.1", OffsetDateTime.now(), "root", "AUTHENTICATION_FAILURE");
 
         when(outboxRepository.findTop10ByRetryCountGreaterThanAndCreatedAtBetween(anyInt(), any(OffsetDateTime.class), any(OffsetDateTime.class)))
                 .thenReturn(Collections.singletonList(new OutboxEntity(authEvent)));
