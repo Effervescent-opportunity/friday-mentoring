@@ -1,7 +1,7 @@
 package com.friday.mentoring.util;
 
 /**
- * Константы для тестов
+ * Константы для интеграционных тестов
  */
 public final class TestConstants {
     public static final String LOCAL_IP_ADDRESS = "127.0.0.1";

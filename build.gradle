@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'jacoco'
     id 'org.springframework.boot' version '3.1.2'
     id 'io.spring.dependency-management' version '1.1.2'
 }
@@ -19,6 +20,74 @@ bootJar {
     archiveFileName = 'application.jar'
 }
 
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
+    reports.junitXml.outputPerTestCase = true
+}
+
+sourceSets {
+    testInt {
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+    }
+}
+
+configurations {
+    testIntImplementation.extendsFrom implementation
+    testIntRuntimeOnly.extendsFrom runtimeOnly
+}
+
+tasks.register('integrationTest', Test) {
+    description = 'Runs integration tests.'
+    group = 'verification'
+
+    testClassesDirs = sourceSets.testInt.output.classesDirs
+    classpath = sourceSets.testInt.runtimeClasspath
+    shouldRunAfter test
+
+    failFast = true
+
+    testLogging {
+        events "failed"
+    }
+}
+
+tasks.register('allTestsReport', TestReport) {
+    description = 'Merges test run data.'
+    group = 'verification'
+
+    dependsOn test, integrationTest
+    destinationDirectory = file("$buildDir/reports/allTests")
+    testResults.from(test, integrationTest)
+}
+
+check.dependsOn integrationTest
+
+jacocoTestReport {
+    dependsOn test, integrationTest
+    executionData(test, integrationTest)
+    reports.xml.required = true
+    reports.html.destination file("${buildDir}/reports/jacoco/all")
+}
+
+jacocoTestCoverageVerification {
+    dependsOn test, integrationTest
+    executionData(test, integrationTest)
+    shouldRunAfter jacocoTestReport
+
+    violationRules {
+        rule {
+            element = 'CLASS'
+            limit {
+                counter = 'INSTRUCTION'
+                value = 'COVEREDRATIO'
+                minimum = 0.8
+            }
+            excludes = ['com.friday.mentoring.db.entity.*', 'com.friday.mentoring.Application']
+        }
+    }
+}
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -30,12 +99,9 @@ dependencies {
     runtimeOnly 'org.postgresql:postgresql'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
-    testImplementation 'org.springframework.kafka:spring-kafka-test'
-    testImplementation 'org.testcontainers:postgresql:1.19.0'
-    testImplementation 'org.testcontainers:junit-jupiter:1.19.0'
-    testRuntimeOnly 'org.postgresql:postgresql'
-}
-
-tasks.named('test') {
-    useJUnitPlatform()
+    testIntImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testIntImplementation 'org.springframework.security:spring-security-test'
+    testIntImplementation 'org.springframework.kafka:spring-kafka-test'
+    testIntImplementation 'org.testcontainers:postgresql:1.19.0'
+    testIntImplementation 'org.testcontainers:junit-jupiter:1.19.0'
 }
