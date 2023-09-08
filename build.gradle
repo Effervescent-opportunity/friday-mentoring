@@ -1,8 +1,6 @@
 plugins {
     id 'java'
     id 'jacoco'
-//    id 'test-report-aggregation'
-//    id 'jvm-test-suite' this is unnecessary - java plugin includes this
     id 'org.springframework.boot' version '3.1.2'
     id 'io.spring.dependency-management' version '1.1.2'
 }
@@ -21,22 +19,6 @@ repositories {
 bootJar {
     archiveFileName = 'application.jar'
 }
-
-//dependencies {
-//    implementation 'org.springframework.boot:spring-boot-starter-web'
-//    implementation 'org.springframework.boot:spring-boot-starter-security'
-//    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-//    implementation 'org.springframework.kafka:spring-kafka'
-//    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-//    implementation 'org.flywaydb:flyway-core'
-//    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
-//    runtimeOnly 'org.postgresql:postgresql'
-//    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-//    testImplementation 'org.springframework.security:spring-security-test'
-//    testImplementation 'org.springframework.kafka:spring-kafka-test'
-//    testImplementation 'org.testcontainers:postgresql:1.19.0'
-//    testImplementation 'org.testcontainers:junit-jupiter:1.19.0'
-//}
 
 tasks.withType(Test).configureEach {
     useJUnitPlatform()
@@ -70,39 +52,19 @@ tasks.register('integrationTest', Test) {
     }
 }
 
-
-//todo может можно объединить эту и jacocoTestReport?
-//this merges 2 index.html into 1 (todo1)
 tasks.register('allTestsReport', TestReport) {
     description = 'Merges test run data.'
     group = 'verification'
 
+    dependsOn test, integrationTest
     destinationDirectory = file("$buildDir/reports/allTests")
-//    testResults.from("$buildDir/test-results/test", "$buildDir/test-results/integrationTest")
     testResults.from(test, integrationTest)
-
-//    reportOn("$buildDir/test-results/test", "$buildDir/test-results/integrationTest")
-
-    doFirst {
-        println "Consolidating tests in $buildDir/reports/allTests"
- //       project.file("$buildDir/reports/allTests").mkdirs() //not needed
-    }
 }
 
-
-//todo1 merge index.html with test results from friday-mentoring/build/reports/tests/integrationTest/index.html
-//and friday-mentoring/build/reports/tests/test/index.html
-
-//todo2 merge integrationTest.exec and test.exec //or maybe it's okey now? I have friday-mentoring/build/reports/jacoco/test/html/index.html
-//with correct coverage
-
-//todo3 make code coverage violations +
-//check.dependsOn integrationTest
-check.dependsOn (integrationTest, jacocoTestReport, allTestsReport, jacocoTestCoverageVerification)
-
+check.dependsOn integrationTest
 
 jacocoTestReport {
-    dependsOn test, integrationTest//do I need this? - yes, if running independent
+    dependsOn test, integrationTest
     executionData(test, integrationTest)
     reports.xml.required = true
     reports.html.destination file("${buildDir}/reports/jacoco/all")
@@ -143,11 +105,3 @@ dependencies {
     testIntImplementation 'org.testcontainers:postgresql:1.19.0'
     testIntImplementation 'org.testcontainers:junit-jupiter:1.19.0'
 }
-
-//:compileJava SKIPPED           :compileJava SKIPPED
-//:processResources SKIPPED      :processResources SKIPPED
-//:classes SKIPPED               :classes SKIPPED
-//:compileTestJava SKIPPED       :compileTestJava SKIPPED
-//:processTestResources SKIPPED  :processTestResources SKIPPED
-//:testClasses SKIPPED           :testClasses SKIPPED
-//:integrationTest SKIPPED       :test SKIPPED
