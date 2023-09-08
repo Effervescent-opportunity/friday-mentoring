@@ -74,6 +74,9 @@ tasks.register('integrationTest', Test) {
 //todo может можно объединить эту и jacocoTestReport?
 //this merges 2 index.html into 1 (todo1)
 tasks.register('allTestsReport', TestReport) {
+    description = 'Merges test run data.'
+    group = 'verification'
+
     destinationDirectory = file("$buildDir/reports/allTests")
 //    testResults.from("$buildDir/test-results/test", "$buildDir/test-results/integrationTest")
     testResults.from(test, integrationTest)
@@ -82,10 +85,9 @@ tasks.register('allTestsReport', TestReport) {
 
     doFirst {
         println "Consolidating tests in $buildDir/reports/allTests"
-        project.file("$buildDir/reports/allTests").mkdirs()
+ //       project.file("$buildDir/reports/allTests").mkdirs() //not needed
     }
 }
-
 
 
 //todo1 merge index.html with test results from friday-mentoring/build/reports/tests/integrationTest/index.html
@@ -94,21 +96,35 @@ tasks.register('allTestsReport', TestReport) {
 //todo2 merge integrationTest.exec and test.exec //or maybe it's okey now? I have friday-mentoring/build/reports/jacoco/test/html/index.html
 //with correct coverage
 
-//todo3 make code coverage violations
-check.dependsOn integrationTest
+//todo3 make code coverage violations +
+//check.dependsOn integrationTest
+check.dependsOn (integrationTest, jacocoTestReport, allTestsReport, jacocoTestCoverageVerification)
 
 
 jacocoTestReport {
-    dependsOn test, integrationTest
+    dependsOn test, integrationTest//do I need this? - yes, if running independent
     executionData(test, integrationTest)
     reports.xml.required = true
-    reports.xml.outputType =
-
-    //this is not what I need, this is correct coverage and is done from binaries (look at todo2)
     reports.html.destination file("${buildDir}/reports/jacoco/all")
 }
 
+jacocoTestCoverageVerification {
+    dependsOn test, integrationTest
+    executionData(test, integrationTest)
+    shouldRunAfter jacocoTestReport
 
+    violationRules {
+        rule {
+            element = 'CLASS'
+            limit {
+                counter = 'INSTRUCTION'
+                value = 'COVEREDRATIO'
+                minimum = 0.8
+            }
+            excludes = ['com.friday.mentoring.db.entity.*', 'com.friday.mentoring.Application']
+        }
+    }
+}
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
