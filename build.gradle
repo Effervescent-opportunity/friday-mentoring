@@ -64,8 +64,9 @@ tasks.register('allTestsReport', TestReport) {
 check.dependsOn integrationTest
 
 jacocoTestReport {
-    dependsOn test, integrationTest
-    executionData(test, integrationTest)
+ //   dependsOn test, integrationTest
+ //   executionData(test, integrationTest) todo uncomment in the end
+    executionData(test)
     reports.xml.required = true
     reports.html.destination file("${buildDir}/reports/jacoco/all")
 }
