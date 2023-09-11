@@ -21,6 +21,10 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class AuthEventListenerTest {//todo why spy-mock is resetting between tests? & extract constants
 
+    //Initializes mocks annotated with Mock, so that explicit usage of MockitoAnnotations.openMocks(Object) is not necessary. Mocks are initialized before each test method.
+    // from https://www.javadoc.io/static/org.mockito/mockito-core/5.5.0/org/mockito/junit/MockitoJUnitRunner.html
+    //maybe this is an answer
+
     AuthEventService authEventService = Mockito.spy(Mockito.mock(AuthEventService.class));
 
     @InjectMocks
