@@ -55,7 +55,7 @@ public class KafkaProducer {
         try {
             adminClient.listTopics(new ListTopicsOptions()).listings().get();
             return true;
-        } catch (ExecutionException | InterruptedException ex) {
+        } catch (Exception ex) {
             LOGGER.error("Timeout while checking Kafka's availability", ex);
         }
 
