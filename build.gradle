@@ -64,11 +64,12 @@ tasks.register('allTestsReport', TestReport) {
 check.dependsOn integrationTest
 
 jacocoTestReport {
- //   dependsOn test, integrationTest
- //   executionData(test, integrationTest) todo uncomment in the end
+    dependsOn test, integrationTest
+    executionData(test, integrationTest) //todo uncomment in the end
     executionData(test)
     reports.xml.required = true
-    reports.html.destination file("${buildDir}/reports/jacoco/all")
+    reports.html.outputLocation = layout.buildDirectory.dir('reports/jacoco/all')
+//    reports.html.destination file("${buildDir}/reports/jacoco/all")
     //todo Build file '/home/effervescent/Work/repo/friday-mentoring/build.gradle': line 71
     //The Report.destination property has been deprecated. This is scheduled to be removed
     // in Gradle 9.0. Please use the outputLocation property instead.
