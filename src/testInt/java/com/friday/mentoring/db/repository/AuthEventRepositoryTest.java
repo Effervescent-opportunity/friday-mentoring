@@ -9,21 +9,39 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)//todo why it's working only with this annotation?
-class AuthEventRepositoryTest extends BaseDatabaseIntegrationTest {//todo write tests & for outbox
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)//todo why it's working only with this annotation? b
+    //because of this: By default, tests annotated with @DataJpaTest are transactional and roll back at the end of each test. They also use an embedded in-memory database (replacing any explicit or usually auto-configured DataSource). The @AutoConfigureTestDatabase annotation can be used to override these settings.
+class AuthEventRepositoryTest extends BaseDatabaseIntegrationTest {
 
     @Autowired
     AuthEventRepository authEventRepository;
 
     @Test
-    public void t1() {
-        authEventRepository.save(new AuthEventEntity(new AuthEventDto("ipAddress", OffsetDateTime.now(), "user", "type")));
+    public void save() {
+        AuthEventDto authEventDto = new AuthEventDto("ipAddress", OffsetDateTime.now(), "user", "type");
 
-        assertEquals(1, authEventRepository.count());
+        authEventRepository.save(new AuthEventEntity(authEventDto));
+
+        List<AuthEventEntity> authEventEntities = authEventRepository.findAll();
+        assertEquals(1, authEventEntities.size());
+        AuthEventEntity authEventEntity = authEventEntities.get(0);
+        assertNotNull(authEventEntity.getId());
+        assertEquals(authEventDto.ipAddress(), authEventEntity.getIpAddress());
+        assertEquals(authEventDto.time(), authEventEntity.getEventTime());
+        assertEquals(authEventDto.userName(), authEventEntity.getUserName());
+        assertEquals(authEventDto.type(), authEventEntity.getEventType());
+
+        authEventRepository.save(new AuthEventEntity(new AuthEventDto("127.0.0.1", OffsetDateTime.now(), "root", "auth")));
+
+        authEventEntities = authEventRepository.findAll();
+        assertEquals(2, authEventEntities.size());
+
+        assertTrue(authEventEntities.contains(authEventEntity));
     }
 
 }
