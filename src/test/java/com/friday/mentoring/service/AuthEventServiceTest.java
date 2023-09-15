@@ -25,19 +25,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class AuthEventServiceTest {//todo make beautiful & look at coverage
-//todo что значит оценить покрытие и реалистичность проверки таких тестов - к каким кейсам устойчивы, к каким - неустойчивы,
-    // что значит тесты неустойчивы к кейсам. входные данные изменятся и тесты не покажут ошибку? хз, мне кажется при норм написанных
-    //тестах они покроют все
-    //юнит тестами не протестировать всякие аспекты, event'ы, контексты, транзакции - сам Спринг, например. или flyway
-    //что при попытке отправить запрос не с тем паролем будет 404 (или не оно, не помню), и создастся event с неуспешной аутентификацией
-    //кажется я не настолько тупая. или это задания легкие?
-
+class AuthEventServiceTest {
 
     private static final String IP_ADDRESS = "127.0.0.1";
     private static final String USERNAME = "root";
     private static final String EVENT_TYPE = "AUTHENTICATION_SUCCESS";
-
     private static final OffsetDateTime EVENT_TIME = OffsetDateTime.now(ZoneId.systemDefault());
 
     @Spy
@@ -53,15 +45,14 @@ class AuthEventServiceTest {//todo make beautiful & look at coverage
     AuthEventService authEventService;
 
     @Test
-    public void eventWasSent() {
-        AuthEventDto authEventDto = createAuthEventDto();
+    public void eventWasSentTest() {
+        AuthEventDto eventDto = createAuthEventDto();
 
         doCallRealMethod().when(transactionTemplate).executeWithoutResult(any());
 
         doAnswer(invocation -> {
             if (invocation.getArgument(0) instanceof TransactionCallback transactionCallback) {
                 transactionCallback.doInTransaction(null);
-                System.out.println("LALALA " + transactionCallback);
             } else {
                 fail("TransactionalCallback expected");
             }
@@ -82,9 +73,8 @@ class AuthEventServiceTest {//todo make beautiful & look at coverage
 
         doAnswer(invocation -> {
             if (invocation.getArgument(0) instanceof OutboxEntity outboxEntity) {
-                System.out.println("LALALA1 " + outboxEntity);
                 assertEquals(5, outboxEntity.getRetryCount());
-                assertEquals(authEventDto, outboxEntity.getEvent());
+                assertEquals(eventDto, outboxEntity.getEvent());
                 assertTrue(EVENT_TIME.isBefore(outboxEntity.getCreatedAt()));
             } else {
                 fail("OutboxEntity expected");
@@ -94,17 +84,17 @@ class AuthEventServiceTest {//todo make beautiful & look at coverage
 
         when(kafkaProducer.sendAuthEvent(any(AuthEventDto.class))).thenReturn(true);
 
-        authEventService.processEvent(authEventDto);
+        authEventService.processEvent(eventDto);
 
         verify(authEventRepository).save(any(AuthEventEntity.class));
         verify(outboxRepository).save(any(OutboxEntity.class));
         verify(outboxRepository).deleteById(isNull());
-        verify(kafkaProducer).sendAuthEvent(authEventDto);
+        verify(kafkaProducer).sendAuthEvent(eventDto);
     }
 
     @Test
-    public void eventWasNotSent() {
-        AuthEventDto authEventDto = createAuthEventDto();
+    public void eventWasNotSentTest() {
+        AuthEventDto eventDto = createAuthEventDto();
         AtomicInteger outboxSaveCount = new AtomicInteger();
 
         doCallRealMethod().when(transactionTemplate).executeWithoutResult(any());
@@ -112,7 +102,6 @@ class AuthEventServiceTest {//todo make beautiful & look at coverage
         doAnswer(invocation -> {
             if (invocation.getArgument(0) instanceof TransactionCallback transactionCallback) {
                 transactionCallback.doInTransaction(null);
-                System.out.println("LALALA " + transactionCallback);
             } else {
                 fail("TransactionalCallback expected");
             }
@@ -133,14 +122,13 @@ class AuthEventServiceTest {//todo make beautiful & look at coverage
 
         doAnswer(invocation -> {
             if (invocation.getArgument(0) instanceof OutboxEntity outboxEntity) {
-                System.out.println("LALALA1 " + outboxEntity);
                 if (outboxSaveCount.get() == 0) {
                     assertEquals(5, outboxEntity.getRetryCount());
                     outboxSaveCount.getAndIncrement();
                 } else {
                     assertEquals(4, outboxEntity.getRetryCount());
                 }
-                assertEquals(authEventDto, outboxEntity.getEvent());
+                assertEquals(eventDto, outboxEntity.getEvent());
                 assertTrue(EVENT_TIME.isBefore(outboxEntity.getCreatedAt()));
             } else {
                 fail("OutboxEntity expected");
@@ -150,22 +138,22 @@ class AuthEventServiceTest {//todo make beautiful & look at coverage
 
         when(kafkaProducer.sendAuthEvent(any(AuthEventDto.class))).thenReturn(false);
 
-        authEventService.processEvent(authEventDto);
+        authEventService.processEvent(eventDto);
 
         verify(authEventRepository).save(any(AuthEventEntity.class));
         verify(outboxRepository, times(2)).save(any(OutboxEntity.class));
-        verify(outboxRepository, times(0)).deleteById(any(UUID.class));
-        verify(kafkaProducer).sendAuthEvent(authEventDto);
+        verify(outboxRepository, never()).deleteById(any(UUID.class));
+        verify(kafkaProducer).sendAuthEvent(eventDto);
     }
 
     @Test()
-    public void transactionError() {
-        AuthEventDto authEventDto = createAuthEventDto();
+    public void transactionErrorTest() {
+        AuthEventDto eventDto = createAuthEventDto();
 
         doCallRealMethod().when(transactionTemplate).executeWithoutResult(any());
 
         doAnswer(invocation -> {
-            if (invocation.getArgument(0) instanceof TransactionCallback transactionCallback) {
+            if (invocation.getArgument(0) instanceof TransactionCallback) {
                 throw new UnexpectedRollbackException("message");
             } else {
                 fail("TransactionalCallback expected");
@@ -173,15 +161,14 @@ class AuthEventServiceTest {//todo make beautiful & look at coverage
             return null;
         }).when(transactionTemplate).execute(any());
 
-        UnexpectedRollbackException thrown = assertThrows(UnexpectedRollbackException.class, () -> authEventService.processEvent(authEventDto));
+        UnexpectedRollbackException thrown = assertThrows(UnexpectedRollbackException.class, () -> authEventService.processEvent(eventDto));
 
         assertEquals("message", thrown.getMessage());
 
         verify(authEventRepository, never()).save(any(AuthEventEntity.class));
         verify(outboxRepository, never()).save(any(OutboxEntity.class));
         verify(outboxRepository, never()).deleteById(any(UUID.class));
-        verify(kafkaProducer, never()).sendAuthEvent(authEventDto);
-
+        verify(kafkaProducer, never()).sendAuthEvent(eventDto);
     }
 
     private AuthEventDto createAuthEventDto() {

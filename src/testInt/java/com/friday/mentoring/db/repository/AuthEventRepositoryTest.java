@@ -14,21 +14,21 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)//todo why it's working only with this annotation? b
-        //because of this: By default, tests annotated with @DataJpaTest are transactional and roll back at the end of each test. They also use an embedded in-memory database (replacing any explicit or usually auto-configured DataSource). The @AutoConfigureTestDatabase annotation can be used to override these settings.
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class AuthEventRepositoryTest extends BaseDatabaseIntegrationTest {
 
     @Autowired
     AuthEventRepository authEventRepository;
 
     @Test
-    public void save() {
+    public void saveTest() {
         AuthEventDto eventDto = new AuthEventDto("ip", OffsetDateTime.now(), "user", "type");
 
         authEventRepository.save(new AuthEventEntity(eventDto));
 
         List<AuthEventEntity> eventEntities = authEventRepository.findAll();
         assertEquals(1, eventEntities.size());
+
         AuthEventEntity eventEntity = eventEntities.get(0);
         assertNotNull(eventEntity.getId());
         assertEquals(eventDto.ipAddress(), eventEntity.getIpAddress());

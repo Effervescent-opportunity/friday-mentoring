@@ -19,19 +19,14 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-class AuthEventListenerTest {//todo why spy-mock is resetting between tests? & extract constants
-
-    //Initializes mocks annotated with Mock, so that explicit usage of MockitoAnnotations.openMocks(Object) is not necessary. Mocks are initialized before each test method.
-    // from https://www.javadoc.io/static/org.mockito/mockito-core/5.5.0/org/mockito/junit/MockitoJUnitRunner.html
-    //maybe this is an answer
+class AuthEventListenerTest {
 
     AuthEventService authEventService = Mockito.spy(Mockito.mock(AuthEventService.class));
-
     @InjectMocks
     AuthEventListener authEventListener;
 
     @Test
-    public void detailsInstanceOfWebAuthenticationDetails() {
+    public void detailsInstanceOfWebAuthenticationDetailsTest() {
         Map<String, Object> eventData = Map.of("details", new WebAuthenticationDetails("remoteAddress", "sessionId"));
         AuditApplicationEvent event = new AuditApplicationEvent("user", "type", eventData);
 
@@ -53,7 +48,7 @@ class AuthEventListenerTest {//todo why spy-mock is resetting between tests? & e
     }
 
     @Test
-    public void noDetails() {
+    public void noDetailsTest() {
         AuditApplicationEvent event = new AuditApplicationEvent("user", "type", "data");
 
         Mockito.doAnswer(invocation -> {

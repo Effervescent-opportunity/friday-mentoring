@@ -11,10 +11,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.kafka.core.KafkaTemplate;
 
 import java.time.OffsetDateTime;
-import java.util.concurrent.ExecutionException;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -28,23 +26,14 @@ class KafkaProducerTest {
     @InjectMocks
     KafkaProducer kafkaProducer;
 
-    private final AuthEventDto authEventDto = new AuthEventDto("ipAddress", OffsetDateTime.now(), "user", "type");
+    private final AuthEventDto eventDto = new AuthEventDto("ipAddress", OffsetDateTime.now(), "user", "type");
 
     @Test
-    public void kafkaDisabled() {//todo check coverage and maybe write tests on InterruptedException and unexpected Exception
-        when(adminClient.listTopics(any(ListTopicsOptions.class))).thenThrow(RuntimeException.class); //Checked exception is invalid for this method!
+    public void kafkaDisabledTest() {
+        when(adminClient.listTopics(any(ListTopicsOptions.class))).thenThrow(RuntimeException.class);
 
-        assertFalse(kafkaProducer.sendAuthEvent(authEventDto));
+        assertFalse(kafkaProducer.sendAuthEvent(eventDto));
 
         verify(kafkaTemplate, never()).send(any(), any());
     }
-
-//    @Test
-//    public void kafkaEnabled() {//todo check coverage and maybe write tests on InterruptedException and unexpected Exception
-//
-//        assertTrue(kafkaProducer.sendAuthEvent(authEventDto));
-//
-//        verify(kafkaTemplate, never()).send(any(), any());
-//    }
-
 }

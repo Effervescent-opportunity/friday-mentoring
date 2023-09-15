@@ -26,7 +26,7 @@ public class OutboxRepositoryTest extends BaseDatabaseIntegrationTest {
     OutboxRepository outboxRepository;
 
     @Test
-    public void top10Test() {
+    public void findTop10Test() {
         for (int i = 0; i < 11; i++) {
             outboxRepository.save(new OutboxEntity(new AuthEventDto("ip" + i, now(), "user", "type")));
         }
@@ -77,9 +77,7 @@ public class OutboxRepositoryTest extends BaseDatabaseIntegrationTest {
     }
 
     @Test
-    public void saveAndDeleteTest() {
-        //save and delete by id
-
+    public void saveAndDeleteByIdTest() {
         AuthEventDto eventDto = new AuthEventDto("ip", OffsetDateTime.now(), "user", "type");
 
         outboxRepository.save(new OutboxEntity(eventDto));
@@ -93,12 +91,8 @@ public class OutboxRepositoryTest extends BaseDatabaseIntegrationTest {
         assertTrue(now().isBefore(outboxEntity.getCreatedAt().plusMinutes(1L)));
         assertEquals(eventDto, outboxEntity.getEvent());
 
-//        OutboxEntity entityForDeletion = new OutboxEntity();
-//        UUID id = UUID.randomUUID();
-//        entityForDeletion.setEvent(new AuthEventDto("127.0.0.1", OffsetDateTime.now(), "root", "auth"));
-//        entityForDeletion.setId(id);
-
-
+        //org.hibernate.Session.persist(java.lang.Object)  For entities with a generated id, persist() ultimately results in generation of an identifier
+        // for the given instance. But this may happen asynchronously, when the session is flushed, depending on the identifier generation strategy.
         //todo почему спринг при сохранении затирает уже существующий адишник у сущности?!!!
         outboxRepository.save(new OutboxEntity(new AuthEventDto("127.0.0.1", OffsetDateTime.now(), "root", "auth")));
 
