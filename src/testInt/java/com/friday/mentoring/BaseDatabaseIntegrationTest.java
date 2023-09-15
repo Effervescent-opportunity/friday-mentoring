@@ -9,6 +9,9 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 
+/**
+ * Класс, обеспечивающий базу данных для тестов с помощью Test containers
+ */
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public abstract class BaseDatabaseIntegrationTest {
 

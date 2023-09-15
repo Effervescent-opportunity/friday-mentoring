@@ -91,9 +91,6 @@ public class OutboxRepositoryTest extends BaseDatabaseIntegrationTest {
         assertTrue(now().isBefore(outboxEntity.getCreatedAt().plusMinutes(1L)));
         assertEquals(eventDto, outboxEntity.getEvent());
 
-        //org.hibernate.Session.persist(java.lang.Object)  For entities with a generated id, persist() ultimately results in generation of an identifier
-        // for the given instance. But this may happen asynchronously, when the session is flushed, depending on the identifier generation strategy.
-        //todo почему спринг при сохранении затирает уже существующий адишник у сущности?!!!
         outboxRepository.save(new OutboxEntity(new AuthEventDto("127.0.0.1", OffsetDateTime.now(), "root", "auth")));
 
         outboxEntities = outboxRepository.findAll();
