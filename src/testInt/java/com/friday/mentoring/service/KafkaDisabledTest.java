@@ -1,6 +1,6 @@
 package com.friday.mentoring.service;
 
-import com.friday.mentoring.BaseIntegrationTest;
+import com.friday.mentoring.BaseDatabaseIntegrationTest;
 import com.friday.mentoring.db.entity.AuthEventEntity;
 import com.friday.mentoring.db.entity.OutboxEntity;
 import com.friday.mentoring.db.repository.AuthEventRepository;
@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -35,8 +36,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Тест KafkaProducer и базы при отсутствии доступа к Кафке
  */
+@SpringBootTest
 @AutoConfigureMockMvc
-public class KafkaDisabledTest extends BaseIntegrationTest {
+public class KafkaDisabledTest extends BaseDatabaseIntegrationTest {
 
     @Autowired
     MockMvc mockMvc;

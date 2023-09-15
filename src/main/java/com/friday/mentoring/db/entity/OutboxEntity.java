@@ -19,7 +19,7 @@ public class OutboxEntity {
     @GeneratedValue
     private UUID id;
     @Column(name = "created_at", nullable = false)
-    private OffsetDateTime createdAt;
+    private OffsetDateTime createdAt = OffsetDateTime.now(ZoneId.systemDefault());
     /**
      * Количество оставшихся попыток переотправки
      */
@@ -36,7 +36,6 @@ public class OutboxEntity {
     }
 
     public OutboxEntity(AuthEventDto eventDto) {
-        this.createdAt = OffsetDateTime.now(ZoneId.systemDefault());
         this.event = eventDto;
     }
 

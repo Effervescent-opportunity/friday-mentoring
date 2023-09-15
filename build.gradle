@@ -67,7 +67,7 @@ jacocoTestReport {
     dependsOn test, integrationTest
     executionData(test, integrationTest)
     reports.xml.required = true
-    reports.html.destination file("${buildDir}/reports/jacoco/all")
+    reports.html.outputLocation = layout.buildDirectory.dir('reports/jacoco/all')
 }
 
 jacocoTestCoverageVerification {
