@@ -21,8 +21,6 @@ class KafkaProducerTest {
 
     @Mock
     KafkaTemplate<String, Object> kafkaTemplate;
-    @Mock
-    AdminClient adminClient;
     @InjectMocks
     KafkaProducer kafkaProducer;
 
@@ -30,10 +28,15 @@ class KafkaProducerTest {
 
     @Test
     public void kafkaDisabledTest() {
-        when(adminClient.listTopics(any(ListTopicsOptions.class))).thenThrow(RuntimeException.class);
+        when(kafkaTemplate.send(anyString(), any(AuthEventDto.class))).thenThrow(new RuntimeException());
 
         assertFalse(kafkaProducer.sendAuthEvent(eventDto));
 
         verify(kafkaTemplate, never()).send(any(), any());
+    }
+
+    @Test
+    public void kafkaEnabledTest() {
+//todo this https://stackoverflow.com/questions/57475464/how-to-mock-result-from-kafkatemplate
     }
 }

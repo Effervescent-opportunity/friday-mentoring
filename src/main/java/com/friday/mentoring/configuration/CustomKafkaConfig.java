@@ -29,13 +29,4 @@ public class CustomKafkaConfig {
         return new KafkaAdmin.NewTopics(TopicBuilder.name(authEventsTopic).build());
     }
 
-    @Bean
-    public AdminClient adminClient() {
-        Map<String, Object> configs = new HashMap<>();
-        configs.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-        configs.put(AdminClientConfig.REQUEST_TIMEOUT_MS_CONFIG, 1000);
-        configs.put(AdminClientConfig.DEFAULT_API_TIMEOUT_MS_CONFIG, 1000);
-        return AdminClient.create(configs);
-    }
-
 }
