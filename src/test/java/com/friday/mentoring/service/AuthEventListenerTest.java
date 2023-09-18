@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.actuate.audit.listener.AuditApplicationEvent;
@@ -21,7 +22,9 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class AuthEventListenerTest {
 
-    AuthEventService authEventService = Mockito.spy(Mockito.mock(AuthEventService.class));
+    @Mock
+    AuthEventService authEventService;
+
     @InjectMocks
     AuthEventListener authEventListener;
 
@@ -49,7 +52,7 @@ class AuthEventListenerTest {
 
     @Test
     public void noDetailsTest() {
-        AuditApplicationEvent event = new AuditApplicationEvent("user", "type", "data");
+        AuditApplicationEvent event = new AuditApplicationEvent("user", "type");
 
         Mockito.doAnswer(invocation -> {
             if (invocation.getArgument(0) instanceof AuthEventDto authEventDto) {
