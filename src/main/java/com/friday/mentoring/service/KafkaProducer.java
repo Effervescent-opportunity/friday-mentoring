@@ -22,7 +22,7 @@ public class KafkaProducer {
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
     public KafkaProducer(KafkaTemplate<String, Object> kafkaTemplate) {
-        this.kafkaTemplate = kafkaTemplate;//но чем AdminClient не угодил?((((//todo del comment + del KafkaDisabledTest and rewrite KafkaProducerTest
+        this.kafkaTemplate = kafkaTemplate;
     }
 
     /**
@@ -31,10 +31,10 @@ public class KafkaProducer {
      * @return true если событие было отправлено, иначе false
      */
     public boolean sendAuthEvent(AuthEventDto authEvent) {
-        LOGGER.info("Sending message [{}] to Kafka", authEvent);
+        LOGGER.debug("Sending message [{}] to Kafka", authEvent);
         try {
             kafkaTemplate.send(authEventsTopic, authEvent).get(3, TimeUnit.SECONDS);
-            LOGGER.info("Message was sent");
+            LOGGER.debug("Message was sent");
             return true;
         } catch (Exception ex) {
             LOGGER.warn("Got exception when sending message to Kafka", ex);
