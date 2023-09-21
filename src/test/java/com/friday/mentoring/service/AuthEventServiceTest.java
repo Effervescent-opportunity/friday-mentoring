@@ -35,9 +35,6 @@ class AuthEventServiceTest {
     @Mock
     KafkaProducer kafkaProducer;
 
-    //no reset - MockitoExtension does ot for us - https://www.javadoc.io/static/org.mockito/mockito-junit-jupiter/5.3.1/org/mockito/junit/jupiter/MockitoExtension.html
-    //"Mocks are initialized before each test method." in MockitoJUnitRunner
-
     @InjectMocks
     AuthEventService authEventService;
 
@@ -56,7 +53,7 @@ class AuthEventServiceTest {
     }
 
     @Test
-    public void eventWasNotSentTest() {//he deleted same things from eventWasSent test because they are checked here//todo del comment
+    public void eventWasNotSentTest() {
         AuthEventDto eventDto = createAuthEventDto();
         AtomicInteger outboxSaveCount = new AtomicInteger();
 

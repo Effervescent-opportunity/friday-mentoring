@@ -41,12 +41,12 @@ class KafkaProducerTest {
     public void kafkaEnabledTest() {
         CompletableFuture<SendResult<String, Object>> future = new CompletableFuture<>();
         when(kafkaTemplate.send(any(), any(AuthEventDto.class))).thenReturn(future);
+
         future.complete(new SendResult<>(new ProducerRecord<>("topic", "success"),
                 new RecordMetadata(new TopicPartition("topic", 1), 1, 2, 3, 4, 5)));
 
         assertTrue(kafkaProducer.sendAuthEvent(eventDto));
 
         verify(kafkaTemplate).send(any(), eq(eventDto));
-//todo this https://stackoverflow.com/questions/57475464/how-to-mock-result-from-kafkatemplate
     }
 }
