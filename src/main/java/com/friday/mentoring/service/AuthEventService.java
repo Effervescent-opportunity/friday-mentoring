@@ -8,7 +8,7 @@ import com.friday.mentoring.dto.AuthEventDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Обрабатывает события аудита (сохраняет в базу, отправляет в Кафку)
@@ -20,32 +20,26 @@ public class AuthEventService {
 
     private final AuthEventRepository authEventRepository;
     private final OutboxRepository outboxRepository;
-
-    private final TransactionTemplate transactionTemplate;
     private final KafkaProducer kafkaProducer;
 
     public AuthEventService(AuthEventRepository authEventRepository, OutboxRepository outboxRepository,
-                            TransactionTemplate transactionTemplate, KafkaProducer kafkaProducer) {
+                            KafkaProducer kafkaProducer) {
         this.authEventRepository = authEventRepository;
         this.outboxRepository = outboxRepository;
-        this.transactionTemplate = transactionTemplate;
         this.kafkaProducer = kafkaProducer;
     }
 
+    @Transactional
     public void processEvent(AuthEventDto authEventDto) {
         AuthEventEntity authEventEntity = new AuthEventEntity(authEventDto);
         OutboxEntity outboxEntity = new OutboxEntity(authEventDto);
 
-        transactionTemplate.executeWithoutResult(transactionStatus -> {
-            authEventRepository.save(authEventEntity);
-            outboxRepository.save(outboxEntity);
-        });
+        authEventRepository.save(authEventEntity);
+        outboxRepository.save(outboxEntity);
 
         LOGGER.debug("AuthEventEntity [{}] and outboxEntity [{}] were saved", authEventEntity, outboxEntity);
 
-        boolean wasSent = kafkaProducer.sendAuthEvent(authEventDto);
-
-        if (wasSent) {
+        if (kafkaProducer.sendAuthEvent(authEventDto)) {
             LOGGER.debug("OutboxEntity [{}] was sent to Kafka, it will be deleted", outboxEntity);
             outboxRepository.deleteById(outboxEntity.getId());
         } else {
