@@ -1,4 +1,16 @@
 
+## Восьмое задание
+
+todo:
+- delete outbox and add column to auth events - not renaming auth event - we're integrating with SIEM (Security Information and Event Management), not the SIEM
+- extract interfaces (read task again & read links)
+- make a lot of dto? - lower level doesn't know about the level above + строгая типизация (как на англ?)
+- rename packages
+- make it work
+- fix tests if still not
+
+- 
+
 ## Седьмое задание
 
 - Убрана проверка доступности Kafka перед отправкой, убрано сохранение сущностей в отдельной транзакции, потому что сказали, что это перебор
