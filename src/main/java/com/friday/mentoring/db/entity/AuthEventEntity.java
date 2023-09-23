@@ -35,6 +35,11 @@ public class AuthEventEntity {
      */
     @Column(name = "event_type", length = 30, nullable = false)
     private String eventType;
+    /**
+     * Было ли отправлено событие в SIEM
+     */
+    @Column(name = "was_sent", nullable = false)
+    private boolean wasSent;
 
     public AuthEventEntity() {
     }
@@ -86,6 +91,14 @@ public class AuthEventEntity {
         this.eventType = eventType;
     }
 
+    public boolean wasSent() {
+        return wasSent;
+    }
+
+    public void setWasSent(boolean wasSent) {
+        this.wasSent = wasSent;
+    }
+
     @Override
     public String toString() {
         return "AuthEventEntity{" +
@@ -94,6 +107,7 @@ public class AuthEventEntity {
                 ", eventTime=" + eventTime +
                 ", userName='" + userName + '\'' +
                 ", eventType='" + eventType + '\'' +
+                ", wasSent=" + wasSent +
                 '}';
     }
 }

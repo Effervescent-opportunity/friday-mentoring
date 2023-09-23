@@ -21,14 +21,14 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class OutboxRetryServiceTest {
+public class SiemSenderServiceTest {
 
     @Mock
     private KafkaProducer kafkaProducer;
     @Mock
     private OutboxRepository outboxRepository;
     @InjectMocks
-    private OutboxRetryService outboxRetryService;
+    private SiemSenderService siemSenderService;
 
     @AfterEach
     void tearDown() {
@@ -40,7 +40,7 @@ public class OutboxRetryServiceTest {
         when(outboxRepository.findTop10ByRetryCountGreaterThanAndCreatedAtBetween(anyInt(), any(OffsetDateTime.class), any(OffsetDateTime.class)))
                 .thenReturn(Collections.emptyList());
 
-        outboxRetryService.retrySendingToKafka();
+        siemSenderService.retrySendingToKafka();
 
         verify(kafkaProducer, never()).sendAuthEvent(any(AuthEventDto.class));
         verify(outboxRepository, never()).deleteById(any(UUID.class));
@@ -71,7 +71,7 @@ public class OutboxRetryServiceTest {
             return null;
         }).when(outboxRepository).save(any(OutboxEntity.class));
 
-        outboxRetryService.retrySendingToKafka();
+        siemSenderService.retrySendingToKafka();
 
         verify(kafkaProducer, times(1)).sendAuthEvent(authEvent);
         verify(outboxRepository, times(wasSent ? 1 : 0)).deleteById(any());
