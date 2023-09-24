@@ -18,14 +18,14 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Сервис, переотправляющий события в Кафку и удаляющий отправленные из базы
+ * Сервис, переотправляющий события в siem и удаляющий отправленные из базы
  */
 @Component
 public class SiemSenderService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SiemSenderService.class);
 
-    private final KafkaProducer kafkaProducer;
+    private final KafkaProducer kafkaProducer;//todo use interface and send wherever
     private final AuthEventRepository authEventRepository;
 
     public SiemSenderService(KafkaProducer kafkaProducer, AuthEventRepository authEventRepository) {
