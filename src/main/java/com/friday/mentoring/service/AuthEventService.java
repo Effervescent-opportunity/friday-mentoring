@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Обрабатывает события аудита (сохраняет в базу, отправляет в Кафку)
  */
 @Component
-public class AuthEventService {
+public class AuthEventService {//todo del - it's unneeded
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthEventService.class);
 

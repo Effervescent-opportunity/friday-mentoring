@@ -5,6 +5,8 @@ import com.friday.mentoring.db.entity.OutboxEntity;
 import com.friday.mentoring.db.repository.AuthEventRepository;
 import com.friday.mentoring.db.repository.OutboxRepository;
 import com.friday.mentoring.dto.AuthEventDto;
+import com.friday.mentoring.event.repository.AuthEventSaver;
+import com.friday.mentoring.siem.integration.SiemSender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -18,18 +20,19 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Сервис, переотправляющий события в siem и удаляющий отправленные из базы
+ * Сервис, отправляющий события в siem
  */
 @Component
 public class SiemSenderService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SiemSenderService.class);
 
-    private final KafkaProducer kafkaProducer;//todo use interface and send wherever
+    private final SiemSender siemSender;
+    private final AuthEventSaver authEventSaver;
     private final AuthEventRepository authEventRepository;
 
-    public SiemSenderService(KafkaProducer kafkaProducer, AuthEventRepository authEventRepository) {
-        this.kafkaProducer = kafkaProducer;
+    public SiemSenderService(SiemSender siemSender, AuthEventRepository authEventRepository) {
+        this.siemSender = siemSender;
         this.authEventRepository = authEventRepository;
     }
 
@@ -38,12 +41,11 @@ public class SiemSenderService {
         List<AuthEventEntity> authEventEntities = authEventRepository.findAllByWasSentFalse();
 
         for (AuthEventEntity authEventEntity : authEventEntities) {
-            if (kafkaProducer.sendAuthEvent(
-                    new AuthEventDto(authEventEntity.getIpAddress(), authEventEntity.getEventTime(),
-                            authEventEntity.getUserName(), authEventEntity.getEventType()))) {//todo make beautiful
+            if (siemSender.send(authEventEntity.getIpAddress(), authEventEntity.getEventTime(),
+                            authEventEntity.getUserName(), authEventEntity.getEventType()))) {//todo enum!
                 //entities should know nothing about dtos
-                authEventRepository.setSuccessSentStatus(authEventEntity.getId());
-                LOGGER.debug("AuthEventEntity [{}] was sent to Kafka", authEventEntity);
+                authEventSaver.setSuccessStatus(authEventEntity.getId());
+                LOGGER.debug("AuthEventEntity [{}] was sent to Siem", authEventEntity);
             }
         }
     }

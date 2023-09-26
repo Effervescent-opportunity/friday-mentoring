@@ -11,7 +11,7 @@ import java.util.UUID;
  */
 @Entity
 @Table(name = "auth_event")
-public class AuthEventEntity {
+public class AuthEventEntity {//todo can I have package private entities?
     @Id
     @GeneratedValue
     private UUID id;
@@ -42,6 +42,13 @@ public class AuthEventEntity {
     private boolean wasSent;
 
     public AuthEventEntity() {
+    }
+
+    public AuthEventEntity(String ipAddress, OffsetDateTime eventTime, String userName, String eventType) {
+        this.ipAddress = ipAddress;
+        this.eventTime = eventTime;
+        this.userName = userName;
+        this.eventType = eventType;
     }
 
     public AuthEventEntity(AuthEventDto eventDto) {
