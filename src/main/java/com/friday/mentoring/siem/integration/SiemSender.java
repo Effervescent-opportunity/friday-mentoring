@@ -11,7 +11,7 @@ public interface SiemSender {//todo rename if I have a good idea
     boolean send(String ipAddress, OffsetDateTime time, String userName, SiemEventType eventType);
 
     enum SiemEventType {//sorry I love all 3 of them
-        //todo ask, can I leave all 3 (task4)
+        //todo ask, can I leave all 3 (task4) - seems like no, because in task I had 2
         // > С помощью Spring Kafka нужно реализовать отправку событий:        //об успешном входе;        //о неуспешном входе.
         AUTHENTICATION_SUCCESS,
         AUTHENTICATION_FAILURE,

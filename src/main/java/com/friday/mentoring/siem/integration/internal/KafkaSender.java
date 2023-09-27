@@ -1,5 +1,6 @@
-package com.friday.mentoring.siem.integration;
+package com.friday.mentoring.siem.integration.internal;
 
+import com.friday.mentoring.siem.integration.SiemSender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;

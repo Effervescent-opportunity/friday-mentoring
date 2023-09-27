@@ -1,6 +1,5 @@
-package com.friday.mentoring.db.entity;
+package com.friday.mentoring.event.repository.internal;
 
-import com.friday.mentoring.dto.AuthEventDto;
 import jakarta.persistence.*;
 
 import java.time.OffsetDateTime;
@@ -11,7 +10,7 @@ import java.util.UUID;
  */
 @Entity
 @Table(name = "auth_event")
-public class AuthEventEntity {//todo can I have package private entities?//yes
+public class AuthEventEntity {
     @Id
     @GeneratedValue
     private UUID id;
@@ -49,13 +48,6 @@ public class AuthEventEntity {//todo can I have package private entities?//yes
         this.eventTime = eventTime;
         this.userName = userName;
         this.eventType = eventType;
-    }
-
-    public AuthEventEntity(AuthEventDto eventDto) {
-        this.ipAddress = eventDto.ipAddress();
-        this.eventTime = eventDto.time();
-        this.userName = eventDto.userName();
-        this.eventType = eventDto.type();
     }
 
     public UUID getId() {

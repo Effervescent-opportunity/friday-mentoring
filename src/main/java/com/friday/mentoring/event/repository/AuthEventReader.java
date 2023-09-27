@@ -1,6 +1,6 @@
 package com.friday.mentoring.event.repository;
 
-import com.friday.mentoring.db.entity.AuthEventEntity;
+import com.friday.mentoring.event.repository.internal.AuthEventEntity;
 
 import java.util.stream.Stream;
 

@@ -1,7 +1,8 @@
-package com.friday.mentoring.event.repository;
+package com.friday.mentoring.event.repository.internal;
 
-import com.friday.mentoring.db.entity.AuthEventEntity;
-import com.friday.mentoring.db.repository.AuthEventRepository;
+import com.friday.mentoring.event.AuthEventType;
+import com.friday.mentoring.event.repository.AuthEventReader;
+import com.friday.mentoring.event.repository.AuthEventSaver;
 import org.springframework.stereotype.Component;
 
 import java.time.OffsetDateTime;

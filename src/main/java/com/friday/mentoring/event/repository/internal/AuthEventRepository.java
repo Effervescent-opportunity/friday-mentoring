@@ -1,6 +1,6 @@
-package com.friday.mentoring.db.repository;
+package com.friday.mentoring.event.repository.internal;
 
-import com.friday.mentoring.db.entity.AuthEventEntity;
+import com.friday.mentoring.event.repository.internal.AuthEventEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -10,7 +10,7 @@ import java.util.UUID;
 import java.util.stream.Stream;
 
 public interface AuthEventRepository extends JpaRepository<AuthEventEntity, UUID> {
-//todo rename
+//todo rename method
     @Query(value = "SELECT a FROM AuthEvent a WHERE a.wasSent = false")
     Stream<AuthEventEntity> getEventsForSending();//todo how Stream works?
 
