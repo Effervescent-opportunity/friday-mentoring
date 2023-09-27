@@ -10,7 +10,7 @@ import java.util.UUID;
 import java.util.stream.Stream;
 
 public interface AuthEventRepository extends JpaRepository<AuthEventEntity, UUID> {
-
+//todo rename
     @Query(value = "SELECT a FROM AuthEvent a WHERE a.wasSent = false")
     Stream<AuthEventEntity> getEventsForSending();//todo how Stream works?
 

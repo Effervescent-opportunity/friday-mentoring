@@ -11,7 +11,7 @@ import java.util.UUID;
  */
 @Entity
 @Table(name = "auth_event")
-public class AuthEventEntity {//todo can I have package private entities?
+public class AuthEventEntity {//todo can I have package private entities?//yes
     @Id
     @GeneratedValue
     private UUID id;

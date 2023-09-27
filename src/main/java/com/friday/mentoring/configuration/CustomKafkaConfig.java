@@ -10,7 +10,7 @@ import org.springframework.kafka.core.KafkaAdmin;
  * Бины для настройки Кафки
  */
 @Configuration
-public class CustomKafkaConfig {
+public class CustomKafkaConfig {//todo make package private and move to siem.integration.internal
 
     @Value(value = "${siem.events.topic}")
     private String authEventsTopic;

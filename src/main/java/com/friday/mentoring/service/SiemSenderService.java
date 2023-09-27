@@ -5,6 +5,7 @@ import com.friday.mentoring.db.entity.OutboxEntity;
 import com.friday.mentoring.db.repository.AuthEventRepository;
 import com.friday.mentoring.db.repository.OutboxRepository;
 import com.friday.mentoring.dto.AuthEventDto;
+import com.friday.mentoring.event.repository.AuthEventReader;
 import com.friday.mentoring.event.repository.AuthEventSaver;
 import com.friday.mentoring.siem.integration.SiemSender;
 import org.slf4j.Logger;
@@ -29,13 +30,15 @@ public class SiemSenderService {
 
     private final SiemSender siemSender;
     private final AuthEventSaver authEventSaver;
-    private final AuthEventRepository authEventRepository;
+    private final AuthEventReader authEventReader;
 
-    public SiemSenderService(SiemSender siemSender, AuthEventRepository authEventRepository) {
+    public SiemSenderService(SiemSender siemSender, AuthEventSaver authEventSaver, AuthEventReader authEventReader) {
         this.siemSender = siemSender;
-        this.authEventRepository = authEventRepository;
+        this.authEventSaver = authEventSaver;
+        this.authEventReader = authEventReader;
     }
-
+//хаха у меня уже правильно сделано fixedDelay - 1 минута между окончанием прошлого и началом следующего запуска, можно не париться про
+    //размер стрима
     @Scheduled(timeUnit = TimeUnit.MINUTES, fixedDelay = 1L)
     public void retrySendingToKafka() {
         List<AuthEventEntity> authEventEntities = authEventRepository.findAllByWasSentFalse();
