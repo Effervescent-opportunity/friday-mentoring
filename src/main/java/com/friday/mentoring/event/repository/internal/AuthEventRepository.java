@@ -9,14 +9,14 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-public interface AuthEventRepository extends JpaRepository<AuthEventEntity, UUID> {
+interface AuthEventRepository extends JpaRepository<AuthEventEntity, UUID> {
 //todo rename method
-    @Query(value = "SELECT a FROM AuthEvent a WHERE a.wasSent = false")
+    @Query(value = "SELECT a FROM AuthEventEntity a WHERE a.wasSent = false")
     Stream<AuthEventEntity> getEventsForSending();//todo how Stream works?
 
     List<AuthEventEntity> findAllByWasSentFalse();
 
     @Modifying
-    @Query(value = "UPDATE AuthEvent a SET a.wasSent = true WHERE a.id = ?1")
+    @Query(value = "UPDATE AuthEventEntity a SET a.wasSent = true WHERE a.id = ?1")
     void setSuccessSentStatus(UUID id);//todo rename method & maybe rename field (send_status?)
 }

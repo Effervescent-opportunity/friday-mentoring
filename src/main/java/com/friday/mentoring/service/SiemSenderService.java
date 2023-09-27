@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
@@ -29,15 +30,14 @@ public class SiemSenderService {
         this.authEventReader = authEventReader;
     }
 
-    //хаха у меня уже правильно сделано fixedDelay - 1 минута между окончанием прошлого и началом следующего запуска, можно не париться про
-    //размер стрима
+    @Transactional
     @Scheduled(timeUnit = TimeUnit.MINUTES, fixedDelay = 1L)
     public void sendToSiem() {
         try (Stream<AuthEventEntity> stream = authEventReader.getNotSentEvents()) {
             stream.forEach(authEventEntity -> {
                 if (siemSender.send(authEventEntity.getIpAddress(), authEventEntity.getEventTime(),
-                        //todo correct enum
-                        authEventEntity.getUserName(), SiemSender.SiemEventType.valueOf(authEventEntity.getEventType()))) {
+                        authEventEntity.getUserName(), authEventEntity.getEventType().equals("AUTHENTICATION_SUCCESS")
+                                ? SiemSender.SiemEventType.AUTH_SUCCESS : SiemSender.SiemEventType.AUTH_FAILURE)) {//todo correct enum
                     authEventSaver.setSuccessStatus(authEventEntity.getId());
                 }
             });

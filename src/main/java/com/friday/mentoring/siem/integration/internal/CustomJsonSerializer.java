@@ -1,4 +1,4 @@
-package com.friday.mentoring.configuration;
+package com.friday.mentoring.siem.integration.internal;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -8,7 +8,7 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 /**
  * Сериализатор для сообщений, отправляющихся в Кафку - сериализует даты в строку, а не в массив, как стандартный Кафковский
  */
-public class CustomJsonSerializer extends JsonSerializer<Object> {
+public class CustomJsonSerializer extends JsonSerializer<Object> {//it has to be public
 
     public CustomJsonSerializer() {
         super(customizedObjectMapper());

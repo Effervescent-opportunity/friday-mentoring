@@ -10,11 +10,11 @@ import java.util.UUID;
 import java.util.stream.Stream;
 
 @Component
-class AuthEventRepositoryImpl implements AuthEventSaver, AuthEventReader {//todo rename - this is very awful
+class AuthEventEntityRepositoryImpl implements AuthEventSaver, AuthEventReader {//todo rename - this is very awful
 
     private final AuthEventRepository authEventRepository;
 
-    public AuthEventRepositoryImpl(AuthEventRepository authEventRepository) {
+    public AuthEventEntityRepositoryImpl(AuthEventRepository authEventRepository) {
         this.authEventRepository = authEventRepository;
     }
 
