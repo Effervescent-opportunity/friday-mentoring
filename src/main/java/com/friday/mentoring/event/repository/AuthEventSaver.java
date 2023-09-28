@@ -8,6 +8,6 @@ import java.util.UUID;
 public interface AuthEventSaver {//todo rename - this is awful
     void save(String ipAddress, OffsetDateTime time, String userName, AuthEventType type);
 
-    void setSuccessStatus(UUID id);//todo isn't it too much - id is inner thing
+    void setSuccessStatus(UUID id);
 
 }

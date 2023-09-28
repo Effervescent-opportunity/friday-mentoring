@@ -1,5 +1,6 @@
 package com.friday.mentoring.siem.integration.internal;
 
+import com.friday.mentoring.siem.integration.SiemEventType;
 import com.friday.mentoring.siem.integration.SiemSender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,16 +13,6 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 class KafkaSender implements SiemSender {
-/*
-todo fix time - maybe it's because earlier I had events from jsonb from db and now just from db where they are stored in UTC
-now I have headers: {
-	"__TypeId__": "com.friday.mentoring.siem.integration.internal.KafkaSender$AuthEventDto"
-} and time "time": "2023-09-27T20:00:24.697264Z",
-earlier:{
-	"__TypeId__": "com.friday.mentoring.dto.AuthEventDto"
-}
-and time was "time": "2023-09-21T22:44:38.625556507+03:00",
- */
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaSender.class);
 
     @Value(value = "${siem.events.topic}")

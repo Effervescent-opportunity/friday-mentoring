@@ -8,7 +8,7 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 /**
  * Сериализатор для сообщений, отправляющихся в Кафку - сериализует даты в строку, а не в массив, как стандартный Кафковский
  */
-public class CustomJsonSerializer extends JsonSerializer<Object> {//it has to be public
+public class CustomJsonSerializer extends JsonSerializer<Object> {
 
     public CustomJsonSerializer() {
         super(customizedObjectMapper());

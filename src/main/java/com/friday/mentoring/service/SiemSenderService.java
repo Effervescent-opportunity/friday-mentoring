@@ -1,9 +1,10 @@
 package com.friday.mentoring.service;
 
 import com.friday.mentoring.event.AuthEventType;
-import com.friday.mentoring.event.repository.internal.AuthEventEntity;
 import com.friday.mentoring.event.repository.AuthEventReader;
 import com.friday.mentoring.event.repository.AuthEventSaver;
+import com.friday.mentoring.event.repository.internal.AuthEventEntity;
+import com.friday.mentoring.siem.integration.SiemEventType;
 import com.friday.mentoring.siem.integration.SiemSender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,16 +39,13 @@ public class SiemSenderService {
             stream.forEach(authEventEntity -> {
                 if (siemSender.send(authEventEntity.getIpAddress(), authEventEntity.getEventTime(),
                         authEventEntity.getUserName(), authEventEntity.getEventType() == AuthEventType.AUTHENTICATION_SUCCESS
-                                ? SiemSender.SiemEventType.AUTH_SUCCESS : SiemSender.SiemEventType.AUTH_FAILURE)) {//todo correct enum
+                                ? SiemEventType.AUTH_SUCCESS : SiemEventType.AUTH_FAILURE)) {
                     authEventSaver.setSuccessStatus(authEventEntity.getId());
                 }
             });
         } catch (Exception ex) {
             LOGGER.warn("Got exception while sending events to SIEM", ex);
         }
-
-        //todo entities should know nothing about dtos
-
     }
 
 }

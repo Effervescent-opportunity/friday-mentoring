@@ -33,6 +33,7 @@ public class AuthEventEntity {
     /**
      * Вид события
      */
+    @Enumerated(value = EnumType.STRING)
     @Column(name = "event_type", length = 30, nullable = false)
     private AuthEventType eventType;
     /**

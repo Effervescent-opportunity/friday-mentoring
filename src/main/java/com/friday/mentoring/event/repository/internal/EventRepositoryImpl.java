@@ -10,11 +10,11 @@ import java.util.UUID;
 import java.util.stream.Stream;
 
 @Component
-class AuthEventEntityRepositoryImpl implements AuthEventSaver, AuthEventReader {//todo rename - this is very awful
+class EventRepositoryImpl implements AuthEventSaver, AuthEventReader {
 
     private final AuthEventRepository authEventRepository;
 
-    public AuthEventEntityRepositoryImpl(AuthEventRepository authEventRepository) {
+    public EventRepositoryImpl(AuthEventRepository authEventRepository) {
         this.authEventRepository = authEventRepository;
     }
 
@@ -30,6 +30,6 @@ class AuthEventEntityRepositoryImpl implements AuthEventSaver, AuthEventReader {
 
     @Override
     public Stream<AuthEventEntity> getNotSentEvents() {
-        return authEventRepository.getEventsForSending();
+        return authEventRepository.streamByWasSentFalse();
     }
 }

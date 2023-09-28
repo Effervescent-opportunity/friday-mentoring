@@ -7,7 +7,7 @@ import com.friday.mentoring.BaseIntegrationTest;
 import com.friday.mentoring.event.AuthEventType;
 import com.friday.mentoring.event.repository.internal.AuthEventEntity;
 import com.friday.mentoring.event.repository.internal.AuthEventRepository;
-import com.friday.mentoring.siem.integration.SiemSender.SiemEventType;
+import com.friday.mentoring.siem.integration.SiemEventType;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;

@@ -4,6 +4,7 @@ import com.friday.mentoring.event.AuthEventType;
 import com.friday.mentoring.event.repository.AuthEventReader;
 import com.friday.mentoring.event.repository.AuthEventSaver;
 import com.friday.mentoring.event.repository.internal.AuthEventEntity;
+import com.friday.mentoring.siem.integration.SiemEventType;
 import com.friday.mentoring.siem.integration.SiemSender;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -47,6 +48,19 @@ public class SiemSenderServiceTest {
     }
 
     @Test
+    public void exceptionTest() {
+        AuthEventEntity authEvent = new AuthEventEntity("127.0.0.1", OffsetDateTime.now(), "root", AuthEventType.AUTHORIZATION_FAILURE);
+
+        when(authEventReader.getNotSentEvents()).thenReturn(Stream.of(authEvent));
+        when(siemSender.send(any(), any(), any(), any())).thenThrow(RuntimeException.class);
+
+        siemSenderService.sendToSiem();
+
+        verify(siemSender, times(1)).send(authEvent.getIpAddress(), authEvent.getEventTime(), authEvent.getUserName(), SiemEventType.AUTH_FAILURE);
+        verify(authEventSaver, never()).setSuccessStatus(any());
+    }
+
+    @Test
     public void wasSentTest() {
         sendToKafka(true);
     }
@@ -64,7 +78,7 @@ public class SiemSenderServiceTest {
 
         siemSenderService.sendToSiem();
 
-        verify(siemSender, times(1)).send(authEvent.getIpAddress(), authEvent.getEventTime(), authEvent.getUserName(), SiemSender.SiemEventType.AUTH_FAILURE);
+        verify(siemSender, times(1)).send(authEvent.getIpAddress(), authEvent.getEventTime(), authEvent.getUserName(), SiemEventType.AUTH_FAILURE);
         verify(authEventSaver, times(wasSent ? 1 : 0)).setSuccessStatus(any());
     }
 

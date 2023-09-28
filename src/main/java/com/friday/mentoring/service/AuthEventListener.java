@@ -16,8 +16,6 @@ import java.time.ZoneId;
  */
 @Component
 public class AuthEventListener {
-    //todo а нет, кажется юз кейс это все вместе - залогиниться и отправить событие в сием и тогда он внутрений и не хочет
-    // знать об отправке в сием, что там два значения в енаме - maybe ask
 
     private final AuthEventSaver authEventSaver;
 
