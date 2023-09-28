@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-interface AuthEventRepository extends JpaRepository<AuthEventEntity, UUID> {
+public interface AuthEventRepository extends JpaRepository<AuthEventEntity, UUID> {
 //todo rename method
     @Query(value = "SELECT a FROM AuthEventEntity a WHERE a.wasSent = false")
-    Stream<AuthEventEntity> getEventsForSending();//todo how Stream works?
+    Stream<AuthEventEntity> getEventsForSending();
 
     List<AuthEventEntity> findAllByWasSentFalse();
 

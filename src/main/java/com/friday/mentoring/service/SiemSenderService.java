@@ -1,5 +1,6 @@
 package com.friday.mentoring.service;
 
+import com.friday.mentoring.event.AuthEventType;
 import com.friday.mentoring.event.repository.internal.AuthEventEntity;
 import com.friday.mentoring.event.repository.AuthEventReader;
 import com.friday.mentoring.event.repository.AuthEventSaver;
@@ -31,12 +32,12 @@ public class SiemSenderService {
     }
 
     @Transactional
-    @Scheduled(timeUnit = TimeUnit.MINUTES, fixedDelay = 1L)
+    @Scheduled(timeUnit = TimeUnit.SECONDS, fixedDelayString = "${siem.send.fixed.delay.seconds:60}")
     public void sendToSiem() {
         try (Stream<AuthEventEntity> stream = authEventReader.getNotSentEvents()) {
             stream.forEach(authEventEntity -> {
                 if (siemSender.send(authEventEntity.getIpAddress(), authEventEntity.getEventTime(),
-                        authEventEntity.getUserName(), authEventEntity.getEventType().equals("AUTHENTICATION_SUCCESS")
+                        authEventEntity.getUserName(), authEventEntity.getEventType() == AuthEventType.AUTHENTICATION_SUCCESS
                                 ? SiemSender.SiemEventType.AUTH_SUCCESS : SiemSender.SiemEventType.AUTH_FAILURE)) {//todo correct enum
                     authEventSaver.setSuccessStatus(authEventEntity.getId());
                 }

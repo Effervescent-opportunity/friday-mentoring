@@ -1,5 +1,6 @@
 package com.friday.mentoring.event.repository.internal;
 
+import com.friday.mentoring.event.AuthEventType;
 import jakarta.persistence.*;
 
 import java.time.OffsetDateTime;
@@ -33,7 +34,7 @@ public class AuthEventEntity {
      * Вид события
      */
     @Column(name = "event_type", length = 30, nullable = false)
-    private String eventType;
+    private AuthEventType eventType;
     /**
      * Было ли отправлено событие в SIEM
      */
@@ -43,7 +44,7 @@ public class AuthEventEntity {
     public AuthEventEntity() {
     }
 
-    public AuthEventEntity(String ipAddress, OffsetDateTime eventTime, String userName, String eventType) {
+    public AuthEventEntity(String ipAddress, OffsetDateTime eventTime, String userName, AuthEventType eventType) {
         this.ipAddress = ipAddress;
         this.eventTime = eventTime;
         this.userName = userName;
@@ -82,11 +83,11 @@ public class AuthEventEntity {
         this.userName = userName;
     }
 
-    public String getEventType() {
+    public AuthEventType getEventType() {
         return eventType;
     }
 
-    public void setEventType(String eventType) {
+    public void setEventType(AuthEventType eventType) {
         this.eventType = eventType;
     }
 

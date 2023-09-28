@@ -20,7 +20,7 @@ class AuthEventEntityRepositoryImpl implements AuthEventSaver, AuthEventReader {
 
     @Override
     public void save(String ipAddress, OffsetDateTime time, String userName, AuthEventType type) {
-        authEventRepository.save(new AuthEventEntity(ipAddress, time, userName, type.name()));
+        authEventRepository.save(new AuthEventEntity(ipAddress, time, userName, type));
     }
 
     @Override
