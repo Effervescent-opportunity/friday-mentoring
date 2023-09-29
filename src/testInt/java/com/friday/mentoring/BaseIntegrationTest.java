@@ -35,5 +35,7 @@ public abstract class BaseIntegrationTest {
         registry.add("spring.datasource.url", datasource::getJdbcUrl);
         registry.add("spring.datasource.username", datasource::getUsername);
         registry.add("spring.datasource.password", datasource::getPassword);
+        registry.add("siem.send.fixed.delay.seconds", () -> "3");
+        registry.add("spring.kafka.bootstrap-servers", () -> "localhost:29093");
     }
 }

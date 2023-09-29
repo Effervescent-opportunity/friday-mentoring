@@ -1,4 +1,4 @@
-package com.friday.mentoring.configuration;
+package com.friday.mentoring.siem.integration.internal;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -10,7 +10,7 @@ import org.springframework.kafka.core.KafkaAdmin;
  * Бины для настройки Кафки
  */
 @Configuration
-public class CustomKafkaConfig {
+class CustomKafkaConfig {
 
     @Value(value = "${siem.events.topic}")
     private String authEventsTopic;

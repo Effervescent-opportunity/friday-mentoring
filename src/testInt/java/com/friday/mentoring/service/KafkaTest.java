@@ -4,10 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.friday.mentoring.BaseIntegrationTest;
-import com.friday.mentoring.db.entity.AuthEventEntity;
-import com.friday.mentoring.db.repository.AuthEventRepository;
-import com.friday.mentoring.db.repository.OutboxRepository;
-import com.friday.mentoring.dto.AuthEventDto;
+import com.friday.mentoring.event.AuthEventType;
+import com.friday.mentoring.event.repository.internal.AuthEventEntity;
+import com.friday.mentoring.event.repository.internal.AuthEventRepository;
+import com.friday.mentoring.siem.integration.SiemEventType;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -34,7 +34,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static com.friday.mentoring.util.TestConstants.*;
+import static com.friday.mentoring.event.AuthEventType.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -45,10 +45,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Тест KafkaProducer и базы при наличии Кафки
  */
-@EmbeddedKafka(ports = {29092}, zkSessionTimeout = 3000, zkConnectionTimeout = 2000, adminTimeout = 1, partitions = 1)
+@EmbeddedKafka(ports = {29093}, zkSessionTimeout = 3000, zkConnectionTimeout = 2000, adminTimeout = 1, partitions = 1)
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class KafkaTest extends BaseIntegrationTest {
+
+    static final String LOCAL_IP_ADDRESS = "127.0.0.1";
 
     @Value(value = "${siem.events.topic}")
     String authEventsTopic;
@@ -58,8 +60,6 @@ public class KafkaTest extends BaseIntegrationTest {
     EmbeddedKafkaBroker embeddedKafkaBroker;
     @Autowired
     AuthEventRepository authEventRepository;
-    @Autowired
-    OutboxRepository outboxRepository;
     Consumer<String, String> consumer;
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
@@ -75,7 +75,6 @@ public class KafkaTest extends BaseIntegrationTest {
     void tearDown() {
         consumer.close();
         authEventRepository.deleteAll();
-        outboxRepository.deleteAll();
     }
 
     @Test
@@ -89,7 +88,7 @@ public class KafkaTest extends BaseIntegrationTest {
         ConsumerRecord<String, String> singleRecord = KafkaTestUtils.getSingleRecord(consumer, authEventsTopic);
 
         assertNotNull(singleRecord);
-        checkRecordedValues(singleRecord.value(), LOCAL_IP_ADDRESS, ROOT_USERNAME, AUTHENTICATION_SUCCESS_TYPE, now);
+        checkRecordedValues(singleRecord.value(), LOCAL_IP_ADDRESS, "root", AUTHENTICATION_SUCCESS, now);
     }
 
     @Test
@@ -103,7 +102,7 @@ public class KafkaTest extends BaseIntegrationTest {
         ConsumerRecord<String, String> singleRecord = KafkaTestUtils.getSingleRecord(consumer, authEventsTopic);
 
         assertNotNull(singleRecord);
-        checkRecordedValues(singleRecord.value(), LOCAL_IP_ADDRESS, "noRoot", AUTHENTICATION_FAILURE_TYPE, now);
+        checkRecordedValues(singleRecord.value(), LOCAL_IP_ADDRESS, "noRoot", AUTHENTICATION_FAILURE, now);
     }
 
     @Test
@@ -117,7 +116,6 @@ public class KafkaTest extends BaseIntegrationTest {
         ConsumerRecords<String, String> records = KafkaTestUtils.getRecords(consumer, Duration.ofSeconds(4));
         assertEquals(0, records.count());
         assertEquals(0, authEventRepository.count());
-        assertEquals(0, outboxRepository.count());
     }
 
     @Test
@@ -131,7 +129,7 @@ public class KafkaTest extends BaseIntegrationTest {
         ConsumerRecord<String, String> singleRecord = KafkaTestUtils.getSingleRecord(consumer, authEventsTopic);
 
         assertNotNull(singleRecord);
-        checkRecordedValues(singleRecord.value(), "Unknown", "noRoot", AUTHORIZATION_FAILURE_TYPE, now);
+        checkRecordedValues(singleRecord.value(), "Unknown", "noRoot", AUTHORIZATION_FAILURE, now);
     }
 
     @Test
@@ -145,21 +143,20 @@ public class KafkaTest extends BaseIntegrationTest {
 
 
         assertNotNull(singleRecord);
-        checkRecordedValues(singleRecord.value(), LOCAL_IP_ADDRESS, "anonymousUser", AUTHORIZATION_FAILURE_TYPE, now);
+        checkRecordedValues(singleRecord.value(), LOCAL_IP_ADDRESS, "anonymousUser", AUTHORIZATION_FAILURE, now);
     }
 
-    private void checkRecordedValues(String valueFromKafka, String ipAddress, String userName, String authType, OffsetDateTime startDate) {
+    private void checkRecordedValues(String valueFromKafka, String ipAddress, String userName, AuthEventType authType, OffsetDateTime startDate) {
         try {
             AuthEventDto authEventDto = objectMapper.readValue(valueFromKafka, AuthEventDto.class);
+            SiemEventType siemEventType = authType == AUTHENTICATION_SUCCESS ? SiemEventType.AUTH_SUCCESS : SiemEventType.AUTH_FAILURE;
 
             assertEquals(ipAddress, authEventDto.ipAddress());
             assertEquals(userName, authEventDto.userName());
-            assertEquals(authType, authEventDto.type());
+            assertEquals(siemEventType, authEventDto.eventType());
 
             assertTrue(startDate.isBefore(authEventDto.time()));
             assertTrue(OffsetDateTime.now().isAfter(authEventDto.time()));
-
-            assertEquals(0, outboxRepository.count());
 
             List<AuthEventEntity> authEventEntities = authEventRepository.findAll();
             assertEquals(1, authEventEntities.size());
@@ -175,6 +172,9 @@ public class KafkaTest extends BaseIntegrationTest {
         } catch (JsonProcessingException ex) {
             Assertions.fail("Cannot get AuthEventDto from json string", ex);
         }
+    }
+
+    private record AuthEventDto(String ipAddress, OffsetDateTime time, String userName, SiemEventType eventType) {
     }
 
 }
