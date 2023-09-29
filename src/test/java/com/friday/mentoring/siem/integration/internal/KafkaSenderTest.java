@@ -1,7 +1,6 @@
 package com.friday.mentoring.siem.integration.internal;
 
 import com.friday.mentoring.siem.integration.SiemEventType;
-import com.friday.mentoring.siem.integration.SiemSender;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.TopicPartition;
