@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 /**
- * Сервис, отправляющий события в siem
+ * Сервис, отправляющий события в SIEM
  */
 @Component
 public class SiemSenderService {

@@ -34,7 +34,8 @@ class AuthEventListenerTest {
 
         authEventListener.on(event);
 
-        verify(authEventSaver).save(LOCAL_IP_ADDRESS, OffsetDateTime.ofInstant(event.getAuditEvent().getTimestamp(), ZoneId.systemDefault()), ROOT_USERNAME, AuthEventType.AUTHENTICATION_SUCCESS);
+        verify(authEventSaver).save(LOCAL_IP_ADDRESS, OffsetDateTime.ofInstant(event.getAuditEvent().getTimestamp(), ZoneId.systemDefault()),
+                ROOT_USERNAME, AuthEventType.AUTHENTICATION_SUCCESS);
     }
 
     @Test
@@ -43,7 +44,8 @@ class AuthEventListenerTest {
 
         authEventListener.on(event);
 
-        verify(authEventSaver).save("Unknown", OffsetDateTime.ofInstant(event.getAuditEvent().getTimestamp(), ZoneId.systemDefault()), ROOT_USERNAME, AuthEventType.AUTHENTICATION_FAILURE);
+        verify(authEventSaver).save("Unknown", OffsetDateTime.ofInstant(event.getAuditEvent().getTimestamp(), ZoneId.systemDefault()),
+                ROOT_USERNAME, AuthEventType.AUTHENTICATION_FAILURE);
     }
 
 }

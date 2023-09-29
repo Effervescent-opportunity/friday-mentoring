@@ -35,8 +35,6 @@ import java.util.List;
 import java.util.Map;
 
 import static com.friday.mentoring.event.AuthEventType.*;
-import static com.friday.mentoring.util.TestConstants.LOCAL_IP_ADDRESS;
-import static com.friday.mentoring.util.TestConstants.ROOT_USERNAME;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -51,6 +49,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class KafkaTest extends BaseIntegrationTest {
+
+    static final String LOCAL_IP_ADDRESS = "127.0.0.1";
 
     @Value(value = "${siem.events.topic}")
     String authEventsTopic;
@@ -88,7 +88,7 @@ public class KafkaTest extends BaseIntegrationTest {
         ConsumerRecord<String, String> singleRecord = KafkaTestUtils.getSingleRecord(consumer, authEventsTopic);
 
         assertNotNull(singleRecord);
-        checkRecordedValues(singleRecord.value(), LOCAL_IP_ADDRESS, ROOT_USERNAME, AUTHENTICATION_SUCCESS, now);
+        checkRecordedValues(singleRecord.value(), LOCAL_IP_ADDRESS, "root", AUTHENTICATION_SUCCESS, now);
     }
 
     @Test
