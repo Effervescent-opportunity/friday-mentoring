@@ -1,4 +1,4 @@
-package com.friday.mentoring.configuration;
+package com.friday.mentoring.siem.integration.internal;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;

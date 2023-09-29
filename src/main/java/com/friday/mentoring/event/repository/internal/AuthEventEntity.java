@@ -1,6 +1,6 @@
-package com.friday.mentoring.db.entity;
+package com.friday.mentoring.event.repository.internal;
 
-import com.friday.mentoring.dto.AuthEventDto;
+import com.friday.mentoring.event.AuthEventType;
 import jakarta.persistence.*;
 
 import java.time.OffsetDateTime;
@@ -33,17 +33,23 @@ public class AuthEventEntity {
     /**
      * Вид события
      */
+    @Enumerated(value = EnumType.STRING)
     @Column(name = "event_type", length = 30, nullable = false)
-    private String eventType;
+    private AuthEventType eventType;
+    /**
+     * Было ли отправлено событие в SIEM
+     */
+    @Column(name = "was_sent", nullable = false)
+    private boolean wasSent;
 
     public AuthEventEntity() {
     }
 
-    public AuthEventEntity(AuthEventDto eventDto) {
-        this.ipAddress = eventDto.ipAddress();
-        this.eventTime = eventDto.time();
-        this.userName = eventDto.userName();
-        this.eventType = eventDto.type();
+    public AuthEventEntity(String ipAddress, OffsetDateTime eventTime, String userName, AuthEventType eventType) {
+        this.ipAddress = ipAddress;
+        this.eventTime = eventTime;
+        this.userName = userName;
+        this.eventType = eventType;
     }
 
     public UUID getId() {
@@ -78,12 +84,20 @@ public class AuthEventEntity {
         this.userName = userName;
     }
 
-    public String getEventType() {
+    public AuthEventType getEventType() {
         return eventType;
     }
 
-    public void setEventType(String eventType) {
+    public void setEventType(AuthEventType eventType) {
         this.eventType = eventType;
+    }
+
+    public boolean wasSent() {
+        return wasSent;
+    }
+
+    public void setWasSent(boolean wasSent) {
+        this.wasSent = wasSent;
     }
 
     @Override
@@ -94,6 +108,7 @@ public class AuthEventEntity {
                 ", eventTime=" + eventTime +
                 ", userName='" + userName + '\'' +
                 ", eventType='" + eventType + '\'' +
+                ", wasSent=" + wasSent +
                 '}';
     }
 }

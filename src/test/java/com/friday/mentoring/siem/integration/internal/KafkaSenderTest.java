@@ -1,6 +1,6 @@
-package com.friday.mentoring.service;
+package com.friday.mentoring.siem.integration.internal;
 
-import com.friday.mentoring.dto.AuthEventDto;
+import com.friday.mentoring.siem.integration.SiemEventType;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.TopicPartition;
@@ -18,35 +18,34 @@ import java.util.concurrent.CompletableFuture;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class KafkaProducerTest {
+class KafkaSenderTest {
 
     @Mock
     KafkaTemplate<String, Object> kafkaTemplate;
     @InjectMocks
-    KafkaProducer kafkaProducer;
-
-    private final AuthEventDto eventDto = new AuthEventDto("ipAddress", OffsetDateTime.now(), "user", "type");
+    KafkaSender kafkaSender;
 
     @Test
     public void kafkaDisabledTest() {
-        when(kafkaTemplate.send(any(), any(AuthEventDto.class))).thenThrow(new RuntimeException());
+        when(kafkaTemplate.send(any(), any())).thenThrow(new RuntimeException());
 
-        assertFalse(kafkaProducer.sendAuthEvent(eventDto));
+        assertFalse(kafkaSender.send("ipAddress", OffsetDateTime.now(), "user", SiemEventType.AUTH_FAILURE));
     }
 
     @Test
     public void kafkaEnabledTest() {
         CompletableFuture<SendResult<String, Object>> future = new CompletableFuture<>();
-        when(kafkaTemplate.send(any(), any(AuthEventDto.class))).thenReturn(future);
+        when(kafkaTemplate.send(any(), any())).thenReturn(future);
 
         future.complete(new SendResult<>(new ProducerRecord<>("topic", "success"),
                 new RecordMetadata(new TopicPartition("topic", 1), 1, 2, 3, 4, 5)));
 
-        assertTrue(kafkaProducer.sendAuthEvent(eventDto));
+        assertTrue(kafkaSender.send("ipAddress", OffsetDateTime.now(), "user", SiemEventType.AUTH_SUCCESS));
 
-        verify(kafkaTemplate).send(any(), eq(eventDto));
+        verify(kafkaTemplate).send(any(), any());
     }
 }
