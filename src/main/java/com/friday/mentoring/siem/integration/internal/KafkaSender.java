@@ -1,5 +1,6 @@
 package com.friday.mentoring.siem.integration.internal;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.friday.mentoring.siem.integration.SiemEventType;
 import com.friday.mentoring.siem.integration.SiemSender;
 import org.slf4j.Logger;
@@ -19,9 +20,11 @@ class KafkaSender implements SiemSender {
     private String authEventsTopic;
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
+    private final ObjectMapper objectMapper;
 
-    public KafkaSender(KafkaTemplate<String, Object> kafkaTemplate) {
+    public KafkaSender(KafkaTemplate<String, Object> kafkaTemplate, ObjectMapper objectMapper) {
         this.kafkaTemplate = kafkaTemplate;
+        this.objectMapper = objectMapper;
     }
 
     /**
@@ -32,7 +35,8 @@ class KafkaSender implements SiemSender {
     @Override
     public boolean send(String ipAddress, OffsetDateTime time, String userName, SiemEventType eventType) {
         try {
-            kafkaTemplate.send(authEventsTopic, new AuthEventDto(ipAddress, time, userName, eventType)).get(3, TimeUnit.SECONDS);
+            var eventDto = new AuthEventDto(ipAddress, time, userName, eventType);
+            kafkaTemplate.send(authEventsTopic, objectMapper.writeValueAsString(eventDto)).get(3, TimeUnit.SECONDS);
             return true;
         } catch (Exception ex) {
             LOGGER.warn("Got exception when sending [{}] message to Kafka", eventType, ex);
