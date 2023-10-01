@@ -1,6 +1,6 @@
 package com.friday.mentoring.security;
 
-import com.friday.mentoring.todo.AuthEventType;
+import com.friday.mentoring.usecase.AuthEventType;
 import com.friday.mentoring.usecase.EventRepository;
 import org.springframework.boot.actuate.audit.AuditEvent;
 import org.springframework.boot.actuate.audit.listener.AuditApplicationEvent;
@@ -33,7 +33,7 @@ public class AuthEventListener {
         }
 
         eventRepository.save(ipAddress, OffsetDateTime.ofInstant(auditEvent.getTimestamp(), ZoneId.systemDefault()),
-                auditEvent.getPrincipal(), AuthEventType.valueOf(auditEvent.getType()));
+                auditEvent.getPrincipal(), AuthEventType.getBySpringName(auditEvent.getType()).name());//todo del comment this saves AUTHN_SUCCESS
     }
 
 }

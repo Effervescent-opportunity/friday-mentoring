@@ -6,8 +6,8 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.friday.mentoring.BaseIntegrationTest;
 import com.friday.mentoring.jpa.AuthEventEntity;
 import com.friday.mentoring.jpa.AuthEventRepository;
-import com.friday.mentoring.todo.AuthEventType;
-import com.friday.mentoring.todo.SiemEventType;
+import com.friday.mentoring.usecase.AuthEventType;
+import com.friday.mentoring.usecase.SiemEventType;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -34,7 +34,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static com.friday.mentoring.todo.AuthEventType.*;
+import static com.friday.mentoring.usecase.AuthEventType.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -88,7 +88,7 @@ public class KafkaTest extends BaseIntegrationTest {
         ConsumerRecord<String, String> singleRecord = KafkaTestUtils.getSingleRecord(consumer, authEventsTopic);
 
         assertNotNull(singleRecord);
-        checkRecordedValues(singleRecord.value(), LOCAL_IP_ADDRESS, "root", AUTHENTICATION_SUCCESS, now);
+        checkRecordedValues(singleRecord.value(), LOCAL_IP_ADDRESS, "root", AUTHN_SUCCESS, now);
     }
 
     @Test
@@ -102,7 +102,7 @@ public class KafkaTest extends BaseIntegrationTest {
         ConsumerRecord<String, String> singleRecord = KafkaTestUtils.getSingleRecord(consumer, authEventsTopic);
 
         assertNotNull(singleRecord);
-        checkRecordedValues(singleRecord.value(), LOCAL_IP_ADDRESS, "noRoot", AUTHENTICATION_FAILURE, now);
+        checkRecordedValues(singleRecord.value(), LOCAL_IP_ADDRESS, "noRoot", AUTHN_FAILURE, now);
     }
 
     @Test
@@ -129,7 +129,7 @@ public class KafkaTest extends BaseIntegrationTest {
         ConsumerRecord<String, String> singleRecord = KafkaTestUtils.getSingleRecord(consumer, authEventsTopic);
 
         assertNotNull(singleRecord);
-        checkRecordedValues(singleRecord.value(), "Unknown", "noRoot", AUTHORIZATION_FAILURE, now);
+        checkRecordedValues(singleRecord.value(), "Unknown", "noRoot", AUTHZ_FAILURE, now);
     }
 
     @Test
@@ -143,13 +143,13 @@ public class KafkaTest extends BaseIntegrationTest {
 
 
         assertNotNull(singleRecord);
-        checkRecordedValues(singleRecord.value(), LOCAL_IP_ADDRESS, "anonymousUser", AUTHORIZATION_FAILURE, now);
+        checkRecordedValues(singleRecord.value(), LOCAL_IP_ADDRESS, "anonymousUser", AUTHZ_FAILURE, now);
     }
 
     private void checkRecordedValues(String valueFromKafka, String ipAddress, String userName, AuthEventType authType, OffsetDateTime startDate) {
         try {
             AuthEventDto authEventDto = objectMapper.readValue(valueFromKafka, AuthEventDto.class);
-            SiemEventType siemEventType = authType == AUTHENTICATION_SUCCESS ? SiemEventType.AUTH_SUCCESS : SiemEventType.AUTH_FAILURE;
+            SiemEventType siemEventType = authType == AUTHN_SUCCESS ? SiemEventType.AUTH_SUCCESS : SiemEventType.AUTH_FAILURE;
 
             assertEquals(ipAddress, authEventDto.ipAddress());
             assertEquals(userName, authEventDto.userName());

@@ -1,6 +1,6 @@
 package com.friday.mentoring.security;
 
-import com.friday.mentoring.todo.AuthEventType;
+import com.friday.mentoring.usecase.AuthEventType;
 import com.friday.mentoring.usecase.EventRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,22 +30,22 @@ class AuthEventListenerTest {
     @Test
     public void detailsInstanceOfWebAuthenticationDetailsTest() {
         Map<String, Object> eventData = Map.of("details", new WebAuthenticationDetails(LOCAL_IP_ADDRESS, "sessionId"));
-        AuditApplicationEvent event = new AuditApplicationEvent(ROOT_USERNAME, AuthEventType.AUTHENTICATION_SUCCESS.name(), eventData);
+        AuditApplicationEvent event = new AuditApplicationEvent(ROOT_USERNAME, AuthEventType.AUTHN_SUCCESS.getSpringName(), eventData);
 
         authEventListener.onAuditApplicationEvent(event);
 
         verify(eventRepository).save(LOCAL_IP_ADDRESS, OffsetDateTime.ofInstant(event.getAuditEvent().getTimestamp(), ZoneId.systemDefault()),
-                ROOT_USERNAME, AuthEventType.AUTHENTICATION_SUCCESS);
+                ROOT_USERNAME, AuthEventType.AUTHN_SUCCESS.name());
     }
 
     @Test
     public void noDetailsTest() {
-        AuditApplicationEvent event = new AuditApplicationEvent(ROOT_USERNAME, AuthEventType.AUTHENTICATION_FAILURE.name());
+        AuditApplicationEvent event = new AuditApplicationEvent(ROOT_USERNAME, AuthEventType.AUTHN_FAILURE.getSpringName());
 
         authEventListener.onAuditApplicationEvent(event);
 
         verify(eventRepository).save("Unknown", OffsetDateTime.ofInstant(event.getAuditEvent().getTimestamp(), ZoneId.systemDefault()),
-                ROOT_USERNAME, AuthEventType.AUTHENTICATION_FAILURE);
+                ROOT_USERNAME, AuthEventType.AUTHN_FAILURE.name());
     }
 
 }

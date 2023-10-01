@@ -1,6 +1,5 @@
 package com.friday.mentoring.jpa;
 
-import com.friday.mentoring.todo.AuthEventType;
 import com.friday.mentoring.usecase.EventRepository;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +17,7 @@ class AuthEventRepositoryFacade implements EventRepository {
     }
 
     @Override
-    public void save(String ipAddress, OffsetDateTime time, String userName, AuthEventType type) {
+    public void save(String ipAddress, OffsetDateTime time, String userName, String type) {
         authEventRepository.save(new AuthEventEntity(ipAddress, time, userName, type));
     }
 

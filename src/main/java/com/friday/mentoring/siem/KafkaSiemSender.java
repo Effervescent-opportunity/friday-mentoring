@@ -1,7 +1,7 @@
 package com.friday.mentoring.siem;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.friday.mentoring.todo.SiemEventType;
+import com.friday.mentoring.usecase.SiemEventType;
 import com.friday.mentoring.usecase.SiemSender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

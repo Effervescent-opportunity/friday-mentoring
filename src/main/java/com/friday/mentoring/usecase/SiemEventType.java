@@ -1,4 +1,4 @@
-package com.friday.mentoring.todo;
+package com.friday.mentoring.usecase;
 
 /**
  * Типы событий для отправки в SIEM

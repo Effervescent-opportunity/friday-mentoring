@@ -1,8 +1,8 @@
 package com.friday.mentoring.siem.scheduled;
 
 import com.friday.mentoring.jpa.AuthEventEntity;
-import com.friday.mentoring.todo.AuthEventType;
-import com.friday.mentoring.todo.SiemEventType;
+import com.friday.mentoring.usecase.AuthEventType;
+import com.friday.mentoring.usecase.SiemEventType;
 import com.friday.mentoring.usecase.EventRepository;
 import com.friday.mentoring.usecase.SiemSender;
 import org.junit.jupiter.api.AfterEach;
@@ -46,7 +46,7 @@ public class ScheduledSiemSenderTest {
 
     @Test
     public void exceptionTest() {
-        AuthEventEntity authEvent = new AuthEventEntity("127.0.0.1", OffsetDateTime.now(), "root", AuthEventType.AUTHORIZATION_FAILURE);
+        AuthEventEntity authEvent = new AuthEventEntity("127.0.0.1", OffsetDateTime.now(), "root", AuthEventType.AUTHZ_FAILURE.getSpringName());
 
         when(eventRepository.getNotSentEvents()).thenReturn(Stream.of(authEvent));
         when(siemSender.send(any(), any(), any(), any())).thenThrow(RuntimeException.class);
@@ -68,7 +68,7 @@ public class ScheduledSiemSenderTest {
     }
 
     private void sendToKafka(boolean wasSent) {
-        AuthEventEntity authEvent = new AuthEventEntity("127.0.0.1", OffsetDateTime.now(), "root", AuthEventType.AUTHENTICATION_FAILURE);
+        AuthEventEntity authEvent = new AuthEventEntity("127.0.0.1", OffsetDateTime.now(), "root", AuthEventType.AUTHN_FAILURE.getSpringName());
 
         when(eventRepository.getNotSentEvents()).thenReturn(Stream.of(authEvent));
         when(siemSender.send(any(), any(), any(), any())).thenReturn(wasSent);

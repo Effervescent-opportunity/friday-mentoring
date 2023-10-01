@@ -1,7 +1,5 @@
 package com.friday.mentoring.usecase;
 
-import com.friday.mentoring.todo.SiemEventType;
-
 import java.time.OffsetDateTime;
 
 public interface SiemSender {
