@@ -60,7 +60,7 @@ https://stackoverflow.com/questions/10309314
 можно сделать по аналогии с `ApplicationListener`, то есть:
 `public void onAuditApplicationEvent(AuditApplicationEvent event)`
 
-3. Тесты падают на последних версиях Java
+3. Тесты падают на последних версиях Java (17.0.8, 21 - только с последними LTS версиями - платформонезависимо (win, lin x86_64, mac armv8))
 ```
 assertTrue(now.isBefore(dateFromService));
 assertEquals(now.getOffset(), dateFromService.getOffset());
@@ -83,7 +83,7 @@ Assertions.assertThat(dateFromService.getOffset()).isEqualTo(now.getOffset());
                 if (siemSender.send(authEventEntity.getIpAddress(), authEventEntity.getEventTime(),
                         authEventEntity.getUserName(), authEventEntity.getEventType() == AuthEventType.AUTHENTICATION_SUCCESS
                                 ? SiemSender.SiemEventType.AUTH_SUCCESS : SiemSender.SiemEventType.AUTH_FAILURE)) {
-                    authEventSaver.setSuccessStatus(authEventEntity.getId());
+                    eventRepository.setSuccessStatus(authEventEntity.getId());
                 }
             });
         } catch (Exception ex) {
@@ -99,7 +99,7 @@ Assertions.assertThat(dateFromService.getOffset()).isEqualTo(now.getOffset());
         try (Stream<AuthEventEntity> stream = authEventReader.getNotSentEvents()) {
             stream.forEach(event -> {
                 send(event);
-                authEventSaver.setSuccessStatus(event.getId());
+                eventRepository.setSuccessStatus(event.getId());
             });
         } catch (Exception ex) {
             LOGGER.warn("Got exception while sending events to SIEM", ex);
