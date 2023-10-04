@@ -2,8 +2,8 @@ package com.friday.mentoring.siem.scheduled;
 
 import com.friday.mentoring.jpa.AuthEventEntity;
 import com.friday.mentoring.usecase.AuthEventType;
-import com.friday.mentoring.usecase.SiemEventType;
 import com.friday.mentoring.usecase.EventRepository;
+import com.friday.mentoring.usecase.SiemEventType;
 import com.friday.mentoring.usecase.SiemSender;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;

@@ -32,7 +32,7 @@ public class ScheduledSiemSender {
     @Scheduled(timeUnit = TimeUnit.SECONDS, fixedDelayString = "${siem.send.fixed.delay.seconds:60}")
     public void sendToSiem() {
         eventRepository.getNotSentEvents().forEach(authEventEntity -> {
-            try {//todo think if I really need this, is therte exception whent type isn't correct? //yes java.lang.IllegalArgumentException: No enum constant com.friday.mentoring.usecase.AuthEventType.0
+            try {
                 if (send(authEventEntity)) {
                     eventRepository.setSuccessStatus(authEventEntity.getId());
                 }
