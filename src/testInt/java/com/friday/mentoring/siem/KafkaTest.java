@@ -88,7 +88,7 @@ public class KafkaTest extends BaseIntegrationTest {
         ConsumerRecord<String, String> singleRecord = KafkaTestUtils.getSingleRecord(consumer, authEventsTopic);
 
         assertNotNull(singleRecord);
-        checkRecordedValues(singleRecord.value(), LOCAL_IP_ADDRESS, "root", AUTHN_SUCCESS, now);
+        checkRecordedValues(singleRecord.value(), LOCAL_IP_ADDRESS, "root", AUTHENTICATION_SUCCESS, now);
     }
 
     @Test
@@ -102,7 +102,7 @@ public class KafkaTest extends BaseIntegrationTest {
         ConsumerRecord<String, String> singleRecord = KafkaTestUtils.getSingleRecord(consumer, authEventsTopic);
 
         assertNotNull(singleRecord);
-        checkRecordedValues(singleRecord.value(), LOCAL_IP_ADDRESS, "noRoot", AUTHN_FAILURE, now);
+        checkRecordedValues(singleRecord.value(), LOCAL_IP_ADDRESS, "noRoot", AUTHENTICATION_FAILURE, now);
     }
 
     @Test
@@ -129,7 +129,7 @@ public class KafkaTest extends BaseIntegrationTest {
         ConsumerRecord<String, String> singleRecord = KafkaTestUtils.getSingleRecord(consumer, authEventsTopic);
 
         assertNotNull(singleRecord);
-        checkRecordedValues(singleRecord.value(), "Unknown", "noRoot", AUTHZ_FAILURE, now);
+        checkRecordedValues(singleRecord.value(), "Unknown", "noRoot", AUTHORIZATION_FAILURE, now);
     }
 
     @Test
@@ -143,13 +143,13 @@ public class KafkaTest extends BaseIntegrationTest {
 
 
         assertNotNull(singleRecord);
-        checkRecordedValues(singleRecord.value(), LOCAL_IP_ADDRESS, "anonymousUser", AUTHZ_FAILURE, now);
+        checkRecordedValues(singleRecord.value(), LOCAL_IP_ADDRESS, "anonymousUser", AUTHORIZATION_FAILURE, now);
     }
 
     private void checkRecordedValues(String valueFromKafka, String ipAddress, String userName, AuthEventType authType, OffsetDateTime startDate) {
         try {
             AuthEventDto authEventDto = objectMapper.readValue(valueFromKafka, AuthEventDto.class);
-            SiemEventType siemEventType = authType == AUTHN_SUCCESS ? SiemEventType.AUTH_SUCCESS : SiemEventType.AUTH_FAILURE;
+            SiemEventType siemEventType = authType == AUTHENTICATION_SUCCESS ? SiemEventType.AUTH_SUCCESS : SiemEventType.AUTH_FAILURE;
 
             assertEquals(ipAddress, authEventDto.ipAddress());
             assertEquals(userName, authEventDto.userName());
@@ -164,7 +164,7 @@ public class KafkaTest extends BaseIntegrationTest {
 
             assertEquals(ipAddress, authEventEntity.getIpAddress());
             assertEquals(userName, authEventEntity.getUserName());
-            assertEquals(authType, authEventEntity.getEventType());
+            assertEquals(authType.name(), authEventEntity.getEventType());
 
             assertTrue(startDate.isBefore(authEventEntity.getEventTime()));
             assertTrue(OffsetDateTime.now().isAfter(authEventEntity.getEventTime()));

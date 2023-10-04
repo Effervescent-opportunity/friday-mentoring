@@ -3,13 +3,10 @@ package com.friday.mentoring.usecase;
 import java.util.HashMap;
 import java.util.Map;
 
-public enum AuthEventType {//todo maybe наоборот?//todo where move?
-    //    AUTHENTICATION_SUCCESS,
-//    AUTHENTICATION_FAILURE,
-//    AUTHORIZATION_FAILURE,
-    AUTHN_SUCCESS("AUTHENTICATION_SUCCESS"),
-    AUTHN_FAILURE("AUTHENTICATION_FAILURE"),
-    AUTHZ_FAILURE("AUTHORIZATION_FAILURE");
+public enum AuthEventType {
+    AUTHENTICATION_SUCCESS("AUTHENTICATION_SUCCESS"),
+    AUTHENTICATION_FAILURE("AUTHENTICATION_FAILURE"),
+    AUTHORIZATION_FAILURE("AUTHORIZATION_FAILURE");
 
     private final String springName;
 

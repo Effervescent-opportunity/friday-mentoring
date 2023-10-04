@@ -3,7 +3,7 @@ package com.friday.mentoring.usecase;
 /**
  * Типы событий для отправки в SIEM
  */
-public enum SiemEventType {//todo move to package
+public enum SiemEventType {
     AUTH_SUCCESS,
     AUTH_FAILURE,
 }

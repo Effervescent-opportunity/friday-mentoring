@@ -2,6 +2,8 @@ package com.friday.mentoring.security;
 
 import com.friday.mentoring.usecase.AuthEventType;
 import com.friday.mentoring.usecase.EventRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.actuate.audit.AuditEvent;
 import org.springframework.boot.actuate.audit.listener.AuditApplicationEvent;
 import org.springframework.context.event.EventListener;
@@ -16,6 +18,7 @@ import java.time.ZoneId;
  */
 @Component
 public class AuthEventListener {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthEventListener.class);
 
     private final EventRepository eventRepository;
 
@@ -32,8 +35,14 @@ public class AuthEventListener {
             ipAddress = details.getRemoteAddress();
         }
 
+        AuthEventType eventType = AuthEventType.getBySpringName(auditEvent.getType());
+        if (eventType == null) {
+            LOGGER.warn("Got AuditApplicationEvent with type [{}] not convertible to AuthEventType. Event won't be saved", auditEvent.getType());
+            return;
+        }
+
         eventRepository.save(ipAddress, OffsetDateTime.ofInstant(auditEvent.getTimestamp(), ZoneId.systemDefault()),
-                auditEvent.getPrincipal(), AuthEventType.getBySpringName(auditEvent.getType()).name());//todo del comment this saves AUTHN_SUCCESS
+                auditEvent.getPrincipal(), eventType.name());
     }
 
 }

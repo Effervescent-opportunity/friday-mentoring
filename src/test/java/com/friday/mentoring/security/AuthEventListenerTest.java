@@ -1,6 +1,5 @@
 package com.friday.mentoring.security;
 
-import com.friday.mentoring.usecase.AuthEventType;
 import com.friday.mentoring.usecase.EventRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,6 +13,8 @@ import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.Map;
 
+import static com.friday.mentoring.usecase.AuthEventType.AUTHENTICATION_FAILURE;
+import static com.friday.mentoring.usecase.AuthEventType.AUTHENTICATION_SUCCESS;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -30,22 +31,22 @@ class AuthEventListenerTest {
     @Test
     public void detailsInstanceOfWebAuthenticationDetailsTest() {
         Map<String, Object> eventData = Map.of("details", new WebAuthenticationDetails(LOCAL_IP_ADDRESS, "sessionId"));
-        AuditApplicationEvent event = new AuditApplicationEvent(ROOT_USERNAME, AuthEventType.AUTHN_SUCCESS.getSpringName(), eventData);
+        AuditApplicationEvent event = new AuditApplicationEvent(ROOT_USERNAME, AUTHENTICATION_SUCCESS.getSpringName(), eventData);
 
         authEventListener.onAuditApplicationEvent(event);
 
         verify(eventRepository).save(LOCAL_IP_ADDRESS, OffsetDateTime.ofInstant(event.getAuditEvent().getTimestamp(), ZoneId.systemDefault()),
-                ROOT_USERNAME, AuthEventType.AUTHN_SUCCESS.name());
+                ROOT_USERNAME, AUTHENTICATION_SUCCESS.name());
     }
 
     @Test
     public void noDetailsTest() {
-        AuditApplicationEvent event = new AuditApplicationEvent(ROOT_USERNAME, AuthEventType.AUTHN_FAILURE.getSpringName());
+        AuditApplicationEvent event = new AuditApplicationEvent(ROOT_USERNAME, AUTHENTICATION_FAILURE.getSpringName());
 
         authEventListener.onAuditApplicationEvent(event);
 
         verify(eventRepository).save("Unknown", OffsetDateTime.ofInstant(event.getAuditEvent().getTimestamp(), ZoneId.systemDefault()),
-                ROOT_USERNAME, AuthEventType.AUTHN_FAILURE.name());
+                ROOT_USERNAME, AUTHENTICATION_FAILURE.name());
     }
 
 }

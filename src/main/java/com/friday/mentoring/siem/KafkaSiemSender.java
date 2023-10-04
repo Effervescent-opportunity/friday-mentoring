@@ -35,7 +35,7 @@ class KafkaSiemSender implements SiemSender {
     @Override
     public boolean send(String ipAddress, OffsetDateTime time, String userName, SiemEventType eventType) {
         try {
-            var eventDto = new AuthEventDto(ipAddress, time, userName, eventType);//todo del comment headers are empty now: {}
+            var eventDto = new AuthEventDto(ipAddress, time, userName, eventType);
             kafkaTemplate.send(authEventsTopic, objectMapper.writeValueAsString(eventDto)).get(3, TimeUnit.SECONDS);
             return true;
         } catch (Exception ex) {
