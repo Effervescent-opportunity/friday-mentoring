@@ -3,8 +3,8 @@ name: Java CI with Gradle
 on:
   push:
     branches: [ "main", "feature/github-actions-test" ]
-  pull_request:
-    branches: [ "main" ]
+#  pull_request:
+#    branches: [ "main" ]
   workflow_dispatch:
 
 permissions:
@@ -26,6 +26,7 @@ jobs:
           gradle-version: current
           arguments: build jacocoTestReport
       - name: Add coverage
+        id: jacoco
         uses: madrapps/jacoco-report@v1.6.1
         with:
           paths: ${{ github.workspace }}/**/build/reports/jacoco/all/jacocoTestReport.xml
