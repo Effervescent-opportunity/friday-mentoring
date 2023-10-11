@@ -67,6 +67,7 @@ jacocoTestReport {
     dependsOn test, integrationTest
     executionData(test, integrationTest)
     reports.xml.required = true
+    reports.xml.outputLocation = layout.buildDirectory.file('reports/jacoco/all/jacocoTestReport.xml')
     reports.html.outputLocation = layout.buildDirectory.dir('reports/jacoco/all')
 }
 
