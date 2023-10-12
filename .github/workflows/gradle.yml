@@ -1,10 +1,11 @@
 name: Java CI with Gradle
 
 on:
-  push:
-    branches: [ "main", "feature/github-actions-test" ]
+#  push:
+#    branches: [ "main", "feature/github-actions-test" ]
 #  pull_request:
 #    branches: [ "main" ]
+  #todo make  work где мой коммент с покрытием, а?
   workflow_dispatch:
 
 permissions:
