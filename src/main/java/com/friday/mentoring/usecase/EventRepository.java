@@ -1,6 +1,7 @@
 package com.friday.mentoring.usecase;
 
 import com.friday.mentoring.jpa.AuthEventEntity;
+import org.springframework.data.domain.Page;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -12,4 +13,6 @@ public interface EventRepository {
     void setSuccessStatus(UUID id);
 
     Stream<AuthEventEntity> getNotSentEvents();
+
+    Page<AuthEventEntity> getFilteredEntities();
 }
