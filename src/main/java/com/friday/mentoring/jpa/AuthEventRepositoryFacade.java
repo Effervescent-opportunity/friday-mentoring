@@ -1,6 +1,7 @@
 package com.friday.mentoring.jpa;
 
 import com.friday.mentoring.usecase.EventRepository;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.time.OffsetDateTime;
@@ -29,5 +30,11 @@ class AuthEventRepositoryFacade implements EventRepository {
     @Override
     public Stream<AuthEventEntity> getNotSentEvents() {
         return authEventRepository.streamByWasSentFalse();
+    }
+
+    @Override
+    public Page<AuthEventEntity> getFilteredEntities(String user, String ip, String type, OffsetDateTime dateFrom,
+                                                     OffsetDateTime dateTo, int page, int size, String[] sort) {
+        return null;
     }
 }

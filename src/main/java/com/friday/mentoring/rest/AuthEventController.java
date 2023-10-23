@@ -5,6 +5,7 @@ import com.friday.mentoring.usecase.EventRepository;
 import com.friday.mentoring.usecase.SiemEventType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,13 +28,13 @@ public class AuthEventController {//todo maybe rename to EventController?
         this.eventRepository = eventRepository;
     }
 
-    @GetMapping(path = "auth/event", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<AuthEventEntity>> getEvents() {
+    @GetMapping(path = "auth/events", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Page<AuthEventEntity>> getEvents() {
         //todo use custom Page class Page
         //кто (логин, IP) что (тип события) и когда (дата и время) производил.
         //page, sort, filter
 //        Sort
-        return ResponseEntity.ok(new ArrayList<>());
+        return ResponseEntity.ok(Page.empty());
     }
 
     //todo maybe ip by mask? or how it's correct like 127.*.*.*
