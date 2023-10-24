@@ -28,7 +28,7 @@ public class AuthEventController {//todo maybe rename to EventController?
         this.eventRepository = eventRepository;
     }
 
-    @GetMapping(path = "auth/events", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "auth/events0", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Page<AuthEventEntity>> getEvents() {
         //todo use custom Page class Page
         //кто (логин, IP) что (тип события) и когда (дата и время) производил.
@@ -44,7 +44,8 @@ public class AuthEventController {//todo maybe rename to EventController?
     //when ?dateFrom=2015-01-01T16:33:23&?dateTo=2016-03-07T14:55:32
     //page ?page=0?size=100500 (incorrect, max size = 100)
     //sort ?sort=column1,direction1&sort=column2,direction2
-    public void aaaa(@RequestParam(name = "user", required = false) String user,
+    @GetMapping(path = "auth/events", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Page<AuthEventEntity>> aaaa(@RequestParam(name = "user", required = false) String user,
                      @RequestParam(name = "ip", required = false) String ip,
                      @RequestParam(name = "type", required = false) String type,
                      @RequestParam(name = "dateFrom", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime dateFrom,
@@ -54,6 +55,7 @@ public class AuthEventController {//todo maybe rename to EventController?
                      @RequestParam(name = "sort", required = false, defaultValue = "id,desc") String[] sort) {
         //https://stackoverflow.com/questions/62676920/spring-boot-offsetdatetime-in-query-param
         //todo check date parsing, they can not work -> object mapper/ and try spring.mvc.format.date-format=yyyy-MM-dd'T'HH:mm:ss.SSSXXX
+        return ResponseEntity.ok(eventRepository.getFilteredEntities(user, ip, type, dateFrom, dateTo, page, size, sort));
     }
 
     private record AuthEventDto(String ipAddress, OffsetDateTime time, String userName, SiemEventType eventType) {
