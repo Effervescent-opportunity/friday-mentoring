@@ -51,17 +51,17 @@ class AuthEventRepositoryFacade implements EventRepository {
             throw new RuntimeException("incorrect page");//todo
         }
 
-        if (size < 0 || size > 100)  {
+        if (size <= 0 || size > 100)  {
             throw new RuntimeException("incorrect size");//todo return http 400 + add field validation
         }
 
         if (dateFrom != null && dateTo != null && dateFrom.isAfter(dateTo)) {
             throw new RuntimeException("incorrect date");//todo
         }
-
-        if (sort.length % 2 != 0) {
-            throw new RuntimeException();//todo http 400
-        }
+//["user", "desc"] String[2]//["user,desc", "type,asc"] - String[2]//["user,desc", "type,asc", "ab,abs"] - String[3]
+//        if (sort.length % 2 != 0) {//incorrect
+//            throw new RuntimeException();//todo http 400
+//        }
 
         Specification<AuthEventEntity> spec = Specification.where(null);
 

@@ -1,3 +1,31 @@
+-- 2023-10-25 
+
+curl -k -v https://localhost:8443/auth/events - works
+
+curl -k -v https://localhost:8443/auth/events?user=root
+curl -k -v https://localhost:8443/auth/events?user=anonymousUser
+https://localhost:8443/auth/events?user=wtfUser - empty + 200
+https://localhost:8443/auth/events?user=root1&ip=127.0.0.1 - empty
+https://localhost:8443/auth/events?user=root&ip=127.0.0.1 - has things
+https://localhost:8443/auth/events?user=root&ip=127.0.0.1&type=AUTHENTICATION_SUCCESS - has things
+https://localhost:8443/auth/events?user=root&page=0&size=2 - works
+curl -k -v https://localhost:8443/auth/events?user=root&page=3&size=0 - wtf
+https://localhost:8443/auth/events?ip=127.0.0.1&size=40&sort=user,desc
+
+https://localhost:8443/auth/events?ip=127.0.0.1&size=40&sort=user,desc&sort=type,asc&sort=ab,abs
+
+https://localhost:8443/auth/events?ip=127.0.0.1&size=40&dateFrom=2015-01-01T16:33:23&dateTo=2016-03-07T14:55:32 - 400 Failed to convert 'dateFrom' with value: '2015-01-01T16:33:23'"
+
+https://localhost:8443/auth/events?ip=127.0.0.1&size=40&dateFrom=2015-01-01T16:33:23+02:00&dateTo=2016-03-07T14:55:32
+
+https://localhost:8443/auth/events?ip=127.0.0.1&size=40&dateFrom=2000-10-31T01:30:00.000-05:00 - this works
+https://localhost:8443/auth/events?ip=127.0.0.1&size=40&dateFrom=2023-10-24T01:30:00.000-05:00 - this works
+https://localhost:8443/auth/events?ip=127.0.0.1&size=40&dateFrom=2023-10-24T01:30:00.000Z - this works
+
+curl -k -v 'https://localhost:8443/auth/events?ip=127.0.0.1&size=40&dateFrom=2023-10-24T01:30:00.000%2b05:00'
+https://localhost:8443/auth/events?ip=127.0.0.1&size=40&dateFrom=2023-10-24T01:30:00.000%2b05:00 - works
+
+https://localhost:8443/auth/events?ip=127.0.0.1&size=40&dateTo=2023-10-24T01:30:00.000%2b05:00&dateFrom=2023-10-01T01:30:00.000%2b05:00
 
 --2023-10-09
 With running with dependency: https://localhost:8443/v3/api-docs

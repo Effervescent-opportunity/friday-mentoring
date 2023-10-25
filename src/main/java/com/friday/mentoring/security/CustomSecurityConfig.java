@@ -34,6 +34,7 @@ public class CustomSecurityConfig {
                 .authorizeHttpRequests(authorizeHttpRequests ->
                         authorizeHttpRequests
                                 .requestMatchers("/auth/events").permitAll())//todo check security - old works, new allows all//or maybe it's all unnecessary?
+                //даже не заходит в AuthController, ClockController, зато в AuthEventController заходит без всего
                 .logout(logout -> logout.logoutUrl("/auth/logout"))
                 .exceptionHandling(authorizeHttpRequests -> authorizeHttpRequests
                         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.NOT_FOUND)))
