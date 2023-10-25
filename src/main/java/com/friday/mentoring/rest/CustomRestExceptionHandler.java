@@ -15,8 +15,17 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = DateTimeException.class)
     protected ProblemDetail handleTimezoneParsingErrors(DateTimeException ex, WebRequest request) {
+        return getBadRequestResult(ex.getMessage(), request);
+    }
+
+    @ExceptionHandler(value = IllegalArgumentException.class)
+    protected ProblemDetail handleIncorrectArgumentsErrors(IllegalArgumentException ex, WebRequest request) {
+        return getBadRequestResult(ex.getMessage(), request);
+    }
+
+    private static ProblemDetail getBadRequestResult(String errorMessage, WebRequest request) {
         ProblemDetail pd = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
-        pd.setDetail(ex.getMessage());
+        pd.setDetail(errorMessage);
         pd.setType(URI.create(request.getContextPath()));
         return pd;
     }

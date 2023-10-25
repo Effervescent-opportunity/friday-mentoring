@@ -1,9 +1,5 @@
 package com.friday.mentoring.jpa;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.OffsetDateTime;
@@ -11,48 +7,47 @@ import java.time.OffsetDateTime;
 class AuthEventSpecifications {
 
     public static Specification<AuthEventEntity> userEquals(String user) {
-        return new Specification<AuthEventEntity>() {
-            @Override
-            public Predicate toPredicate(Root<AuthEventEntity> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-                return criteriaBuilder.equal(root.get(AuthEventEntity_.USER_NAME), user);
-//                return null;
+        return (root, query, criteriaBuilder) -> {
+            if (user == null) {
+                return null;
             }
+            return criteriaBuilder.equal(root.get(AuthEventEntity_.USER_NAME), user);
         };
     }
 
     public static Specification<AuthEventEntity> ipEquals(String ip) {
-        return new Specification<AuthEventEntity>() {
-            @Override
-            public Predicate toPredicate(Root<AuthEventEntity> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-                return criteriaBuilder.equal(root.get(AuthEventEntity_.IP_ADDRESS), ip);
+        return (root, query, criteriaBuilder) -> {
+            if (ip == null) {
+                return null;
             }
+            return criteriaBuilder.equal(root.get(AuthEventEntity_.IP_ADDRESS), ip);
         };
     }
 
     public static Specification<AuthEventEntity> typeEquals(String type) {
-        return new Specification<AuthEventEntity>() {
-            @Override
-            public Predicate toPredicate(Root<AuthEventEntity> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-                return criteriaBuilder.equal(root.get(AuthEventEntity_.EVENT_TYPE), type);
+        return (root, query, criteriaBuilder) -> {
+            if (type == null) {
+                return null;
             }
+            return criteriaBuilder.equal(root.get(AuthEventEntity_.EVENT_TYPE), type);
         };
     }
 
     public static Specification<AuthEventEntity> timeGreaterThan(OffsetDateTime startTime) {
-        return new Specification<AuthEventEntity>() {
-            @Override
-            public Predicate toPredicate(Root<AuthEventEntity> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-                return criteriaBuilder.greaterThanOrEqualTo(root.get(AuthEventEntity_.EVENT_TIME), startTime);
+        return (root, query, criteriaBuilder) -> {
+            if (startTime == null) {
+                return null;
             }
+            return criteriaBuilder.greaterThanOrEqualTo(root.get(AuthEventEntity_.EVENT_TIME), startTime);
         };
     }
 
     public static Specification<AuthEventEntity> timeLessThan(OffsetDateTime endTime) {
-        return new Specification<AuthEventEntity>() {
-            @Override
-            public Predicate toPredicate(Root<AuthEventEntity> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-                return criteriaBuilder.lessThanOrEqualTo(root.get(AuthEventEntity_.EVENT_TIME), endTime);
+        return (root, query, criteriaBuilder) -> {
+            if (endTime == null) {
+                return null;
             }
+            return criteriaBuilder.lessThanOrEqualTo(root.get(AuthEventEntity_.EVENT_TIME), endTime);
         };
     }
 }
