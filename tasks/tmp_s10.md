@@ -1,4 +1,56 @@
--- 2023-10-25 
+-- 2023-10-25
+Swagger works at https://localhost:8443/swagger-ui/index.html#/auth-event-controller/aaaa и даты там можно с плюсиком вводить
+(и их в принципе можно без миллисекунд вводить)
+curl -k -v -X POST https://localhost:8443/auth/login -H "Content-Type: application/json" -d '{"user": "root", "password": "password"}'
+
+7BE9537CFB7B015F46EA2F0C8AA521C3
+
+curl -k -v https://localhost:8444/actuator/auditevents ??? because of management.server.port = 8444
+curl -k -v https://localhost:8443/actuator/auditevents after deletion
+
+
+curl -k -v https://localhost:8443/time/current/utc 
+curl -k -v https://localhost:8443/time/current/utc -H "Cookie: JSESSIONID=7BE9537CFB7B015F46EA2F0C8AA521C3" - works
+
+Enormous page:
+```json
+{
+  "content": [
+    {
+      "id": "fcf50e3e-4f6e-42a7-aaac-0ccc7d9c1cc2",
+      "ipAddress": "127.0.0.1",
+      "eventTime": "2023-09-28T19:00:16.995115Z",
+      "userName": "root",
+      "eventType": "0"
+    }
+  ],
+  "pageable": {
+    "sort": {
+      "empty": true,
+      "sorted": false,
+      "unsorted": true
+    },
+    "offset": 0,
+    "pageNumber": 0,
+    "pageSize": 10,
+    "paged": true,
+    "unpaged": false
+  },
+  "totalPages": 1,
+  "totalElements": 1,
+  "last": true,
+  "size": 10,
+  "number": 0,
+  "sort": {
+    "empty": true,
+    "sorted": false,
+    "unsorted": true
+  },
+  "numberOfElements": 1,
+  "first": true,
+  "empty": false
+}
+```
 
 curl -k -v https://localhost:8443/auth/events - works
 

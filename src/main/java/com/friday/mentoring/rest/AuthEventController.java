@@ -56,7 +56,7 @@ public class AuthEventController {//todo maybe rename to EventController?
         //https://stackoverflow.com/questions/62676920/spring-boot-offsetdatetime-in-query-param
         //todo check date parsing, they can not work -> object mapper/ and try spring.mvc.format.date-format=yyyy-MM-dd'T'HH:mm:ss.SSSXXX
         return ResponseEntity.ok(eventRepository.getFilteredEntities(user, ip, type, dateFrom, dateTo, page, size, sort));
-    }
+    }//todo make custom page. now I have very big it (look at tmp_s10
 
     private record AuthEventDto(String ipAddress, OffsetDateTime time, String userName, SiemEventType eventType) {
     }
