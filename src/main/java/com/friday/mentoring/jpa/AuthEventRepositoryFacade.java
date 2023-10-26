@@ -23,7 +23,7 @@ class AuthEventRepositoryFacade implements EventRepository {
 
     private static final String SORT_DELIMITER = ",";
 
-    private static List<String> sortedFields;
+    private static final List<String> sortedFields;
 
     static {
         sortedFields = new ArrayList<>();
@@ -55,6 +55,28 @@ class AuthEventRepositoryFacade implements EventRepository {
         return authEventRepository.streamByWasSentFalse();
     }
 
+
+    @Override
+    public Page<AuthEventEntity> getFilteredEntities1(String user, String ip, String type, OffsetDateTime dateFrom,
+                                                      OffsetDateTime dateTo, Pageable pageable) {
+//        if (page < 0) {//todo is it reachable?
+//            throw new IllegalArgumentException("Номер страницы должен быть неотрицательным");
+//        }
+//
+//        if (size <= 0 || size > 100) {
+//            throw new IllegalArgumentException("Допустимый размер страницы: от 0 до 100 включительно");
+//        }
+
+        if (dateFrom != null && dateTo != null && dateFrom.isAfter(dateTo)) {
+            throw new IllegalArgumentException("Дата начала периода должна быть до даты окончания периода");
+        }//todo sort order property
+
+        Specification<AuthEventEntity> spec = userEquals(user).and(ipEquals(ip)).and(typeEquals(type))
+                .and(timeGreaterThan(dateFrom)).and(timeLessThan(dateTo));
+
+        return authEventRepository.findAll(spec, pageable);
+    }
+
     @Override
     public Page<AuthEventEntity> getFilteredEntities(String user, String ip, String type, OffsetDateTime dateFrom,
                                                      OffsetDateTime dateTo, int page, int size, String[] sort) {
@@ -78,7 +100,7 @@ class AuthEventRepositoryFacade implements EventRepository {
     }
 
     private Sort getSortFromArray(String[] sort) {
-        if (sort.length <= 1) {//todo try without sort in controller - is it parsed to [id, desc] String[2]? Or to String[1]?
+        if (sort.length <= 1) {//todo try without sort in controller - is it parsed to [id, desc] String[2]? Or to String[1]?//string 2
             throw new IllegalArgumentException("Некорректно задаincorrect sort");
         }
 

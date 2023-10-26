@@ -1,3 +1,8 @@
+-- 2023-10-26
+https://localhost:8443/auth/events?ip=127.0.0.1&size=40&sort=user,desc
+
+https://localhost:8443/auth/events1?ip=127.0.0.1&size=40&sort=userName,desc
+
 -- 2023-10-25
 Swagger works at https://localhost:8443/swagger-ui/index.html#/auth-event-controller/aaaa и даты там можно с плюсиком вводить
 (и их в принципе можно без миллисекунд вводить)

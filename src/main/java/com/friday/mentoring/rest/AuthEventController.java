@@ -5,7 +5,9 @@ import com.friday.mentoring.usecase.EventRepository;
 import com.friday.mentoring.usecase.SiemEventType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -58,6 +60,31 @@ public class AuthEventController {//todo maybe rename to EventController?
         return ResponseEntity.ok(eventRepository.getFilteredEntities(user, ip, type, dateFrom, dateTo, page, size, sort));
     }//todo make custom page. now I have very big it (look at tmp_s10
 
+    @GetMapping(path = "auth/events1", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Page<AuthEventEntity>> aaaa1(@RequestParam(name = "user", required = false) String user,
+                                                       @RequestParam(name = "ip", required = false) String ip,
+                                                       @RequestParam(name = "type", required = false) String type,
+                                                       @RequestParam(name = "dateFrom", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime dateFrom,
+                                                       @RequestParam(name = "dateTo", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime dateTo,
+
+//                                                       @PageableDefault(page = 0, size = 20)
+//                                                           @SortDefault.SortDefaults({
+//                                                                   @SortDefault(sort = "name", direction = Sort.Direction.DESC),
+//                                                                   @SortDefault(sort = "id", direction = Sort.Direction.ASC)
+//                                                           })
+                                                       Pageable pageable) {//todo you can accept pageable
+        //https://stackoverflow.com/questions/62676920/spring-boot-offsetdatetime-in-query-param
+        //todo check date parsing, they can not work -> object mapper/ and try spring.mvc.format.date-format=yyyy-MM-dd'T'HH:mm:ss.SSSXXX
+//Если параметры для pageable некорректны, то он ставит дефолтные 0, 20. Плюс наименование полей все равно проверять
+        return ResponseEntity.ok(eventRepository.getFilteredEntities1(user, ip, type, dateFrom, dateTo, pageable));
+    }//todo make custom page. now I have very big it (look at tmp_s10
+
+
+    //todo spring.data.web.pageable.size-parameter=size
+    //spring.data.web.pageable.page-parameter=page
+    //spring.data.web.pageable.default-page-size=20
+    //spring.data.web.pageable.one-indexed-parameters=false
+    //spring.data.web.pageable.max-page-size=2000
     private record AuthEventDto(String ipAddress, OffsetDateTime time, String userName, SiemEventType eventType) {
     }
 }
