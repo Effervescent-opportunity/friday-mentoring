@@ -3,8 +3,8 @@ package com.friday.mentoring.jpa;
 import com.friday.mentoring.usecase.EventRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
@@ -55,28 +55,6 @@ class AuthEventRepositoryFacade implements EventRepository {
         return authEventRepository.streamByWasSentFalse();
     }
 
-
-    @Override
-    public Page<AuthEventEntity> getFilteredEntities1(String user, String ip, String type, OffsetDateTime dateFrom,
-                                                      OffsetDateTime dateTo, Pageable pageable) {
-//        if (page < 0) {//todo is it reachable?
-//            throw new IllegalArgumentException("Номер страницы должен быть неотрицательным");
-//        }
-//
-//        if (size <= 0 || size > 100) {
-//            throw new IllegalArgumentException("Допустимый размер страницы: от 0 до 100 включительно");
-//        }
-
-        if (dateFrom != null && dateTo != null && dateFrom.isAfter(dateTo)) {
-            throw new IllegalArgumentException("Дата начала периода должна быть до даты окончания периода");
-        }//todo sort order property
-
-        Specification<AuthEventEntity> spec = userEquals(user).and(ipEquals(ip)).and(typeEquals(type))
-                .and(timeGreaterThan(dateFrom)).and(timeLessThan(dateTo));
-
-        return authEventRepository.findAll(spec, pageable);
-    }
-
     @Override
     public Page<AuthEventEntity> getFilteredEntities(String user, String ip, String type, OffsetDateTime dateFrom,
                                                      OffsetDateTime dateTo, int page, int size, String[] sort) {
@@ -100,32 +78,23 @@ class AuthEventRepositoryFacade implements EventRepository {
     }
 
     private Sort getSortFromArray(String[] sort) {
-        if (sort.length <= 1) {//todo try without sort in controller - is it parsed to [id, desc] String[2]? Or to String[1]?//string 2
-            throw new IllegalArgumentException("Некорректно задаincorrect sort");
+        if (sort.length <= 1) {
+            throw new IllegalArgumentException("Сортировка задана некорректно");
         }
-
-        //["user", "desc"] String[2]
-        // ["user,desc", "type,asc"] - String[2]
-        // ["user,desc", "type,asc", "ab,abs"] - String[3]
-//        if (sort.length % 2 != 0) {//incorrect
-//            throw new RuntimeException();//todo http 400
-//        }
-
 
         List<Order> sortOrders = new ArrayList<>();
 
         if (sort[0].contains(SORT_DELIMITER)) {
-            // will sort more than 2 fields//todo translate to Russian
-            // sortOrder="field, direction"
+            // Сортировка по двум и более полям, массив вида: ["userName,desc", "eventType,asc"]
             for (String sortOrder : sort) {
                 String[] fieldAndDirection = sortOrder.split(SORT_DELIMITER);
                 if (fieldAndDirection.length != 2) {
-                    throw new IllegalArgumentException("Incorrect one sort");//todo rename
+                    throw new IllegalArgumentException("Сортировка задана некорректно");
                 }
                 sortOrders.add(getSortOrder(fieldAndDirection[0], fieldAndDirection[1]));
             }
         } else {
-            // sort=[field, direction]
+            // Сортировка по одному полю, массив вида: ["userName", "desc"]
             sortOrders.add(getSortOrder(sort[0], sort[1]));
         }
 
@@ -137,10 +106,10 @@ class AuthEventRepositoryFacade implements EventRepository {
             throw new IllegalArgumentException("Некорректное название поля для сортировки: " + fieldName);
         }
 
-        if (Sort.Direction.ASC.name().equalsIgnoreCase(direction)) {
-            return new Order(Sort.Direction.ASC, fieldName);
-        } else if (Sort.Direction.DESC.name().equalsIgnoreCase(direction)) {
-            return new Order(Sort.Direction.DESC, fieldName);
+        if (Direction.ASC.name().equalsIgnoreCase(direction)) {
+            return new Order(Direction.ASC, fieldName);
+        } else if (Direction.DESC.name().equalsIgnoreCase(direction)) {
+            return new Order(Direction.DESC, fieldName);
         } else {
             throw new IllegalArgumentException("Некорректное направление сортировки: " + direction);
         }
