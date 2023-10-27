@@ -7,7 +7,10 @@ import java.time.OffsetDateTime;
 /**
  * Спецификации для фильтрации AuthEventEntity
  */
-class AuthEventSpecifications {
+final class AuthEventSpecifications {
+
+    private AuthEventSpecifications() {
+    }
 
     public static Specification<AuthEventEntity> userNameEquals(String userName) {
         return (root, query, criteriaBuilder) -> {

@@ -6,16 +6,19 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@DirtiesContext
 @AutoConfigureMockMvc
 public class EventControllerTest extends BaseIntegrationTest {
 
@@ -42,17 +45,36 @@ public class EventControllerTest extends BaseIntegrationTest {
 
     @Sql("/add_events.sql")
     @Test
-    void successFilterTest() throws Exception {
+    void successFiltersTest() throws Exception {
         mockMvc.perform(get("/auth/events").param("userName", "root")
+                        .param("timeTo", OffsetDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME))
                         .param("ipAddress", "127.0.0.1")
-                        .param("sort", "eventTime, asc")
+                        .param("sort", "eventTime,asc")
                         .param("size", "1"))
                 .andExpectAll(
                         status().isOk(),
                         content().contentType("application/json"),
                         jsonPath("numberOfElements").value(1),
                         jsonPath("totalPages").value(3),
-                        jsonPath("content[0].eventType").value("AUTHENTICATION_SUCCESS")
+                        jsonPath("content[0].eventType").value("AUTHENTICATION_SUCCESS"),
+                        jsonPath("content[0].userName").value("root")
+                ).andDo(print());
+
+        mockMvc.perform(get("/auth/events").param("eventType", "AUTHENTICATION_SUCCESS")
+                        .param("timeFrom", OffsetDateTime.of(2022, 1, 1, 1, 1, 1, 0, ZoneOffset.UTC).format(DateTimeFormatter.ISO_DATE_TIME))
+                        .param("timeTo", OffsetDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME))
+                        .param("sort", "userName,desc")
+                        .param("sort", "eventTime,asc")
+                        .param("page", "1")
+                        .param("size", "1"))
+                .andExpectAll(
+                        status().isOk(),
+                        content().contentType("application/json"),
+                        jsonPath("numberOfElements").value(1),
+                        jsonPath("totalPages").value(3),
+                        jsonPath("number").value(1),
+                        jsonPath("content[0].eventType").value("AUTHENTICATION_SUCCESS"),
+                        jsonPath("content[0].userName").value("other")
                 ).andDo(print());
     }
 
@@ -97,6 +119,14 @@ public class EventControllerTest extends BaseIntegrationTest {
     @Test
     void incorrectSortTest() throws Exception {
         mockMvc.perform(get("/auth/events").param("sort", "incorrect"))
+                .andExpectAll(
+                        status().isBadRequest(),
+                        content().contentTypeCompatibleWith("application/problem+json"),
+                        jsonPath("detail").value("Сортировка задана некорректно")
+                ).andDo(print());
+
+        mockMvc.perform(get("/auth/events").param("sort", "userName,asc")
+                        .param("sort", "incorrect"))
                 .andExpectAll(
                         status().isBadRequest(),
                         content().contentTypeCompatibleWith("application/problem+json"),
