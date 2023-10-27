@@ -56,22 +56,22 @@ class AuthEventRepositoryFacade implements EventRepository {
     }
 
     @Override
-    public Page<AuthEventEntity> getFilteredEntities(String user, String ip, String type, OffsetDateTime dateFrom,
-                                                     OffsetDateTime dateTo, int page, int size, String[] sort) {
+    public Page<AuthEventEntity> getFilteredEntities(String user, String ip, String type, OffsetDateTime timeFrom,
+                                                     OffsetDateTime timeTo, int page, int size, String[] sort) {
         if (page < 0) {
             throw new IllegalArgumentException("Номер страницы должен быть неотрицательным");
         }
 
         if (size <= 0 || size > 100) {
-            throw new IllegalArgumentException("Допустимый размер страницы: от 0 до 100 включительно");
+            throw new IllegalArgumentException("Допустимый размер страницы: от 1 до 100 включительно");
         }
 
-        if (dateFrom != null && dateTo != null && dateFrom.isAfter(dateTo)) {
+        if (timeFrom != null && timeTo != null && timeFrom.isAfter(timeTo)) {
             throw new IllegalArgumentException("Дата начала периода должна быть до даты окончания периода");
         }
 
-        Specification<AuthEventEntity> spec = userEquals(user).and(ipEquals(ip)).and(typeEquals(type))
-                .and(timeGreaterThan(dateFrom)).and(timeLessThan(dateTo));
+        Specification<AuthEventEntity> spec = userNameEquals(user).and(ipAddressEquals(ip)).and(eventTypeEquals(type))
+                .and(eventTimeGreaterThanOrEquals(timeFrom)).and(eventTimeLessThanOrEquals(timeTo));
 
         Sort sortObject = getSortFromArray(sort);
         return authEventRepository.findAll(spec, PageRequest.of(page, size, sortObject));

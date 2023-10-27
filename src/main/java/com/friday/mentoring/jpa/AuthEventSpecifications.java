@@ -4,50 +4,53 @@ import org.springframework.data.jpa.domain.Specification;
 
 import java.time.OffsetDateTime;
 
+/**
+ * Спецификации для фильтрации AuthEventEntity
+ */
 class AuthEventSpecifications {
 
-    public static Specification<AuthEventEntity> userEquals(String user) {
+    public static Specification<AuthEventEntity> userNameEquals(String userName) {
         return (root, query, criteriaBuilder) -> {
-            if (user == null) {
+            if (userName == null) {
                 return null;
             }
-            return criteriaBuilder.equal(root.get(AuthEventEntity_.USER_NAME), user);
+            return criteriaBuilder.equal(root.get(AuthEventEntity_.USER_NAME), userName);
         };
     }
 
-    public static Specification<AuthEventEntity> ipEquals(String ip) {
+    public static Specification<AuthEventEntity> ipAddressEquals(String ipAddress) {
         return (root, query, criteriaBuilder) -> {
-            if (ip == null) {
+            if (ipAddress == null) {
                 return null;
             }
-            return criteriaBuilder.equal(root.get(AuthEventEntity_.IP_ADDRESS), ip);
+            return criteriaBuilder.equal(root.get(AuthEventEntity_.IP_ADDRESS), ipAddress);
         };
     }
 
-    public static Specification<AuthEventEntity> typeEquals(String type) {
+    public static Specification<AuthEventEntity> eventTypeEquals(String eventType) {
         return (root, query, criteriaBuilder) -> {
-            if (type == null) {
+            if (eventType == null) {
                 return null;
             }
-            return criteriaBuilder.equal(root.get(AuthEventEntity_.EVENT_TYPE), type);
+            return criteriaBuilder.equal(root.get(AuthEventEntity_.EVENT_TYPE), eventType);
         };
     }
 
-    public static Specification<AuthEventEntity> timeGreaterThan(OffsetDateTime startTime) {
+    public static Specification<AuthEventEntity> eventTimeGreaterThanOrEquals(OffsetDateTime eventTimeFrom) {
         return (root, query, criteriaBuilder) -> {
-            if (startTime == null) {
+            if (eventTimeFrom == null) {
                 return null;
             }
-            return criteriaBuilder.greaterThanOrEqualTo(root.get(AuthEventEntity_.EVENT_TIME), startTime);
+            return criteriaBuilder.greaterThanOrEqualTo(root.get(AuthEventEntity_.EVENT_TIME), eventTimeFrom);
         };
     }
 
-    public static Specification<AuthEventEntity> timeLessThan(OffsetDateTime endTime) {
+    public static Specification<AuthEventEntity> eventTimeLessThanOrEquals(OffsetDateTime eventTimeTo) {
         return (root, query, criteriaBuilder) -> {
-            if (endTime == null) {
+            if (eventTimeTo == null) {
                 return null;
             }
-            return criteriaBuilder.lessThanOrEqualTo(root.get(AuthEventEntity_.EVENT_TIME), endTime);
+            return criteriaBuilder.lessThanOrEqualTo(root.get(AuthEventEntity_.EVENT_TIME), eventTimeTo);
         };
     }
 }

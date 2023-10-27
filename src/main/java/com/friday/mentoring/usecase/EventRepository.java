@@ -14,6 +14,6 @@ public interface EventRepository {
 
     Stream<AuthEventEntity> getNotSentEvents();
 
-    Page<AuthEventEntity> getFilteredEntities(String user, String ip, String type, OffsetDateTime dateFrom,
-                                              OffsetDateTime dateTo, int page, int size, String[] sort);
+    Page<AuthEventEntity> getFilteredEntities(String user, String ip, String type, OffsetDateTime timeFrom,
+                                              OffsetDateTime timeTo, int page, int size, String[] sort);
 }
