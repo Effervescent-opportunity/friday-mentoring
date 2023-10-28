@@ -33,7 +33,7 @@ public class EventController {
                                                         @RequestParam(name = "timeTo", required = false) @DateTimeFormat(iso = ISO.DATE_TIME) OffsetDateTime timeTo,
                                                         @RequestParam(name = "page", required = false, defaultValue = "0") int page,
                                                         @RequestParam(name = "size", required = false, defaultValue = "10") int size,
-                                                        @RequestParam(name = "sort", required = false, defaultValue = "id,desc") String[] sort) {
+                                                        @RequestParam(name = "sort", required = false, defaultValue = "eventTime,desc") String[] sort) {
         Page<AuthEventEntity> filteredEntities = eventRepository.getFilteredEntities(userName, ipAddress, eventType, timeFrom, timeTo, page, size, sort);
 
         return ResponseEntity.ok(filteredEntities

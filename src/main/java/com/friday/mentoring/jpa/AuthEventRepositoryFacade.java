@@ -15,8 +15,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+import static com.friday.mentoring.jpa.AuthEventEntity.*;
 import static com.friday.mentoring.jpa.AuthEventEntity_.*;
-import static com.friday.mentoring.jpa.AuthEventSpecifications.*;
 
 @Component
 class AuthEventRepositoryFacade implements EventRepository {
@@ -25,16 +25,7 @@ class AuthEventRepositoryFacade implements EventRepository {
     /**
      * Названия полей, по которым возможна сортировка
      */
-    private static final List<String> sortedFields;
-
-    static {
-        sortedFields = new ArrayList<>();
-        sortedFields.add(ID);
-        sortedFields.add(USER_NAME);
-        sortedFields.add(IP_ADDRESS);
-        sortedFields.add(EVENT_TYPE);
-        sortedFields.add(EVENT_TIME);
-    }
+    private static final List<String> sortedFields = List.of(USER_NAME, IP_ADDRESS, EVENT_TYPE, EVENT_TIME);
 
     private final AuthEventRepository authEventRepository;
 
@@ -72,8 +63,11 @@ class AuthEventRepositoryFacade implements EventRepository {
             throw new IllegalArgumentException("Дата начала периода должна быть до даты окончания периода");
         }
 
-        Specification<AuthEventEntity> spec = userNameEquals(userName).and(ipAddressEquals(ipAddress)).and(eventTypeEquals(eventType))
-                .and(eventTimeGreaterThanOrEquals(eventTimeFrom)).and(eventTimeLessThanOrEquals(eventTimeTo));
+        Specification<AuthEventEntity> spec = userNameEquals(userName)
+                .and(ipAddressEquals(ipAddress))
+                .and(eventTypeEquals(eventType))
+                .and(eventTimeGreaterThanOrEquals(eventTimeFrom))
+                .and(eventTimeLessThanOrEquals(eventTimeTo));
 
         Sort sortObject = getSortFromArray(sort);
         return authEventRepository.findAll(spec, PageRequest.of(page, size, sortObject));
