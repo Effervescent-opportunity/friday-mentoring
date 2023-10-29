@@ -37,6 +37,8 @@ jobs:
           pass-emoji: ':green_circle:'
           fail-emoji: ':red_circle:'
           debug-mode: true
+          prNumber: 11
+# IDK where to put this          https://github.com/Madrapps/jacoco-report/issues/62
       - name: Get the Coverage info
         run: |
           echo "Total coverage ${{ steps.jacoco.outputs.coverage-overall }}"
