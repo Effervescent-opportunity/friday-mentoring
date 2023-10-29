@@ -20,6 +20,5 @@ public interface EventRepository {
 
     record AuthEventDto(String ipAddress, OffsetDateTime time, String userName, String eventType) {
     }
-    record FilterRequest(String userName, String ipAddress, String eventType, OffsetDateTime timeFrom, OffsetDateTime timeTo) {
-    }
+
 }

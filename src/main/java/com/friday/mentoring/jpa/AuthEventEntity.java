@@ -116,7 +116,7 @@ public class AuthEventEntity {
             if (userName == null) {
                 return null;
             }
-            return criteriaBuilder.equal(root.get(AuthEventEntity_.USER_NAME), userName);
+            return criteriaBuilder.equal(root.get("userName"), userName);
         };
     }
 
@@ -125,7 +125,7 @@ public class AuthEventEntity {
             if (ipAddress == null) {
                 return null;
             }
-            return criteriaBuilder.equal(root.get(AuthEventEntity_.IP_ADDRESS), ipAddress);
+            return criteriaBuilder.equal(root.get("ipAddress"), ipAddress);
         };
     }
 
@@ -134,7 +134,7 @@ public class AuthEventEntity {
             if (eventType == null) {
                 return null;
             }
-            return criteriaBuilder.equal(root.get(AuthEventEntity_.EVENT_TYPE), eventType);
+            return criteriaBuilder.equal(root.get("eventType"), eventType);
         };
     }
 
@@ -143,7 +143,7 @@ public class AuthEventEntity {
             if (eventTimeFrom == null) {
                 return null;
             }
-            return criteriaBuilder.greaterThanOrEqualTo(root.get(AuthEventEntity_.EVENT_TIME), eventTimeFrom);
+            return criteriaBuilder.greaterThanOrEqualTo(root.get("eventTime"), eventTimeFrom);
         };
     }
 
@@ -152,7 +152,7 @@ public class AuthEventEntity {
             if (eventTimeTo == null) {
                 return null;
             }
-            return criteriaBuilder.lessThanOrEqualTo(root.get(AuthEventEntity_.EVENT_TIME), eventTimeTo);
+            return criteriaBuilder.lessThanOrEqualTo(root.get("eventTime"), eventTimeTo);
         };
     }
 }
