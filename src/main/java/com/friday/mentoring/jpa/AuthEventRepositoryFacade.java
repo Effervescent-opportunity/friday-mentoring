@@ -3,6 +3,7 @@ package com.friday.mentoring.jpa;
 import com.friday.mentoring.usecase.EventRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
@@ -49,16 +50,8 @@ class AuthEventRepositoryFacade implements EventRepository {
     }
 
     @Override
-    public Page<AuthEventEntity> getFilteredEntities(String userName, String ipAddress, String eventType, OffsetDateTime eventTimeFrom,
-                                                     OffsetDateTime eventTimeTo, int page, int size, String[] sort) {
-        if (page < 0) {
-            throw new IllegalArgumentException("Номер страницы должен быть неотрицательным");
-        }
-
-        if (size <= 0 || size > 100) {
-            throw new IllegalArgumentException("Допустимый размер страницы: от 1 до 100 включительно");
-        }
-
+    public Page<EventRepository.AuthEventDto> getFilteredEntities(String userName, String ipAddress, String eventType, OffsetDateTime eventTimeFrom,
+                                                     OffsetDateTime eventTimeTo, Pageable pageable) {
         if (eventTimeFrom != null && eventTimeTo != null && eventTimeFrom.isAfter(eventTimeTo)) {
             throw new IllegalArgumentException("Дата начала периода должна быть до даты окончания периода");
         }
@@ -69,8 +62,8 @@ class AuthEventRepositoryFacade implements EventRepository {
                 .and(eventTimeGreaterThanOrEquals(eventTimeFrom))
                 .and(eventTimeLessThanOrEquals(eventTimeTo));
 
-        Sort sortObject = getSortFromArray(sort);
-        return authEventRepository.findAll(spec, PageRequest.of(page, size, sortObject));
+        return authEventRepository.findAll(spec, pageable)
+                .map(entity -> new AuthEventDto(entity.getIpAddress(), entity.getEventTime(), entity.getUserName(), entity.getEventType()));
     }
 
     private Sort getSortFromArray(String[] sort) {

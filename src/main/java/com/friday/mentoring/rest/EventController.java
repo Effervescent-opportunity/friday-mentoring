@@ -1,8 +1,9 @@
 package com.friday.mentoring.rest;
 
-import com.friday.mentoring.jpa.AuthEventEntity;
 import com.friday.mentoring.usecase.EventRepository;
+import com.friday.mentoring.usecase.EventRepository.AuthEventDto;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.http.MediaType;
@@ -31,15 +32,8 @@ public class EventController {
                                                         @RequestParam(name = "eventType", required = false) String eventType,
                                                         @RequestParam(name = "timeFrom", required = false) @DateTimeFormat(iso = ISO.DATE_TIME) OffsetDateTime timeFrom,
                                                         @RequestParam(name = "timeTo", required = false) @DateTimeFormat(iso = ISO.DATE_TIME) OffsetDateTime timeTo,
-                                                        @RequestParam(name = "page", required = false, defaultValue = "0") int page,
-                                                        @RequestParam(name = "size", required = false, defaultValue = "10") int size,
-                                                        @RequestParam(name = "sort", required = false, defaultValue = "eventTime,desc") String[] sort) {
-        Page<AuthEventEntity> filteredEntities = eventRepository.getFilteredEntities(userName, ipAddress, eventType, timeFrom, timeTo, page, size, sort);
-
-        return ResponseEntity.ok(filteredEntities
-                .map(entity -> new AuthEventDto(entity.getIpAddress(), entity.getEventTime(), entity.getUserName(), entity.getEventType())));
+                                                        Pageable pageable) {
+        return ResponseEntity.ok(eventRepository.getFilteredEntities(userName, ipAddress, eventType, timeFrom, timeTo, pageable));
     }
 
-    private record AuthEventDto(String ipAddress, OffsetDateTime time, String userName, String eventType) {
-    }
 }
