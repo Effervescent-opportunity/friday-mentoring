@@ -2,6 +2,7 @@ package com.friday.mentoring.usecase;
 
 import com.friday.mentoring.jpa.AuthEventEntity;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -14,6 +15,10 @@ public interface EventRepository {
 
     Stream<AuthEventEntity> getNotSentEvents();
 
-    Page<AuthEventEntity> getFilteredEntities(String userName, String ipAddress, String eventType, OffsetDateTime timeFrom,
-                                              OffsetDateTime timeTo, int page, int size, String[] sort);
+    Page<AuthEventDto> getFilteredEntities(String userName, String ipAddress, String eventType, OffsetDateTime timeFrom,
+                                           OffsetDateTime timeTo, Pageable pageable);
+
+    record AuthEventDto(String ipAddress, OffsetDateTime time, String userName, String eventType) {
+    }
+
 }

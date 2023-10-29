@@ -1,5 +1,6 @@
 package com.friday.mentoring.rest;
 
+import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -21,6 +22,11 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = IllegalArgumentException.class)
     protected ProblemDetail handleIllegalArgumentErrors(IllegalArgumentException ex, WebRequest request) {
         return getBadRequestResult(ex.getMessage(), request);
+    }
+
+    @ExceptionHandler(value = PropertyReferenceException.class)
+    protected ProblemDetail handleIllegalColumnNameErrors(PropertyReferenceException ex, WebRequest request) {
+        return getBadRequestResult("Incorrect property name for sorting: " + ex.getPropertyName(), request);
     }
 
     private static ProblemDetail getBadRequestResult(String errorMessage, WebRequest request) {

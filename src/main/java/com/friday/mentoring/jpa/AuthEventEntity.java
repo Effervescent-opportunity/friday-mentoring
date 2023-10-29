@@ -1,6 +1,7 @@
 package com.friday.mentoring.jpa;
 
 import jakarta.persistence.*;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -108,5 +109,50 @@ public class AuthEventEntity {
                 ", eventType='" + eventType + '\'' +
                 ", wasSent=" + wasSent +
                 '}';
+    }
+
+    public static Specification<AuthEventEntity> userNameEquals(String userName) {
+        return (root, query, criteriaBuilder) -> {
+            if (userName == null) {
+                return null;
+            }
+            return criteriaBuilder.equal(root.get("userName"), userName);
+        };
+    }
+
+    public static Specification<AuthEventEntity> ipAddressEquals(String ipAddress) {
+        return (root, query, criteriaBuilder) -> {
+            if (ipAddress == null) {
+                return null;
+            }
+            return criteriaBuilder.equal(root.get("ipAddress"), ipAddress);
+        };
+    }
+
+    public static Specification<AuthEventEntity> eventTypeEquals(String eventType) {
+        return (root, query, criteriaBuilder) -> {
+            if (eventType == null) {
+                return null;
+            }
+            return criteriaBuilder.equal(root.get("eventType"), eventType);
+        };
+    }
+
+    public static Specification<AuthEventEntity> eventTimeGreaterThanOrEquals(OffsetDateTime eventTimeFrom) {
+        return (root, query, criteriaBuilder) -> {
+            if (eventTimeFrom == null) {
+                return null;
+            }
+            return criteriaBuilder.greaterThanOrEqualTo(root.get("eventTime"), eventTimeFrom);
+        };
+    }
+
+    public static Specification<AuthEventEntity> eventTimeLessThanOrEquals(OffsetDateTime eventTimeTo) {
+        return (root, query, criteriaBuilder) -> {
+            if (eventTimeTo == null) {
+                return null;
+            }
+            return criteriaBuilder.lessThanOrEqualTo(root.get("eventTime"), eventTimeTo);
+        };
     }
 }

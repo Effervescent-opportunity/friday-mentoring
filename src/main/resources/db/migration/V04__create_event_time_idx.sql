@@ -1,0 +1,1 @@
+CREATE INDEX event_time_idx ON auth_event(event_time);
