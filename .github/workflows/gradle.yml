@@ -1,0 +1,48 @@
+name: Java CI with Gradle
+
+on:
+#  push:
+#    branches: [ "feature/github-actions-test" ]
+  pull_request:
+    branches: [ "main" ]
+  #todo make  work где мой коммент с покрытием, а?
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'liberica'
+      - name: Build with Gradle
+        uses: gradle/gradle-build-action@v2.6.0
+        with:
+          gradle-version: current
+          arguments: build jacocoTestReport
+      - name: Add coverage
+        id: jacoco
+        uses: madrapps/jacoco-report@v1.6.1
+        with:
+          paths: ${{ github.workspace }}/**/build/reports/jacoco/all/jacocoTestReport.xml
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: Code coverage
+          pass-emoji: ':green_circle:'
+          fail-emoji: ':red_circle:'
+          debug-mode: true
+#          prNumber: 11 https://github.com/Madrapps/jacoco-report/blob/main/src/action.ts
+# IDK where to put this          https://github.com/Madrapps/jacoco-report/issues/62
+      - name: Get the Coverage info
+        run: |
+          echo "Total coverage ${{ steps.jacoco.outputs.coverage-overall }}"
+          echo "Changed Files coverage ${{ steps.jacoco.outputs.coverage-changed-files }}"
+#          It has: 2023-10-29T16:20:59.9811119Z ##[group]Run echo "Total coverage 90.96"
+#2023-10-29T16:20:59.9812235Z [36;1mecho "Total coverage 90.96"
+#2023-10-29T16:20:59.9812996Z [36;1mecho "Changed Files coverage 100"
