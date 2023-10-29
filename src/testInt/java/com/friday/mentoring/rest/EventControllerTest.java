@@ -80,6 +80,7 @@ public class EventControllerTest extends BaseIntegrationTest {
                 ).andDo(print());
     }
 
+    @Sql("/add_events.sql")
     @Test
     void incorrectPageNumberTest() throws Exception {
         mockMvc.perform(get("/auth/events").param("page", "-1"))
@@ -92,6 +93,7 @@ public class EventControllerTest extends BaseIntegrationTest {
                 ).andDo(print());
     }
 
+    @Sql("/add_events.sql")
     @Test
     void incorrectSizeTest() throws Exception {
         mockMvc.perform(get("/auth/events").param("size", "0"))
@@ -108,7 +110,7 @@ public class EventControllerTest extends BaseIntegrationTest {
                         status().isOk(),
                         content().contentType("application/json"),
                         jsonPath("numberOfElements").value(5),
-                        jsonPath("size").value(20),
+                        jsonPath("size").value(100),
                         jsonPath("number").value(0)
                 ).andDo(print());
     }
