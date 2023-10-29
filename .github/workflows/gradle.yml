@@ -42,5 +42,5 @@ jobs:
           echo "Total coverage ${{ steps.jacoco.outputs.coverage-overall }}"
           echo "Changed Files coverage ${{ steps.jacoco.outputs.coverage-changed-files }}"
 #          It has: 2023-10-29T16:20:59.9811119Z ##[group]Run echo "Total coverage 90.96"
-#2023-10-29T16:20:59.9812235Z [36;1mecho "Total coverage 90.96"[0m
-#2023-10-29T16:20:59.9812996Z [36;1mecho "Changed Files coverage 100"[0m
+#2023-10-29T16:20:59.9812235Z [36;1mecho "Total coverage 90.96"
+#2023-10-29T16:20:59.9812996Z [36;1mecho "Changed Files coverage 100"
