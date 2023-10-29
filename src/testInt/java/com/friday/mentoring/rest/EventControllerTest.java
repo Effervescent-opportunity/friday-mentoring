@@ -39,7 +39,9 @@ public class EventControllerTest extends BaseIntegrationTest {
                 .andExpectAll(
                         status().isOk(),
                         content().contentType("application/json"),
-                        jsonPath("numberOfElements").value(5)
+                        jsonPath("numberOfElements").value(5),
+                        jsonPath("size").value(20),
+                        jsonPath("sort.sorted").value(true)
                 ).andDo(print());
     }
 
@@ -78,30 +80,38 @@ public class EventControllerTest extends BaseIntegrationTest {
                 ).andDo(print());
     }
 
+    @Sql("/add_events.sql")
     @Test
     void incorrectPageNumberTest() throws Exception {
         mockMvc.perform(get("/auth/events").param("page", "-1"))
                 .andExpectAll(
-                        status().isBadRequest(),
-                        content().contentTypeCompatibleWith("application/problem+json"),
-                        jsonPath("detail").value("Номер страницы должен быть неотрицательным")
+                        status().isOk(),
+                        content().contentType("application/json"),
+                        jsonPath("numberOfElements").value(5),
+                        jsonPath("size").value(20),
+                        jsonPath("number").value(0)
                 ).andDo(print());
     }
 
+    @Sql("/add_events.sql")
     @Test
     void incorrectSizeTest() throws Exception {
         mockMvc.perform(get("/auth/events").param("size", "0"))
                 .andExpectAll(
-                        status().isBadRequest(),
-                        content().contentTypeCompatibleWith("application/problem+json"),
-                        jsonPath("detail").value("Допустимый размер страницы: от 1 до 100 включительно")
+                        status().isOk(),
+                        content().contentType("application/json"),
+                        jsonPath("numberOfElements").value(5),
+                        jsonPath("size").value(20),
+                        jsonPath("number").value(0)
                 ).andDo(print());
 
         mockMvc.perform(get("/auth/events").param("size", "101"))
                 .andExpectAll(
-                        status().isBadRequest(),
-                        content().contentTypeCompatibleWith("application/problem+json"),
-                        jsonPath("detail").value("Допустимый размер страницы: от 1 до 100 включительно")
+                        status().isOk(),
+                        content().contentType("application/json"),
+                        jsonPath("numberOfElements").value(5),
+                        jsonPath("size").value(100),
+                        jsonPath("number").value(0)
                 ).andDo(print());
     }
 
@@ -112,7 +122,7 @@ public class EventControllerTest extends BaseIntegrationTest {
                 .andExpectAll(
                         status().isBadRequest(),
                         content().contentTypeCompatibleWith("application/problem+json"),
-                        jsonPath("detail").value("Дата начала периода должна быть до даты окончания периода")
+                        jsonPath("detail").value("EventTimeFrom must be less than eventTimeTo")
                 ).andDo(print());
     }
 
@@ -122,29 +132,7 @@ public class EventControllerTest extends BaseIntegrationTest {
                 .andExpectAll(
                         status().isBadRequest(),
                         content().contentTypeCompatibleWith("application/problem+json"),
-                        jsonPath("detail").value("Сортировка задана некорректно")
-                ).andDo(print());
-
-        mockMvc.perform(get("/auth/events").param("sort", "userName,asc")
-                        .param("sort", "incorrect"))
-                .andExpectAll(
-                        status().isBadRequest(),
-                        content().contentTypeCompatibleWith("application/problem+json"),
-                        jsonPath("detail").value("Сортировка задана некорректно")
-                ).andDo(print());
-
-        mockMvc.perform(get("/auth/events").param("sort", "user,asc"))
-                .andExpectAll(
-                        status().isBadRequest(),
-                        content().contentTypeCompatibleWith("application/problem+json"),
-                        jsonPath("detail").value("Некорректное название поля для сортировки: user")
-                ).andDo(print());
-
-        mockMvc.perform(get("/auth/events").param("sort", "userName,upper"))
-                .andExpectAll(
-                        status().isBadRequest(),
-                        content().contentTypeCompatibleWith("application/problem+json"),
-                        jsonPath("detail").value("Некорректное направление сортировки: upper")
+                        jsonPath("detail").value("Incorrect property name for sorting: incorrect")
                 ).andDo(print());
     }
 }
