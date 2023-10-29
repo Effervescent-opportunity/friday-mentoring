@@ -1,10 +1,10 @@
 name: Java CI with Gradle
 
 on:
-  push:
-    branches: [ "feature/github-actions-test" ]
-#  pull_request:
-#    branches: [ "main" ]
+#  push:
+#    branches: [ "feature/github-actions-test" ]
+  pull_request:
+    branches: [ "main" ]
   #todo make  work где мой коммент с покрытием, а?
   workflow_dispatch:
 
@@ -37,7 +37,7 @@ jobs:
           pass-emoji: ':green_circle:'
           fail-emoji: ':red_circle:'
           debug-mode: true
-          prNumber: 11
+#          prNumber: 11 https://github.com/Madrapps/jacoco-report/blob/main/src/action.ts
 # IDK where to put this          https://github.com/Madrapps/jacoco-report/issues/62
       - name: Get the Coverage info
         run: |
