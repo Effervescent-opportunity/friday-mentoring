@@ -50,8 +50,34 @@ services:
       - POSTGRES_PASSWORD=fmpass
     volumes:
       - fmdb-data:/var/lib/postgresql/data
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.10.4
+    container_name: fm-elk
+    ports:
+      - "9200:9200"
+    environment:
+      discovery.type: single-node
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.10.4
+    container_name: fm-logstash
+    depends_on:
+      - elasticsearch
+    ports:
+      - "5044:5044"
+    volumes:
+      - fm-logstash-data:/var/lib/logstash/data
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.10.4
+    container_name: fm-kibana
+    depends_on:
+      - elasticsearch
+    ports:
+      - "5601:5601"
 
 volumes:
   fmdb-data:
     driver: local
     name: "fmdb-data-volume"
+  fm-logstash-data:
+    driver: local
+    name: "fm-logstash-data-volume"
