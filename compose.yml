@@ -51,14 +51,14 @@ services:
     volumes:
       - fmdb-data:/var/lib/postgresql/data
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.10.4
+    image: elasticsearch:8.10.2
     container_name: fm-elk
     ports:
       - "9200:9200"
     environment:
       discovery.type: single-node
   logstash:
-    image: docker.elastic.co/logstash/logstash:8.10.4
+    image: logstash:8.10.2
     container_name: fm-logstash
     depends_on:
       - elasticsearch
@@ -67,7 +67,7 @@ services:
     volumes:
       - fm-logstash-data:/var/lib/logstash/data
   kibana:
-    image: docker.elastic.co/kibana/kibana:8.10.4
+    image: kibana:8.10.2
     container_name: fm-kibana
     depends_on:
       - elasticsearch
