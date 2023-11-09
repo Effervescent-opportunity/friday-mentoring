@@ -8,7 +8,7 @@
     <property resource="application.properties"/>
 
 <!--    <if condition='"${logstash.address}".contains("profile1")'>-->
-    <if condition='isDefined("${logstash.address}")'>
+    <if condition='isDefined("${logstash.host}") &amp;&amp; isDefined("${logstash.port}")'>
         <then>
             <appender name="stash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
                 <destination>${logstash.address}</destination>
