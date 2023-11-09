@@ -354,3 +354,38 @@ tomcat_sessions_alive_max_seconds 0.0
 tomcat_sessions_created_sessions_total 1.0
 tomcat_sessions_expired_sessions_total 0.0
 tomcat_sessions_rejected_sessions_total 0.0
+
+
+docker stats --no-stream
+
+when starting:
+CONTAINER ID   NAME           CPU %     MEM USAGE / LIMIT     MEM %     NET I/O           BLOCK I/O         PIDS
+3c38cd2c560f   fm-kafka-ui    263.62%   233.7MiB / 15.44GiB   1.48%     6.36kB / 0B       83.7MB / 65.5kB   25
+0347be6e4882   fm-kafka       112.63%   290.7MiB / 15.44GiB   1.84%     9.69kB / 4.39kB   27.7MB / 115kB    39
+ef187a243b3b   fm-zookeeper   1.05%     142.9MiB / 15.44GiB   0.90%     10.9kB / 3.38kB   73.3MB / 180kB    47
+4b08c781dada   fm-postgres    0.03%     21.68MiB / 15.44GiB   0.14%     6.67kB / 0B       21.4MB / 49.2kB   6
+
+
+without app:
+CONTAINER ID   NAME           CPU %     MEM USAGE / LIMIT     MEM %     NET I/O           BLOCK I/O        PIDS
+3c38cd2c560f   fm-kafka-ui    0.18%     298.5MiB / 15.44GiB   1.89%     39.2kB / 3.71kB   98MB / 164kB     35
+0347be6e4882   fm-kafka       2.42%     370.5MiB / 15.44GiB   2.34%     18.3kB / 35.6kB   30.6MB / 229kB   76
+ef187a243b3b   fm-zookeeper   0.25%     143.6MiB / 15.44GiB   0.91%     16.6kB / 9.25kB   73.3MB / 262kB   47
+4b08c781dada   fm-postgres    0.04%     28.24MiB / 15.44GiB   0.18%     7.03kB / 0B       22.4MB / 242kB   6
+
+with running app:
+CONTAINER ID   NAME           CPU %     MEM USAGE / LIMIT     MEM %     NET I/O           BLOCK I/O        PIDS
+3c38cd2c560f   fm-kafka-ui    0.09%     298.6MiB / 15.44GiB   1.89%     94.3kB / 8.9kB    98MB / 217kB     35
+0347be6e4882   fm-kafka       83.68%    386.9MiB / 15.44GiB   2.45%     28.2kB / 95.5kB   30.6MB / 524kB   76
+ef187a243b3b   fm-zookeeper   1.44%     143.8MiB / 15.44GiB   0.91%     21.1kB / 12.1kB   73.3MB / 418kB   47
+4b08c781dada   fm-postgres    0.05%     47.5MiB / 15.44GiB    0.30%     36.3kB / 26.9kB   26.8MB / 651kB   16
+
+CONTAINER ID   NAME           CPU %     MEM USAGE / LIMIT   MEM %     NET I/O           BLOCK I/O         PIDS
+d4c314bc741d   fm-kibana      0.01%     329.3MiB / 500MiB   65.86%    153kB / 2.73MB    1.57MB / 8.19kB   12
+c614d1632668   fm-logstash    1.00%     499.6MiB / 500MiB   99.93%    9.51kB / 10.4kB   515MB / 648MB     34
+88dede13bfe0   fm-elk         1.37%     499.5MiB / 500MiB   99.90%    345kB / 153kB     68.9MB / 184MB    79
+9eb29071e540   fm-postgres    0.01%     29.53MiB / 100MiB   29.53%    4.24kB / 0B       11.5MB / 610kB    6
+91680016332f   fm-kafka-ui    0.14%     171.6MiB / 400MiB   42.89%    320kB / 31.8kB    352kB / 1.01MB    23
+ccf070552431   fm-kafka       1.04%     341.4MiB / 400MiB   85.34%    56.4kB / 341kB    426kB / 2MB       73
+efd617756af3   fm-zookeeper   0.17%     83.45MiB / 200MiB   41.72%    33.3kB / 22.7kB   0B / 905kB        37
+
