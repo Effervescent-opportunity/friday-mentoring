@@ -78,6 +78,7 @@ services:
     environment:
       - discovery.type=single-node
       - ELASTIC_PASSWORD=fmpass
+      - xpack.security.enabled=false
     deploy:
       resources:
         limits:
@@ -90,6 +91,8 @@ services:
       - elasticsearch
     ports:
       - "5044:5044"
+#    environment:
+#      - monitoring.elasticsearch.hosts=http://elasticsearch:9200
     volumes:
       - fm-logstash-data:/var/lib/logstash/data
     deploy:
@@ -105,8 +108,9 @@ services:
     ports:
       - "5601:5601"
     environment:
-      - ELASTICSEARCH_USERNAME=elastic
-      - ELASTICSEARCH_PASSWORD=fmpass
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+#      - ELASTICSEARCH_USERNAME=elastic
+#      - ELASTICSEARCH_PASSWORD=fmpass
     deploy:
       resources:
         limits:
