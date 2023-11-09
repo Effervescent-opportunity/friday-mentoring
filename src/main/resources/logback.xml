@@ -12,7 +12,8 @@
 <!--        <then>-->
             <appender name="stash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
                 <destination>127.0.0.1:5044</destination>
-<!--                todo IDK what to do og destination 127.0.0.1/<unresolved>:5044: Waiting 29702ms before attempting reconnection.-->
+<!--                todo IDK what to do
+21:46:26,916 |-WARN in net.logstash.logback.appender.LogstashTcpSocketAppender[stash] - Log destination 127.0.0.1/<unresolved>:5044: Waiting 28163ms before attempting reconnection.-->
 <!--                in logs: LogstashTcpSocketAppender[stash] - Log destination localhost/<unresolved>:5044-->
 <!--                <destination>${logstash.host}:${logstash.port}</destination>-->
                 <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
