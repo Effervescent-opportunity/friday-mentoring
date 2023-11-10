@@ -9,11 +9,6 @@
         </encoder>
     </appender>
 
-<!--    <if condition='isDefined("logstash.destination") &amp;&amp; property("logstash.destination").contains(":")'>-->
-<!--    <if condition='isDefined("logstash.destination") &amp;&amp; isDefined(property("logstash.destination"))'> IllArgEx-->
-<!--    <if condition='isDefined("logstash.destination") &amp;&amp; !isNull(property("logstash.destination"))'> IllArgEx-->
-<!--    <if condition='isDefined("logstash.destination") &amp;&amp; !isNull("logstash.destination")'> true-->
-<!--    <if condition='isDefined("logstash.destination") &amp;&amp; property("logstash.destination") != ""'> true-->
     <if condition='isDefined("logstash.destination") &amp;&amp; property("logstash.destination").length() != 0'>
         <then>
             <appender name="stash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
