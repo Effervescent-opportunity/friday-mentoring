@@ -1,10 +1,7 @@
 
 ## Девятое задание
 
-- В `compose.yml` добавлены elasticsearch, logstash, kibana, скорее всего некоторые параметры не нужны или каких-то не хватает,
-это планировалось исправлять после выполнения обязательных задач, чего не случилось 
-- Отправка логов в Logstash не работает, и у меня нет идей, как это исправить. В логах приложения: `|-WARN in net.logstash.logback.appender.LogstashTcpSocketAppender[stash] - Log destination 127.0.0.1/<unresolved>:5044: Waiting 28163ms before attempting reconnection`.
-В логах Logstash: `io.netty.handler.codec.DecoderException: org.logstash.beats.InvalidFrameProtocolException: Invalid version of beats protocol: 34` с разными числами на конце. Закомментированы строки, которые не влияют на неработоспособность
+- В `compose.yml` добавлены ограничения на CPU и память
 - Приложение из коробки отдает больше 350 метрик, включая системные метрики (количество свободного места на диске, загрузку процессора), 
 метрики JVM (общая информация, состояние памяти, сборщика мусора), Spring (http-запросы в разбивке по эндпоинтам и статусам ответов,
 состояние пулов - соединений к базе, планировщика, асинхронных задач, запросы к Spring Data репозиториям, вызовы kafkaTemplate, 
