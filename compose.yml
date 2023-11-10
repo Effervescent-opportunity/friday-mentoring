@@ -8,6 +8,11 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
     ports:
       - "22181:2181"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: '200M'
   kafka:
     image: confluentinc/cp-kafka:7.4.1
     container_name: fm-kafka
@@ -25,6 +30,11 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_REQUEST_TIMEOUT_MS: 2000
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: '400M'
   kafka-ui:
     image: provectuslabs/kafka-ui:v0.7.1
     container_name: fm-kafka-ui
@@ -39,6 +49,11 @@ services:
     links:
       - kafka
       - zookeeper
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: '400M'
   postgres:
     image: postgres:15.4-alpine
     container_name: fm-postgres
@@ -50,6 +65,11 @@ services:
       - POSTGRES_PASSWORD=fmpass
     volumes:
       - fmdb-data:/var/lib/postgresql/data
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: '100M'
 
 volumes:
   fmdb-data:
