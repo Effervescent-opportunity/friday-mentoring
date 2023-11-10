@@ -389,3 +389,8 @@ c614d1632668   fm-logstash    1.00%     499.6MiB / 500MiB   99.93%    9.51kB / 1
 ccf070552431   fm-kafka       1.04%     341.4MiB / 400MiB   85.34%    56.4kB / 341kB    426kB / 2MB       73
 efd617756af3   fm-zookeeper   0.17%     83.45MiB / 200MiB   41.72%    33.3kB / 22.7kB   0B / 905kB        37
 
+Задача не доделана - в логах приложения: 09:25:12,959 |-WARN in net.logstash.logback.appender.LogstashTcpSocketAppender[stash] - Log destination 127.0.0.1/<unresolved>:5044: Waiting 29984ms before attempting reconnection.
+В логах логстеша: [2023-11-10T06:25:55,795][WARN ][io.netty.channel.DefaultChannelPipeline][main][0710cad67e8f47667bc7612580d5b91f691dd8262a4187d9eca8cf87229d04aa] An exceptionCaught() event was fired, and it reached at the tail of the pipeline. It usually means the last handler in the pipeline did not handle the exception.
+io.netty.handler.codec.DecoderException: org.logstash.beats.InvalidFrameProtocolException: Invalid version of beats protocol: 34
+
+Как это починить - не знаю.

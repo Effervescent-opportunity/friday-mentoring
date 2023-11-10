@@ -7,26 +7,37 @@
     </appender>
     <property resource="application.properties"/>
 
-<!--    <if condition='"${logstash.address}".contains("profile1")'>-->
-<!--    <if condition='isDefined("${logstash.host}") &amp;&amp; isDefined("${logstash.port}")'>-->
-<!--        <then>-->
-            <appender name="stash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-                <destination>127.0.0.1:5044</destination>
-<!--                todo IDK what to do
-21:46:26,916 |-WARN in net.logstash.logback.appender.LogstashTcpSocketAppender[stash] - Log destination 127.0.0.1/<unresolved>:5044: Waiting 28163ms before attempting reconnection.-->
-<!--                in logs: LogstashTcpSocketAppender[stash] - Log destination localhost/<unresolved>:5044-->
-<!--                <destination>${logstash.host}:${logstash.port}</destination>-->
-                <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
-            </appender>
-<!--            <root>-->
-<!--                <appender-ref ref="stash"/>-->
-<!--            </root>-->
-<!--        </then>-->
-<!--    </if>-->
-<!--    todo в какой-то момент были логи конфигурации логбека, и там было написано, что мол stash не используется-->
+    <appender name="stash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>127.0.0.1:5044</destination>
 
-    <root level="INFO">
-        <appender-ref ref="STDOUT"/>
+        <!-- encoder is required -->
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+    </appender>
+
+    <root level="DEBUG">
         <appender-ref ref="stash"/>
     </root>
+
+    <!--    <if condition='"${logstash.address}".contains("profile1")'>-->
+    <!--    <if condition='isDefined("${logstash.host}") &amp;&amp; isDefined("${logstash.port}")'>-->
+    <!--        <then>-->
+    <!--            <appender name="stash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">-->
+    <!--                <destination>127.0.0.1:5044</destination>-->
+    <!--                todo IDK what to do
+    21:46:26,916 |-WARN in net.logstash.logback.appender.LogstashTcpSocketAppender[stash] - Log destination 127.0.0.1/<unresolved>:5044: Waiting 28163ms before attempting reconnection.-->
+    <!--                in logs: LogstashTcpSocketAppender[stash] - Log destination localhost/<unresolved>:5044-->
+    <!--                <destination>${logstash.host}:${logstash.port}</destination>-->
+    <!--                <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>-->
+    <!--            </appender>-->
+    <!--            <root>-->
+    <!--                <appender-ref ref="stash"/>-->
+    <!--            </root>-->
+    <!--        </then>-->
+    <!--    </if>-->
+    <!--    todo в какой-то момент были логи конфигурации логбека, и там было написано, что мол stash не используется-->
+
+<!--    <root level="INFO">-->
+<!--        <appender-ref ref="STDOUT"/>-->
+<!--        <appender-ref ref="stash"/>-->
+<!--    </root>-->
 </configuration>
