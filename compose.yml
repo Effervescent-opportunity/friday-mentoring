@@ -91,7 +91,9 @@ services:
       - elasticsearch
     ports:
       - "5044:5044"
-#    environment:
+      - "9600:9600"
+    environment:
+      - ELASTIC_PASSWORD=fmpass
 #      - monitoring.elasticsearch.hosts=http://elasticsearch:9200
     volumes:
       - fm-logstash-data:/var/lib/logstash/data
