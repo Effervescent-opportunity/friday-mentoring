@@ -1,5 +1,46 @@
 # Вопросы с ответами по заданиям и исправлениям
 
+## Девятое задание
+
+PR считаю готовым, годным и соответствующим — разумеется, с учётом нижерасполагающейся простыни нюансов.
+
+Имеем вот что...
+
+`implementation ch.qos.logback:logback-classic:1.4.8` можно не писать, т.к. приходит в зависимостях транзитивно.
+
+> параметр logstash.destination с каким-то значением
+
+Понятия "параметр" с однозначной трактовкой в 2023 году уже нет. Есть "свойства" (properties), которые могут переопределяться 
+переменными окружения. См.
+[Externalized Configuration](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.external-config)
+
+Из этого тезиса есть ряд важных следствий:
+1. не нужно делать импорт свойств из application.properties вот так: `<property resource="application.properties"/>`
+вместо этого - использовать переменные окружения.
+Получается такая система:
+- в [configmap](https://kubernetes.io/docs/concepts/configuration/configmap/) девопс определяет переменные окружения, 
+для Spring Boot формируя её название по правилам 
+[Relaxed Binding](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.external-config.typesafe-configuration-properties.relaxed-binding), а для Logback - без этих правил;
+- pod потребляет значение этой переменной;
+- применяется конфигурация в нашем случае Logback.
+
+2. значение `<if condition='isDefined("logstash.destination") &amp;&amp; property("logstash.destination").length() != 0'>` 
+достаточно переписать на `<if condition='isDefined("logstash.destination")'>` учитывая что в configmap будет нечто такое:
+```
+apiVersion: v1
+kind: ConfigMap
+metadata:
+# ...  это мы опустим
+data:
+logstash.destination: "{{ .Values.config.logstash.destination }}"
+```
+
+> больше 350 метрик
+
+Главное - не заставлять девопсов искать описание для всего. Можно предложить 
+[готовый дашборд](https://grafana.com/grafana/dashboards/19004-spring-boot-statistics/) для графаны, настроить алерты и наслаждаться. 
+В задании проверялись не только техническая составляющая, но и рамки ориентированности на результат :)
+
 ## Десятое задание
 ### По поводу решения
 
