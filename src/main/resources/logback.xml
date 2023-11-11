@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true">
-    <property resource="application.properties"/>
-
     <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
@@ -9,7 +7,7 @@
         </encoder>
     </appender>
 
-    <if condition='isDefined("logstash.destination") &amp;&amp; property("logstash.destination").length() != 0'>
+    <if condition='isDefined("logstash.destination")'>
         <then>
             <appender name="stash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
                 <destination>${logstash.destination}</destination>
