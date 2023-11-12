@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
@@ -32,6 +33,7 @@ public class CustomSecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .logout(logout -> logout.logoutUrl("/auth/logout"))
+                .passwordManagement(manager -> manager.changePasswordPage("/auth/change-password"))
                 .exceptionHandling(authorizeHttpRequests -> authorizeHttpRequests
                         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.NOT_FOUND)))
                 .build();
@@ -39,11 +41,14 @@ public class CustomSecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return NoOpPasswordEncoder.getInstance();
+        return new BCryptPasswordEncoder(4);//the lowest strength - по умолчанию 10ка и занимает секунду на проверку, надеюсь с 4 будет поменьше
     }
 
     @Bean
     public UserDetailsService userDetailsService() {
+
+
+        //old
         UserDetails rootUser = User.withUsername("root")
                 .password("password")
                 .roles("ADMIN")
