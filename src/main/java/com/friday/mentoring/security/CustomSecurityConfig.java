@@ -18,8 +18,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
+import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+
+import javax.sql.DataSource;
 
 /**
  * Бины для аутентификации, авторизации, аудита
@@ -44,16 +48,23 @@ public class CustomSecurityConfig {
         return new BCryptPasswordEncoder(4);//the lowest strength - по умолчанию 10ка и занимает секунду на проверку, надеюсь с 4 будет поменьше
     }
 
+//    @Bean
+//    public UserDetailsService userDetailsService() {
+//        User.UserBuilder userBuilder = User.withDefaultPasswordEncoder();
+//
+////        userBuilder.username()
+////"{noop}password todo run and check/ and change only it's password
+//        //old
+//        UserDetails rootUser = User.withUsername("root")
+//                .password("password")
+//                .roles("ADMIN")
+//                .build();
+//        return new InMemoryUserDetailsManager(rootUser);
+//    }
+
     @Bean
-    public UserDetailsService userDetailsService() {
-
-
-        //old
-        UserDetails rootUser = User.withUsername("root")
-                .password("password")
-                .roles("ADMIN")
-                .build();
-        return new InMemoryUserDetailsManager(rootUser);
+    public UserDetailsManager userDetailsManager(DataSource dataSource) {
+        return new JdbcUserDetailsManager(dataSource);
     }
 
     @Bean
