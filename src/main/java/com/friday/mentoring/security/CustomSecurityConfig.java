@@ -31,13 +31,21 @@ import javax.sql.DataSource;
 @Configuration
 @EnableMethodSecurity
 public class CustomSecurityConfig {
+    /*
+     * select * from auth_event order by event_time desc;
+     *
+     * update users set password ='{bcrypt}$2a$10$dXJ3SW6G7P50lGmMkkmwe.20cQQubK3.HZWzG3YB1tlRy.fqvM/BG' where username = 'root';
+     * update users set password ='$2a$04$h2h/1yUrMk/1s1z8qVLTouoW./Mgd10Yr2.XBGhNDuVRsDCh756km' where username = 'root';
+     * JSESSIONID=9664CCA69A8501F89A3A1173C405D726
+     *
+     */
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .logout(logout -> logout.logoutUrl("/auth/logout"))
-                .passwordManagement(manager -> manager.changePasswordPage("/auth/change-password"))
+                .passwordManagement(manager -> manager.changePasswordPage("/auth/change-password"))//todo - now it's not working
                 .exceptionHandling(authorizeHttpRequests -> authorizeHttpRequests
                         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.NOT_FOUND)))
                 .build();
