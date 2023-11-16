@@ -75,11 +75,7 @@ public class CustomSecurityConfig {
 
     @Bean
     public UserDetailsManager userDetailsManager(AuthenticationManagerBuilder auth, DataSource dataSource) throws Exception {
-        return auth.jdbcAuthentication().passwordEncoder(passwordEncoder())
-                .dataSource(dataSource)
-                .getUserDetailsService();
-
-//        return new JdbcUserDetailsManager(dataSource);
+        return new JdbcUserDetailsManager(dataSource);
     }
 
     @Bean
