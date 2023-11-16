@@ -36,8 +36,10 @@ public class CustomSecurityConfig {
      *
      * update users set password ='{bcrypt}$2a$10$dXJ3SW6G7P50lGmMkkmwe.20cQQubK3.HZWzG3YB1tlRy.fqvM/BG' where username = 'root';
      * update users set password ='$2a$04$h2h/1yUrMk/1s1z8qVLTouoW./Mgd10Yr2.XBGhNDuVRsDCh756km' where username = 'root';
-     * JSESSIONID=9664CCA69A8501F89A3A1173C405D726
+     * JSESSIONID=947FBDC297F3D61AEACC41D3CBD44F7B
+     * https://localhost:8443/auth/change-password
      *
+     * curl -k -v -X POST https://localhost:8443/auth/change-password -H "Cookie: JSESSIONID=947FBDC297F3D61AEACC41D3CBD44F7B" -H "Content-Type: application/json" -d '{"user": "root", "oldPassword": "password", "newPassword": "password1"}'
      */
 
     @Bean
@@ -45,7 +47,7 @@ public class CustomSecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .logout(logout -> logout.logoutUrl("/auth/logout"))
-                .passwordManagement(manager -> manager.changePasswordPage("/auth/change-password"))//todo - now it's not working
+//                .passwordManagement(manager -> manager.changePasswordPage("/auth/change-password"))//todo - now it's not working
                 .exceptionHandling(authorizeHttpRequests -> authorizeHttpRequests
                         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.NOT_FOUND)))
                 .build();

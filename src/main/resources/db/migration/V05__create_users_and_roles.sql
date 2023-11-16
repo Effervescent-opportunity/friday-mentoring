@@ -12,11 +12,11 @@ CREATE TABLE authorities
 );
 
 INSERT INTO users(username, password)
-VALUES ('root', '{noop}password');
+VALUES ('root', '$2a$04$h2h/1yUrMk/1s1z8qVLTouoW./Mgd10Yr2.XBGhNDuVRsDCh756km');
 INSERT INTO users(username, password)
-VALUES ('wakeup', '{noop}password');
+VALUES ('wakeup', '$2a$04$h2h/1yUrMk/1s1z8qVLTouoW./Mgd10Yr2.XBGhNDuVRsDCh756km');
 INSERT INTO users(username, password)
-VALUES ('beza', '{noop}password');
+VALUES ('beza', '$2a$04$h2h/1yUrMk/1s1z8qVLTouoW./Mgd10Yr2.XBGhNDuVRsDCh756km');
 
 INSERT INTO authorities(username, authority)
 VALUES ('root', 'ROLE_ADMIN');
