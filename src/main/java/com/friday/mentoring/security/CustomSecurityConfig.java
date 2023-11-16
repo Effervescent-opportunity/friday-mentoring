@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authorization.AuthorizationEventPublisher;
 import org.springframework.security.authorization.SpringAuthorizationEventPublisher;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -73,8 +74,12 @@ public class CustomSecurityConfig {
 //    }
 
     @Bean
-    public UserDetailsManager userDetailsManager(DataSource dataSource) {
-        return new JdbcUserDetailsManager(dataSource);
+    public UserDetailsManager userDetailsManager(AuthenticationManagerBuilder auth, DataSource dataSource) throws Exception {
+        return auth.jdbcAuthentication().passwordEncoder(passwordEncoder())
+                .dataSource(dataSource)
+                .getUserDetailsService();
+
+//        return new JdbcUserDetailsManager(dataSource);
     }
 
     @Bean
