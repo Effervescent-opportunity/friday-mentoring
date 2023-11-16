@@ -33,6 +33,14 @@ public class SecurityTest extends BaseIntegrationTest {
         mockMvc.perform(post("/auth/login").contentType(MediaType.APPLICATION_JSON)
                         .content("{\"user\": \"root\", \"password\": \"password\"}"))
                 .andExpect(status().isOk()).andDo(print());
+
+        mockMvc.perform(post("/auth/login").contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"user\": \"wakeup\", \"password\": \"password\"}"))
+                .andExpect(status().isOk()).andDo(print());
+
+        mockMvc.perform(post("/auth/login").contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"user\": \"beza\", \"password\": \"password\"}"))
+                .andExpect(status().isOk()).andDo(print());
     }
 
     @Test
@@ -43,7 +51,7 @@ public class SecurityTest extends BaseIntegrationTest {
     }
 
     @Test
-    @WithMockUser(value = "root", roles = "ADMIN")
+    @WithMockUser(roles = "TIME")
     void clockSuccessfulAuthTest() throws Exception {
         mockMvc.perform(get("/time/current/utc")).andExpectAll(
                 status().isOk(),
@@ -67,12 +75,34 @@ public class SecurityTest extends BaseIntegrationTest {
     }
 
     @Test
-    @WithMockUser(value = "noRoot")
-    void clockNotRootUserForbiddenTest() throws Exception {
+    @WithMockUser(roles = "SECURITY")
+    void clockNotTimeRoleForbiddenTest() throws Exception {
         mockMvc.perform(get("/time/current/utc"))
                 .andExpect(status().isForbidden()).andDo(print());
 
         mockMvc.perform(get("/time/current").param("timezone", "Europe/Paris"))
+                .andExpect(status().isForbidden()).andDo(print());
+    }
+
+    @Test
+    @WithMockUser(roles = "SECURITY")
+    void eventsSuccessfulAuthTest() throws Exception {
+        mockMvc.perform(get("/auth/events")).andExpectAll(
+                status().isOk(),
+                content().contentType("application/json")
+        ).andDo(print());
+    }
+
+    @Test
+    void eventsNoUserNotFoundTest() throws Exception {
+        mockMvc.perform(get("/auth/events"))
+                .andExpect(status().isNotFound()).andDo(print());
+    }
+
+    @Test
+    @WithMockUser(roles = "TIME")
+    void eventsNotSecurityRoleForbiddenTest() throws Exception {
+        mockMvc.perform(get("/auth/events"))
                 .andExpect(status().isForbidden()).andDo(print());
     }
 
