@@ -1,5 +1,6 @@
 package com.friday.mentoring.security;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.audit.AuditEventRepository;
 import org.springframework.boot.actuate.audit.InMemoryAuditEventRepository;
 import org.springframework.context.ApplicationEventPublisher;
@@ -27,6 +28,9 @@ import javax.sql.DataSource;
 @EnableMethodSecurity
 public class CustomSecurityConfig {
 
+    @Value(value = "${bcrypt.encoder.strength}")
+    private Integer bcryptStrength;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
@@ -39,7 +43,7 @@ public class CustomSecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(4);
+        return new BCryptPasswordEncoder(bcryptStrength);
     }
 
     @Bean
