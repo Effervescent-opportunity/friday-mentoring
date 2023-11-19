@@ -106,7 +106,7 @@ public class KafkaTest extends BaseIntegrationTest {
     }
 
     @Test
-    @WithMockUser(value = "root", roles = "ADMIN")
+    @WithMockUser(roles = "TIME")
     void authorizationSuccessTest() throws Exception {
         mockMvc.perform(get("/time/current/utc")).andExpectAll(
                 status().isOk(),
