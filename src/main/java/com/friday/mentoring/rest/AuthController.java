@@ -1,5 +1,6 @@
 package com.friday.mentoring.rest;
 
+import com.friday.mentoring.usecase.AuthEventType;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
@@ -23,8 +24,15 @@ public class AuthController {
         try {
             httpServletRequest.login(credentials.user(), credentials.password());
             return ResponseEntity.ok().build();
+            //todo на успех обнулить счетчик неуспеха
         } catch (ServletException ex) {
             LOGGER.info("Got exception while logging in with user [{}]", credentials.user(), ex);
+            //todo на неуспех увеличить счетчик неуспеха + заблокировать если надо + сделать свой user details?
+
+//            userRepository.processtLoginAttempts(userName);
+
+            
+
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
